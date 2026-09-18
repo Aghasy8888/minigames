@@ -33,6 +33,11 @@ $color-avatar-random-3: #bce3ff;
 $color-avatar-random-4: #ffc6ff;
 $color-avatar-random-5: #e2e4ff;
 
+// Font families — style guide: Inter, Roboto (both text)
+$font-family-inter: 'Inter', system-ui, sans-serif;
+$font-family-roboto: 'Roboto', system-ui, sans-serif;
+$font-family-text: $font-family-inter;
+
 // Font sizes
 $font-size-display-large: 3.5rem;
 $font-size-display-medium: 2.25rem;
@@ -90,3 +95,12 @@ $btn-padding-icon: 0.5rem;
 $shadow-level-1: 4px 4px $color-on-primary;
 $shadow-level-2: 6px 6px $color-on-primary;
 $shadow-level-3: 8px 8px $color-on-primary;
+
+// Breakpoints — media-query widths only (layout changes). Mobile-first: base = mobile.
+$breakpoints: (
+  'mobile': 375px,
+  'tablet': 768px,
+);
+
+// Content shell max width — Pixel Perfect at 1920; ≥1921 stays centered (side space grows).
+$layout-max-width: 1920px;

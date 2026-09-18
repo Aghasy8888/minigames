@@ -1,5 +1,14 @@
 @use './tokens' as *;
 
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/700.css';
+@import '@fontsource/inter/800.css';
+@import '@fontsource/roboto/400.css';
+@import '@fontsource/roboto/500.css';
+@import '@fontsource/roboto/700.css';
+@import '@fontsource/roboto/800.css';
+
 :root {
   // Base
   --color-white: #{$color-white};
@@ -35,6 +44,11 @@
   --color-avatar-random-3: #{$color-avatar-random-3};
   --color-avatar-random-4: #{$color-avatar-random-4};
   --color-avatar-random-5: #{$color-avatar-random-5};
+
+  // Font families
+  --font-family-inter: #{$font-family-inter};
+  --font-family-roboto: #{$font-family-roboto};
+  --font-family-text: #{$font-family-text};
 
   // Font sizes
   --font-size-display-large: #{$font-size-display-large};
@@ -93,4 +107,12 @@
   --shadow-level-1: #{$shadow-level-1};
   --shadow-level-2: #{$shadow-level-2};
   --shadow-level-3: #{$shadow-level-3};
+
+  // Layout
+  --layout-max-width: #{$layout-max-width};
+}
+
+body {
+  font-family: var(--font-family-text);
+  font-weight: var(--font-weight-regular);
 }
