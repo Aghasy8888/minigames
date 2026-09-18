@@ -1,4 +1,4 @@
-# Cursor (local rules/settings — keep untracked)
+# Cursor
 .cursor/
 
 # Dependencies
@@ -7,35 +7,16 @@ node_modules/
 # Build
 dist/
 
-# Vite / env local overrides
+# Vite
 *.local
 
-# OS
+# Logs
+*.log
+npm-debug.log*
+
+# OS / editor
 .DS_Store
 Thumbs.db
 
-# Editor — local overrides only (share base settings if added later)
-.vscode/*
-!.vscode/extensions.json
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-
-# Logs
-logs/
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-
-# Test / coverage
+# Coverage
 coverage/
-*.lcov
-.nyc_output/
-
-# Misc
-*.tsbuildinfo
-.cache/
-.temp/
-.tmp/

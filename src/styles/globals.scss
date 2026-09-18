@@ -1,0 +1,118 @@
+@use './tokens' as *;
+
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/700.css';
+@import '@fontsource/inter/800.css';
+@import '@fontsource/roboto/400.css';
+@import '@fontsource/roboto/500.css';
+@import '@fontsource/roboto/700.css';
+@import '@fontsource/roboto/800.css';
+
+:root {
+  // Base
+  --color-white: #{$color-white};
+  --color-black: #{$color-black};
+
+  // General
+  --color-bg: #{$color-bg};
+  --color-on-bg: #{$color-on-bg};
+  --color-on-bg-low: #{$color-on-bg-low};
+  --color-bg-footer: #{$color-bg-footer};
+  --color-bg-footer-low: #{$color-bg-footer-low};
+  --color-bg-footer-lowest: #{$color-bg-footer-lowest};
+  --color-on-bg-footer: #{$color-on-bg-footer};
+  --color-surface: #{$color-surface};
+  --color-surface-low: #{$color-surface-low};
+  --color-primary: #{$color-primary};
+  --color-primary-low: #{$color-primary-low};
+  --color-primary-high: #{$color-primary-high};
+  --color-on-primary: #{$color-on-primary};
+  --color-secondary: #{$color-secondary};
+  --color-tertiary: #{$color-tertiary};
+  --color-like: #{$color-like};
+  --color-error: #{$color-error};
+  --color-price-free: #{$color-price-free};
+
+  // Borders
+  --color-outline: #{$color-outline};
+  --color-outline-variant: #{$color-outline-variant};
+
+  // Additional
+  --color-avatar-random-1: #{$color-avatar-random-1};
+  --color-avatar-random-2: #{$color-avatar-random-2};
+  --color-avatar-random-3: #{$color-avatar-random-3};
+  --color-avatar-random-4: #{$color-avatar-random-4};
+  --color-avatar-random-5: #{$color-avatar-random-5};
+
+  // Font families
+  --font-family-inter: #{$font-family-inter};
+  --font-family-roboto: #{$font-family-roboto};
+  --font-family-text: #{$font-family-text};
+
+  // Font sizes
+  --font-size-display-large: #{$font-size-display-large};
+  --font-size-display-medium: #{$font-size-display-medium};
+  --font-size-display-small: #{$font-size-display-small};
+  --font-size-headline-large: #{$font-size-headline-large};
+  --font-size-headline-medium: #{$font-size-headline-medium};
+  --font-size-headline-small: #{$font-size-headline-small};
+  --font-size-body-large: #{$font-size-body-large};
+  --font-size-body-medium: #{$font-size-body-medium};
+  --font-size-body-small: #{$font-size-body-small};
+  --font-size-label-extra-large: #{$font-size-label-extra-large};
+  --font-size-label-large: #{$font-size-label-large};
+  --font-size-label-medium: #{$font-size-label-medium};
+  --font-size-label-small: #{$font-size-label-small};
+
+  // Font weights
+  --font-weight-regular: #{$font-weight-regular};
+  --font-weight-medium: #{$font-weight-medium};
+  --font-weight-bold: #{$font-weight-bold};
+  --font-weight-extra-bold: #{$font-weight-extra-bold};
+
+  // Sizes
+  --size-05: #{$size-05};
+  --size-1: #{$size-1};
+  --size-2: #{$size-2};
+  --size-3: #{$size-3};
+  --size-4: #{$size-4};
+  --size-5: #{$size-5};
+  --size-6: #{$size-6};
+  --size-7: #{$size-7};
+  --size-8: #{$size-8};
+  --size-9: #{$size-9};
+  --size-10: #{$size-10};
+  --size-11: #{$size-11};
+  --size-12: #{$size-12};
+  --size-13: #{$size-13};
+  --size-14: #{$size-14};
+  --size-15: #{$size-15};
+
+  // Corners
+  --corner-extra-small: #{$corner-extra-small};
+  --corner-small: #{$corner-small};
+  --corner-medium: #{$corner-medium};
+  --corner-large: #{$corner-large};
+  --corner-extra-large: #{$corner-extra-large};
+  --corner-full: #{$corner-full};
+
+  // Button padding
+  --btn-padding-large: #{$btn-padding-large};
+  --btn-padding-medium: #{$btn-padding-medium};
+  --btn-padding-small: #{$btn-padding-small};
+  --btn-padding-icon: #{$btn-padding-icon};
+
+  // Shadows
+  --shadow-level-1: #{$shadow-level-1};
+  --shadow-level-2: #{$shadow-level-2};
+  --shadow-level-3: #{$shadow-level-3};
+
+  // Layout
+  --layout-max-width: #{$layout-max-width};
+}
+
+body {
+  font-family: var(--font-family-text);
+  font-weight: var(--font-weight-regular);
+}
