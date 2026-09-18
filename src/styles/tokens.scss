@@ -1,0 +1,92 @@
+// Base — Place: white → bg, text-color; black → gradient
+$color-white: #ffffff;
+$color-black: #000000;
+
+// General
+$color-bg: #f9f8f3; // base background
+$color-on-bg: #5f5d75; // base text-color
+$color-on-bg-low: #737380; // text-color for additional info
+$color-bg-footer: #1e1b3a; // footer background
+$color-bg-footer-low: #2a264f; // social-link
+$color-bg-footer-lowest: #3c376e; // social-link hover
+$color-on-bg-footer: #b9b5c9; // footer text-color
+$color-surface: #fff9e5; // button-hover
+$color-surface-low: #fffcf5; // input focus
+$color-primary: #ffd02b; // button, text-color
+$color-primary-low: #fde047; // sort-action
+$color-primary-high: #e5bb00; // button-hover
+$color-on-primary: #242145; // primary text-color
+$color-secondary: #f0eeff; // badge
+$color-tertiary: #3a2ebf; // table header, button hover
+$color-like: #ff4b4b; // like icon
+$color-error: #b3261e; // validation error
+$color-price-free: #0b8a8f; // price
+
+// Borders — Place: border
+$color-outline: #e5e7eb;
+$color-outline-variant: #d2d2d2;
+
+// Additional — Place: avatar bg
+$color-avatar-random-1: #e9eef6;
+$color-avatar-random-2: #a3e2c9;
+$color-avatar-random-3: #bce3ff;
+$color-avatar-random-4: #ffc6ff;
+$color-avatar-random-5: #e2e4ff;
+
+// Font sizes
+$font-size-display-large: 3.5rem;
+$font-size-display-medium: 2.25rem;
+$font-size-display-small: 1.5rem;
+$font-size-headline-large: 2rem;
+$font-size-headline-medium: 1.5rem;
+$font-size-headline-small: 1.25rem;
+$font-size-body-large: 1.125rem;
+$font-size-body-medium: 1rem;
+$font-size-body-small: 0.875rem;
+$font-size-label-extra-large: 1rem;
+$font-size-label-large: 0.875rem;
+$font-size-label-medium: 0.75rem;
+$font-size-label-small: 0.625rem;
+
+// Font weights
+$font-weight-regular: 400;
+$font-weight-medium: 500;
+$font-weight-bold: 700;
+$font-weight-extra-bold: 800;
+
+// Sizes
+$size-05: 0.25rem;
+$size-1: 0.5rem;
+$size-2: 1rem;
+$size-3: 1.5rem;
+$size-4: 2rem;
+$size-5: 2.5rem;
+$size-6: 3rem;
+$size-7: 3.5rem;
+$size-8: 4rem;
+$size-9: 4.5rem;
+$size-10: 5rem;
+$size-11: 5.5rem;
+$size-12: 6rem;
+$size-13: 6.5rem;
+$size-14: 7rem;
+$size-15: 7.5rem;
+
+// Corners
+$corner-extra-small: 4px;
+$corner-small: 8px;
+$corner-medium: 12px;
+$corner-large: 16px;
+$corner-extra-large: 24px;
+$corner-full: 9999px;
+
+// Button padding
+$btn-padding-large: 1.5rem 1rem;
+$btn-padding-medium: 1.25rem 0.625rem;
+$btn-padding-small: 1rem 0.5rem;
+$btn-padding-icon: 0.5rem;
+
+// Shadows
+$shadow-level-1: 4px 4px $color-on-primary;
+$shadow-level-2: 6px 6px $color-on-primary;
+$shadow-level-3: 8px 8px $color-on-primary;
