@@ -54,7 +54,7 @@
   &__nav-list {
     display: flex;
     align-items: center;
-    gap: $size-5;
+    gap: $size-1;
     padding-right: $size-2;
   }
 
@@ -165,7 +165,7 @@
     }
   }
 
-  @include media-up('tablet') {
+  @include media-up('phablet') {
     &__inner {
       min-height: $size-9;
       padding: $size-1 $size-5;
@@ -173,6 +173,20 @@
 
     &__sign-up {
       display: inline-flex;
+    }
+  }
+
+  @include media-up('tablet') {
+    &__nav {
+      display: block;
+    }
+
+    &__log-in {
+      display: inline-flex;
+    }
+
+    &__menu {
+      display: none;
     }
   }
 
@@ -186,16 +200,8 @@
       font-size: $font-size-headline-medium;
     }
 
-    &__nav {
-      display: block;
-    }
-
-    &__log-in {
-      display: inline-flex;
-    }
-
-    &__menu {
-      display: none;
+    &__nav-list {
+      gap: $size-5;
     }
   }
 }

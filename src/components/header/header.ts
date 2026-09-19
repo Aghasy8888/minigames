@@ -183,15 +183,15 @@ export function createHeader(): HTMLElement {
 
   menuButton.addEventListener('click', toggleMenu);
 
-  // Keep in sync with $breakpoints 'desktop' in tokens.scss (1200px)
-  const desktopMediaQuery = globalThis.matchMedia('(min-width: 1200px)');
-  const handleDesktopChange = (event: MediaQueryListEvent | MediaQueryList): void => {
+  // Keep in sync with $breakpoints 'tablet' in tokens.scss (769px → above 768 PP)
+  const tabletMediaQuery = globalThis.matchMedia('(min-width: 769px)');
+  const handleTabletChange = (event: MediaQueryListEvent | MediaQueryList): void => {
     if (event.matches) {
       closeMenu();
     }
   };
-  handleDesktopChange(desktopMediaQuery);
-  desktopMediaQuery.addEventListener('change', handleDesktopChange);
+  handleTabletChange(tabletMediaQuery);
+  tabletMediaQuery.addEventListener('change', handleTabletChange);
 
   actions.append(createNav(), logInButton, signUpButton, menuButton);
   inner.append(createLogo(), actions);

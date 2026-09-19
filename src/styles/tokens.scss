@@ -102,7 +102,8 @@ $shadow-level-3: 8px 8px $color-on-primary;
 // Breakpoints — media-query widths only (layout changes). Mobile-first: base = mobile.
 $breakpoints: (
   'mobile': 375px,
-  'tablet': 768px,
+  'phablet': 540px,
+  'tablet': 769px,
   'desktop': 1200px,
 );
 
