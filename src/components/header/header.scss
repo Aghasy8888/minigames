@@ -77,12 +77,11 @@
     }
   }
 
-  &__log-in {
-    display: none;
-  }
-
+  &__log-in,
   &__sign-up {
     display: none;
+    color: $color-on-primary;
+    border-color: $color-on-primary;
   }
 
   &__menu {

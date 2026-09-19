@@ -9,13 +9,13 @@
   width: fit-content;
   height: fit-content;
   margin: 0;
-  border: 2px solid $color-black;
+  border: 2px solid $color-on-primary;
   border-radius: $corner-small;
   font-family: $font-family-text;
   font-size: $font-size-label-large;
   font-weight: $font-weight-bold;
   line-height: 1;
-  color: $color-black;
+  color: $color-on-primary;
   text-decoration: none;
   cursor: pointer;
   appearance: none;
@@ -86,6 +86,28 @@
   &--large {
     padding: $btn-padding-large;
     border-radius: $corner-small;
+    font-size: $font-size-label-extra-large;
+  }
+
+  &--block {
+    width: 100%;
+  }
+
+  &--icon-md {
+    // 0.7rem — no exact $size-* match; 1.5rem = $size-3
+    padding: 0.7rem $size-3;
+    gap: $size-2;
+
+    .button__icon {
+      width: $size-3;
+      height: $size-3;
+    }
+  }
+
+  &--raised {
+    border-radius: $corner-medium;
+    // 0 4px 0 — no exact $shadow-* match (levels are diagonal)
+    box-shadow: 0 4px 0 $color-on-primary;
   }
 
   &--icon {

@@ -1,4 +1,9 @@
 export { default as arrowIcon } from './arrow.svg';
 export { default as arrowUpIcon } from './arrow-up.svg';
 export { default as closeIcon } from './close.svg';
+export { default as googleIcon } from './google-icon.svg';
 export { default as hamburgerButtonIcon } from './hamburger-button.svg';
+export { default as lockIcon } from './lock.svg';
+export { default as mailIcon } from './mail.svg';
+export { default as personIcon } from './person.svg';
+export { default as visibilityIcon } from './visibility.svg';
