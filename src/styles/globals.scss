@@ -161,3 +161,12 @@ body {
   font-weight: var(--font-weight-regular);
   background-color: var(--color-bg);
 }
+
+.hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}

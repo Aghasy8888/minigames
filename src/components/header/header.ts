@@ -1,13 +1,13 @@
 import { closeIcon, hamburgerButtonIcon } from '../../assets/icons';
 import { logoImage } from '../../assets/images';
+import { openAuthDialog, type AuthDialogMode } from '../../store/auth-dialog-store';
+import { lockScroll, unlockScroll } from '../../utils/scroll-lock';
 import { createButton } from '../button';
 import { createMobileNav } from '../mobile-nav';
 import './header.scss';
 
 const NAV_ITEMS: readonly string[] = ['Home', 'Library', 'Tournaments', 'Community'];
 const MENU_TRANSITION_MS = 250;
-
-function noopClick(): void {}
 
 function createLogo(): HTMLAnchorElement {
   const logoLink = document.createElement('a');
@@ -104,7 +104,9 @@ export function createHeader(): HTMLElement {
     label: 'Log In',
     variant: 'secondary',
     size: 'medium',
-    onClick: noopClick,
+    onClick: () => {
+      openAuthDialog('login');
+    },
   });
   logInButton.classList.add('header__log-in');
 
@@ -112,7 +114,9 @@ export function createHeader(): HTMLElement {
     label: 'Sign Up',
     variant: 'primary',
     size: 'medium',
-    onClick: noopClick,
+    onClick: () => {
+      openAuthDialog('register');
+    },
   });
   signUpButton.classList.add('header__sign-up');
 
@@ -120,10 +124,16 @@ export function createHeader(): HTMLElement {
   let isMenuOpen = false;
   let closeTimerId: ReturnType<typeof globalThis.setTimeout> | undefined;
 
+  const requestAuth = (mode: AuthDialogMode): void => {
+    closeMenu();
+    openAuthDialog(mode);
+  };
+
   const mobileNav = createMobileNav({
     onNavigate: () => {
       closeMenu();
     },
+    onAuthRequest: requestAuth,
   });
   mobileNav.id = 'mobile-nav';
 
@@ -147,7 +157,7 @@ export function createHeader(): HTMLElement {
     mobileNav.classList.add('mobile-nav--open');
     mobileNav.setAttribute('aria-hidden', 'false');
     mobileNav.inert = false;
-    document.body.style.overflow = 'hidden';
+    lockScroll();
     document.addEventListener('keydown', handleEscape);
   }
 
@@ -162,7 +172,7 @@ export function createHeader(): HTMLElement {
     menuButton.setAttribute('aria-expanded', 'false');
     menuButton.setAttribute('aria-label', 'Open menu');
     mobileNav.classList.remove('mobile-nav--open');
-    document.body.style.overflow = '';
+    unlockScroll();
     document.removeEventListener('keydown', handleEscape);
 
     closeTimerId = globalThis.setTimeout(() => {

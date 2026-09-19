@@ -1,4 +1,5 @@
 import { logoImage } from '../../assets/images';
+import type { AuthDialogMode } from '../../store/auth-dialog-store';
 import { createButton } from '../button';
 import './mobile-nav.scss';
 
@@ -6,12 +7,11 @@ const NAV_ITEMS: readonly string[] = ['Home', 'Library', 'Tournaments', 'Communi
 
 export interface CreateMobileNavOptions {
   onNavigate?: () => void;
+  onAuthRequest?: (mode: AuthDialogMode) => void;
 }
 
-function noopClick(): void {}
-
 export function createMobileNav(options: CreateMobileNavOptions = {}): HTMLElement {
-  const { onNavigate } = options;
+  const { onNavigate, onAuthRequest } = options;
 
   const panel = document.createElement('div');
   panel.className = 'mobile-nav';
@@ -83,7 +83,9 @@ export function createMobileNav(options: CreateMobileNavOptions = {}): HTMLEleme
     variant: 'secondary',
     size: 'medium',
     className: 'button--ghost-on-dark button--menu-auth',
-    onClick: noopClick,
+    onClick: () => {
+      onAuthRequest?.('login');
+    },
   });
 
   const signUpButton = createButton({
@@ -91,7 +93,9 @@ export function createMobileNav(options: CreateMobileNavOptions = {}): HTMLEleme
     variant: 'primary',
     size: 'medium',
     className: 'button--menu-auth',
-    onClick: noopClick,
+    onClick: () => {
+      onAuthRequest?.('register');
+    },
   });
 
   actions.append(logInButton, signUpButton);

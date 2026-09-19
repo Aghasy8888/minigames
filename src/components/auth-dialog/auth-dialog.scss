@@ -1,0 +1,251 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/mixins' as *;
+
+// Figma fixed dialog width 420px — no size token matches
+$dialog-width: 26.25rem;
+
+.auth-dialog {
+  max-width: calc(100% - #{$size-4});
+  max-height: calc(100dvh - #{$size-4});
+  // Padding lives on __content so backdrop clicks resolve on the dialog itself
+  padding: 0;
+  border: 3px solid $color-on-primary;
+  border-radius: $corner-extra-large;
+  background-color: $color-bg;
+  box-shadow: $shadow-level-3;
+  overflow: hidden;
+  opacity: 0;
+  transform: scale(0.96) translateY(-0.5rem);
+  transition:
+    opacity 0.25s ease-out,
+    transform 0.25s ease-out;
+
+  // Scoped to [open] — unscoped display:flex would defeat UA display:none on closed dialog
+  &[open] {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &::backdrop {
+    background-color: rgba($color-bg-footer, 0.6);
+    opacity: 0;
+    transition: opacity 0.25s ease-out;
+  }
+
+  &--open {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+
+    &::backdrop {
+      opacity: 1;
+    }
+  }
+
+  &__content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: $size-3;
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 0;
+    padding: $size-4;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background-color: $color-bg;
+  }
+
+  &__tabs {
+    display: grid;
+    flex-shrink: 0;
+    grid-template-columns: repeat(2, 1fr);
+    border: 3px solid $color-on-primary;
+    border-radius: $corner-medium;
+    background-color: $color-white;
+    overflow: hidden;
+  }
+
+  &__tab {
+    margin: 0;
+    padding: 0.82rem $size-2; // no size-* match
+    border: 0;
+    background-color: $color-white;
+    font-family: $font-family-text;
+    font-size: $font-size-label-extra-large;
+    font-weight: $font-weight-bold;
+    line-height: 1;
+    color: $color-on-bg;
+    cursor: pointer;
+    appearance: none;
+    transition:
+      background-color 0.2s ease-out,
+      color 0.2s ease-out;
+
+    &:first-child {
+      border-radius: 0 $corner-small $corner-small 0;
+    }
+
+    &:last-child {
+      border-radius: $corner-small 0 0 $corner-small;
+    }
+
+    &:hover {
+      background-color: rgba($color-surface, 0.6);
+      color: $color-on-primary;
+    }
+
+    &--active {
+      background-color: $color-bg-footer-low;
+      color: $color-white;
+
+      &:hover {
+        background-color: $color-bg-footer-low;
+        color: $color-white;
+      }
+    }
+  }
+
+  &__panels {
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  &__panel {
+    display: flex;
+    flex-direction: column;
+    gap: $size-3;
+    opacity: 1;
+    transform: translateX(0);
+    transition:
+      opacity 0.7s ease-out,
+      transform 0.7s ease-out;
+
+    &[hidden] {
+      display: none;
+    }
+
+    &--entering {
+      opacity: 0;
+      transform: translateX(0.75rem);
+    }
+
+    &--leaving {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transform: translateX(-0.75rem);
+      pointer-events: none;
+    }
+  }
+
+  &__heading {
+    display: flex;
+    flex-direction: column;
+    gap: $size-1;
+  }
+
+  &__title {
+    font-family: $font-family-text;
+    font-size: $font-size-display-small;
+    font-weight: $font-weight-bold;
+    line-height: 1;
+    color: $color-on-primary;
+  }
+
+  &__subtitle {
+    font-family: $font-family-text;
+    font-size: $font-size-body-small;
+    font-weight: $font-weight-regular;
+    line-height: 1;
+    color: $color-on-bg;
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: $size-3;
+  }
+
+  &__fields,
+  &__actions {
+    display: flex;
+    flex-direction: column;
+    gap: $size-2;
+  }
+
+  &__forgot {
+    align-self: flex-end;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    font-family: $font-family-text;
+    font-size: $font-size-label-large;
+    font-weight: $font-weight-bold;
+    line-height: 1;
+    color: $color-on-primary;
+    text-decoration: underline;
+    cursor: pointer;
+    appearance: none;
+
+    &:hover {
+      color: $color-tertiary;
+    }
+  }
+
+  &__divider {
+    display: flex;
+    align-items: center;
+    gap: $size-1;
+    color: $color-on-bg;
+    padding: 0.094rem 0; // no size-* match
+    &::before,
+    &::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background-color: $color-outline-variant;
+    }
+  }
+
+  &__divider-label {
+    font-family: $font-family-text;
+    font-size: $font-size-label-medium;
+    font-weight: $font-weight-medium;
+    line-height: 1;
+  }
+
+  &__switch {
+    font-family: $font-family-text;
+    font-size: $font-size-label-large;
+    font-weight: $font-weight-regular;
+    line-height: 1;
+    color: $color-on-bg;
+    text-align: center;
+  }
+
+  &__switch-action {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    font-family: $font-family-text;
+    font-size: $font-size-label-large;
+    font-weight: $font-weight-bold;
+    line-height: 1;
+    color: $color-on-primary;
+    text-decoration: underline;
+    cursor: pointer;
+    appearance: none;
+
+    &:hover {
+      color: $color-tertiary;
+    }
+  }
+
+  @include media-up('tablet') {
+    &__content {
+      width: $dialog-width;
+    }
+  }
+}
