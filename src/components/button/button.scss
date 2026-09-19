@@ -74,7 +74,7 @@
   &--medium {
     padding: $btn-padding-medium-mobile;
 
-    @include media-up('tablet') {
+    @include media-up('phablet') {
       padding: $btn-padding-medium-compact;
     }
 
