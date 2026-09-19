@@ -100,6 +100,7 @@
   // Button padding
   --btn-padding-large: #{$btn-padding-large};
   --btn-padding-medium: #{$btn-padding-medium};
+  --btn-padding-medium-compact: #{$btn-padding-medium-compact};
   --btn-padding-small: #{$btn-padding-small};
   --btn-padding-icon: #{$btn-padding-icon};
 
@@ -112,7 +113,51 @@
   --layout-max-width: #{$layout-max-width};
 }
 
+html {
+  margin: 0;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ul,
+ol,
+figure {
+  margin: 0;
+}
+
+ul,
+ol {
+  padding: 0;
+  list-style: none;
+}
+
+img,
+picture {
+  display: block;
+  max-width: 100%;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
 body {
   font-family: var(--font-family-text);
   font-weight: var(--font-weight-regular);
+  background-color: var(--color-bg);
 }

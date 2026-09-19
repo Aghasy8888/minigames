@@ -1,0 +1,139 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/mixins' as *;
+
+.header {
+  width: 100%;
+  background-color: $color-bg;
+  border-bottom: 2px solid $color-on-primary;
+
+  &__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: $layout-max-width;
+    min-height: $size-8;
+    margin-inline: auto;
+    padding: $size-2;
+  }
+
+  &__logo {
+    display: inline-flex;
+    align-items: center;
+    gap: $size-1;
+    color: $color-on-primary;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  &__logo-mark {
+    display: block;
+    width: $size-4;
+    height: $size-4;
+    flex-shrink: 0;
+  }
+
+  &__logo-text {
+    font-family: $font-family-text;
+    font-size: $font-size-headline-small;
+    font-weight: $font-weight-bold;
+    line-height: 1;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: $size-2;
+  }
+
+  &__nav {
+    display: none;
+  }
+
+  &__nav-list {
+    display: flex;
+    align-items: center;
+    gap: $size-5;
+    padding-right: $size-2;
+  }
+
+  &__nav-link {
+    font-family: $font-family-text;
+    font-size: $font-size-body-medium;
+    font-weight: $font-weight-medium;
+    color: $color-on-bg;
+    text-decoration: none;
+    cursor: pointer;
+
+    &:hover,
+    &:active {
+      color: $color-on-primary;
+    }
+
+    &--active {
+      font-weight: $font-weight-bold;
+      color: $color-on-primary;
+    }
+  }
+
+  &__log-in {
+    display: none;
+  }
+
+  &__sign-up {
+    display: none;
+  }
+
+  &__menu {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    appearance: none;
+  }
+
+  &__menu-icon {
+    display: block;
+    width: $size-4;
+    height: $size-4;
+  }
+
+  @include media-up('tablet') {
+    &__inner {
+      min-height: $size-9;
+      padding: $size-1 $size-5;
+    }
+
+    &__sign-up {
+      display: inline-flex;
+    }
+  }
+
+  @include media-up('desktop') {
+    &__inner {
+      min-height: auto;
+      padding: $size-3 $size-10;
+    }
+
+    &__logo-text {
+      font-size: $font-size-headline-medium;
+    }
+
+    &__nav {
+      display: block;
+    }
+
+    &__log-in {
+      display: inline-flex;
+    }
+
+    &__menu {
+      display: none;
+    }
+  }
+}

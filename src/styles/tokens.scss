@@ -86,10 +86,11 @@ $corner-extra-large: 24px;
 $corner-full: 9999px;
 
 // Button padding
-$btn-padding-large: 1.5rem 1rem;
-$btn-padding-medium: 1.25rem 0.625rem;
-$btn-padding-small: 1rem 0.5rem;
-$btn-padding-icon: 0.5rem;
+$btn-padding-large: $size-3 $size-2;
+$btn-padding-medium: 0.625rem 1.25rem; // no exact $size-* match
+$btn-padding-medium-compact: $size-1 0.8rem; // 0.8rem — no exact $size-* match
+$btn-padding-small: $size-2 $size-1;
+$btn-padding-icon: $size-1;
 
 // Shadows
 $shadow-level-1: 4px 4px $color-on-primary;
@@ -100,6 +101,7 @@ $shadow-level-3: 8px 8px $color-on-primary;
 $breakpoints: (
   'mobile': 375px,
   'tablet': 768px,
+  'desktop': 1200px,
 );
 
 // Content shell max width — Pixel Perfect at 1920; ≥1921 stays centered (side space grows).

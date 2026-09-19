@@ -1,6 +1,6 @@
 import '../styles/globals.scss';
 import { createFooter } from '../components/footer/footer';
-import { createHeader } from '../components/header/header';
+import { createHeader } from '../components/header';
 import { startRouter } from './router';
 
 function bootstrap(): void {
