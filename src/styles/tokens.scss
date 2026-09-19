@@ -62,6 +62,7 @@ $font-weight-extra-bold: 800;
 // Sizes
 $size-05: 0.25rem;
 $size-1: 0.5rem;
+$size-125: 0.625rem;
 $size-2: 1rem;
 $size-3: 1.5rem;
 $size-4: 2rem;
@@ -87,8 +88,9 @@ $corner-full: 9999px;
 
 // Button padding
 $btn-padding-large: $size-3 $size-2;
-$btn-padding-medium: 0.625rem 1.25rem; // no exact $size-* match
+$btn-padding-medium: $size-125 1.25rem; // 1.25rem — no exact $size-* match
 $btn-padding-medium-compact: $size-1 0.8rem; // 0.8rem — no exact $size-* match
+$btn-padding-medium-mobile: $size-125 0.8rem; // 0.8rem — no exact $size-* match
 $btn-padding-small: $size-2 $size-1;
 $btn-padding-icon: $size-1;
 

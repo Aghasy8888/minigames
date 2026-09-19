@@ -14,6 +14,7 @@ export interface CreateButtonOptions {
   type?: ButtonType;
   disabled?: boolean;
   ariaLabel?: string;
+  className?: string;
   onClick?: (event: MouseEvent) => void;
 }
 
@@ -45,6 +46,7 @@ export function createButton(options: CreateButtonOptions = {}): HTMLButtonEleme
     type = 'button',
     disabled = false,
     ariaLabel,
+    className,
     onClick,
   } = options;
 
@@ -53,7 +55,9 @@ export function createButton(options: CreateButtonOptions = {}): HTMLButtonEleme
   const button = document.createElement('button');
   button.type = type;
   button.disabled = disabled;
-  button.className = `button button--${variant} button--${size}`;
+  button.className = ['button', `button--${variant}`, `button--${size}`, className]
+    .filter(Boolean)
+    .join(' ');
   button.setAttribute('aria-label', accessibleName);
 
   if (icon) {

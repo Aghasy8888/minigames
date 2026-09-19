@@ -72,7 +72,11 @@
   }
 
   &--medium {
-    padding: $btn-padding-medium-compact;
+    padding: $btn-padding-medium-mobile;
+
+    @include media-up('tablet') {
+      padding: $btn-padding-medium-compact;
+    }
 
     @include media-up('desktop') {
       padding: $btn-padding-medium;
@@ -94,5 +98,26 @@
       width: $size-3;
       height: $size-3;
     }
+  }
+
+  &--ghost-on-dark {
+    color: $color-white;
+    background-color: transparent;
+    border-color: $color-white;
+
+    &:hover:not(:disabled) {
+      color: $color-white;
+      background-color: $color-bg-footer-low;
+    }
+
+    &:active:not(:disabled) {
+      color: $color-white;
+      background-color: $color-bg-footer-lowest;
+    }
+  }
+
+  &--menu-auth {
+    width: 100%;
+    padding-inline: $size-125;
   }
 }
