@@ -36,7 +36,6 @@
     align-items: center;
     justify-content: space-between;
     min-height: $size-4;
-    // Reserve space for the header menu button (close) above the overlay
     padding-right: $size-6;
   }
 
@@ -51,8 +50,8 @@
 
   &__logo-mark {
     display: block;
-    width: 1.875rem; // no size-* match
-    height: 1.875rem; // no size-* match
+    width: $size-375;
+    height: $size-375;
     flex-shrink: 0;
   }
 

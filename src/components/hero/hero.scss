@@ -55,7 +55,7 @@
     box-sizing: border-box;
     width: 100%;
     padding: $size-3;
-    border: 2px solid $color-on-primary;
+    border: $border-width solid $color-on-primary;
     border-radius: $corner-medium;
     background-color: $color-bg;
     box-shadow: $shadow-level-1;
@@ -117,7 +117,7 @@
 
     &__card {
       width: 30rem; // 480px — used once
-      border-width: 2.5px; // no size-* match
+      border-width: 2.5px; // no exact $border-width-* match
       border-radius: $corner-large;
       box-shadow: $shadow-level-2;
     }
@@ -141,7 +141,7 @@
 
     &__image {
       inset: auto;
-      // PP: no size-* match
+      // no exact $size-* match
       top: -13.76%;
       left: -9.33%;
       width: 119.29%;

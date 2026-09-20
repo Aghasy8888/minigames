@@ -9,7 +9,7 @@
   width: fit-content;
   height: fit-content;
   margin: 0;
-  border: 2px solid $color-on-primary;
+  border: $border-width solid $color-on-primary;
   border-radius: $corner-small;
   font-family: $font-family-text;
   font-size: $font-size-label-large;
@@ -94,7 +94,7 @@
   }
 
   &--icon-md {
-    // 0.7rem — no exact $size-* match; 1.5rem = $size-3
+    // no exact $size-* match
     padding: 0.7rem $size-3;
     gap: $size-2;
 
@@ -106,7 +106,7 @@
 
   &--raised {
     border-radius: $corner-medium;
-    // 0 4px 0 — no exact $shadow-* match (levels are diagonal)
+    // no exact $shadow-* match
     box-shadow: 0 4px 0 $color-on-primary;
   }
 

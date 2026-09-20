@@ -1,0 +1,436 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/mixins' as *;
+
+// 2.5px — no exact $border-width-* match
+$leaderboard-border: 2.5px;
+// 12px — no exact $size-* match ($corner-medium is radius-only)
+$leaderboard-phablet-header-gap: 12px;
+
+.leaderboard {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: $layout-max-width;
+  margin-inline: auto;
+  padding: $size-2;
+  display: flex;
+  flex-direction: column;
+  gap: $size-2;
+
+  @include media-up('phablet') {
+    padding: $size-3 $size-5;
+    gap: $size-3;
+  }
+
+  @include media-up('desktop') {
+    padding: $size-5 $size-15;
+    gap: $size-5;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: $size-1;
+    width: 100%;
+  }
+
+  &__accent {
+    flex-shrink: 0;
+    width: $size-1;
+    height: $size-3;
+    border: $border-width-sm solid $color-on-primary;
+    border-radius: $corner-extra-small;
+    background-color: $color-primary;
+
+    @include media-up('desktop') {
+      height: $size-4;
+    }
+  }
+
+  &__title {
+    margin: 0;
+    font-family: $font-family-text;
+    font-size: $font-size-headline-medium;
+    font-weight: $font-weight-bold;
+    line-height: normal;
+    color: $color-on-primary;
+
+    @include media-up('desktop') {
+      font-size: $font-size-headline-large;
+    }
+  }
+
+  &__title-text--full {
+    display: none;
+
+    @include media-up('phablet') {
+      display: inline;
+    }
+  }
+
+  &__title-text--short {
+    display: inline;
+
+    @include media-up('phablet') {
+      display: none;
+    }
+  }
+
+  &__frame {
+    box-sizing: border-box;
+    width: 100%;
+    overflow: hidden;
+    border: $leaderboard-border solid $color-on-primary;
+    border-radius: $corner-large;
+    background-color: $color-white;
+    box-shadow: $shadow-level-1;
+
+    @include media-up('desktop') {
+      box-shadow: $shadow-level-2;
+    }
+  }
+
+  &__table {
+    display: block;
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  &__head,
+  &__body {
+    display: block;
+    width: 100%;
+  }
+
+  &__head tr {
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    width: 100%;
+    min-height: $size-6;
+    padding: $size-2;
+    gap: $size-1;
+    background-color: $color-tertiary;
+    border-bottom: $border-width-sm solid $color-on-primary;
+
+    @include media-up('phablet') {
+      gap: $leaderboard-phablet-header-gap;
+    }
+
+    @include media-up('desktop') {
+      min-height: 4.1875rem; // no exact $size-* match
+      padding: $size-3;
+      gap: $size-2;
+    }
+  }
+
+  &__row {
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    width: 100%;
+    min-height: $size-7;
+    padding: 0.9rem $size-2; // no exact $size-* match
+    gap: $size-1;
+    border-bottom: 1px solid $color-outline;
+
+    @include media-up('phablet') {
+      min-height: 3.75rem; // no exact $size-* match
+      gap: $size-2;
+    }
+
+    @include media-up('desktop') {
+      min-height: $size-9;
+      padding: 0.9rem $size-3; // no exact $size-* match
+      gap: $size-2;
+    }
+
+    &:nth-child(odd) {
+      background-color: $color-bg;
+    }
+
+    &:nth-child(even) {
+      background-color: $color-white;
+    }
+
+    &--desktop-only {
+      display: none;
+
+      @include media-up('desktop') {
+        display: flex;
+      }
+    }
+  }
+
+  &__th,
+  &__cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    padding: 0;
+    min-width: 0;
+  }
+
+  &__th {
+    font-family: $font-family-roboto;
+    font-size: $font-size-body-small;
+    font-weight: $font-weight-extra-bold;
+    line-height: normal;
+    color: $color-white;
+    text-transform: uppercase;
+    background-color: transparent;
+
+    @include media-up('desktop') {
+      font-size: $font-size-body-medium;
+    }
+  }
+
+  &__cell {
+    font-family: $font-family-roboto;
+    font-size: $font-size-body-small;
+    font-weight: $font-weight-bold;
+    line-height: normal;
+    color: $color-on-primary;
+
+    @include media-up('desktop') {
+      font-size: $font-size-body-medium;
+    }
+  }
+
+  &__th--rank,
+  &__cell--rank {
+    flex: 0 0 $size-5;
+    width: $size-5;
+
+    @include media-up('phablet') {
+      flex: 0 0 $size-10;
+      width: $size-10;
+    }
+  }
+
+  &__th--player,
+  &__cell--player {
+    flex: 1 1 0;
+    justify-content: center;
+
+    @include media-up('phablet') {
+      flex: 0 0 10rem; // no exact $size-* match
+      width: 10rem;
+    }
+
+    @include media-up('desktop') {
+      flex: 1 1 0;
+      width: auto;
+    }
+  }
+
+  &__col--games {
+    display: none;
+
+    @include media-up('phablet') {
+      display: flex;
+      flex: 0 0 $size-6875;
+      width: $size-6875;
+    }
+
+    @include media-up('desktop') {
+      flex: 1 1 0;
+      width: auto;
+    }
+  }
+
+  &__th--score,
+  &__cell--score {
+    flex: 0 0 $size-10;
+
+    @include media-up('phablet') {
+      flex: 0 0 $size-6875;
+      width: $size-6875;
+    }
+
+    @include media-up('desktop') {
+      flex: 1 1 0;
+      width: auto;
+    }
+  }
+
+  &__th--streak,
+  &__cell--streak {
+    flex: 0 0 4.375rem; // no exact $size-* match
+
+    @include media-up('phablet') {
+      flex: 0 0 $size-6875;
+      width: $size-6875;
+    }
+
+    @include media-up('desktop') {
+      flex: 1 1 0;
+      width: auto;
+    }
+  }
+
+  &__col--favorite {
+    display: none;
+
+    @include media-up('desktop') {
+      display: flex;
+      flex: 1 1 0;
+      width: auto;
+    }
+  }
+
+  &__th-label--full {
+    display: none;
+
+    @include media-up('desktop') {
+      display: inline;
+    }
+  }
+
+  &__th-label--short {
+    display: inline;
+
+    @include media-up('desktop') {
+      display: none;
+    }
+  }
+
+  &__cell--rank {
+    font-weight: $font-weight-extra-bold;
+  }
+
+  &__cell--rank-first {
+    color: $color-tertiary;
+
+    @include media-up('desktop') {
+      color: $color-primary;
+    }
+  }
+
+  &__cell--games {
+    font-weight: $font-weight-medium;
+  }
+
+  &__player {
+    display: flex;
+    align-items: center;
+    gap: 6px; // no exact $size-* match
+    min-width: 0;
+    width: 100%;
+
+    @include media-up('phablet') {
+      gap: $size-1;
+    }
+
+    @include media-up('desktop') {
+      gap: $size-125;
+    }
+  }
+
+  &__avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-sizing: border-box;
+    width: $size-3;
+    height: $size-3;
+    border: 1px solid $color-on-primary;
+    border-radius: $corner-medium;
+    font-family: $font-family-roboto;
+    font-size: $font-size-label-small;
+    font-weight: $font-weight-bold;
+    color: $color-on-primary;
+
+    @include media-up('phablet') {
+      width: 1.75rem; // no exact $size-* match
+      height: 1.75rem; // no exact $size-* match
+      border-radius: 14px; // no exact $corner-* match
+    }
+
+    @include media-up('desktop') {
+      width: $size-5;
+      height: $size-5;
+      border: $border-width-sm solid $color-on-primary;
+      border-radius: 20px; // no exact $corner-* match
+      font-size: $font-size-label-large;
+    }
+
+    &--primary {
+      background-color: $color-primary;
+    }
+
+    &--random-2 {
+      background-color: $color-avatar-random-2;
+    }
+
+    &--random-3 {
+      background-color: $color-avatar-random-3;
+    }
+
+    &--random-4 {
+      background-color: $color-avatar-random-4;
+    }
+
+    &--random-5 {
+      background-color: $color-avatar-random-5;
+    }
+  }
+
+  &__player-name {
+    overflow: hidden;
+    font-weight: $font-weight-bold;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  &__score--compact {
+    display: inline;
+
+    @include media-up('phablet') {
+      display: none;
+    }
+  }
+
+  &__score--full {
+    display: none;
+
+    @include media-up('phablet') {
+      display: inline;
+    }
+  }
+
+  &__streak--short {
+    display: inline;
+
+    @include media-up('desktop') {
+      display: none;
+    }
+  }
+
+  &__streak--full {
+    display: none;
+
+    @include media-up('desktop') {
+      display: inline;
+    }
+  }
+
+  &__game-badge {
+    display: inline-block;
+    box-sizing: border-box;
+    max-width: 100%;
+    padding: $size-05 $size-125;
+    overflow: hidden;
+    border: $border-width-sm solid $color-on-primary;
+    border-radius: 20px; // no exact $corner-* match
+    background-color: $color-bg;
+    font-family: $font-family-roboto;
+    font-size: $font-size-label-medium;
+    font-weight: $font-weight-bold;
+    line-height: normal;
+    color: $color-on-primary;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+}

@@ -161,7 +161,7 @@
     gap: $size-1;
     width: 100%;
     padding-top: $size-1;
-    border-top: 1px solid rgba($color-white, 0.12); // no token match
+    border-top: 1px solid rgba($color-white, 0.12); // no exact $color-* match
   }
 
   &__copyright {
@@ -203,7 +203,7 @@
     justify-content: center;
     width: $size-25;
     height: $size-25;
-    border-radius: 10px; // PP: Figma 10px; between $corner-small and $corner-medium
+    border-radius: 10px; // no exact $corner-* match
     flex-shrink: 0;
     overflow: hidden;
   }
@@ -218,12 +218,12 @@
 
   &__credit-icon-img {
     display: block;
-    width: 0.625rem; // no size-* match
+    width: $size-125;
     height: auto;
   }
 
   &__credit--github &__credit-icon-img {
-    width: 0.875rem; // no size-* match
+    width: 0.875rem; // no exact $size-* match
   }
 
   &__credit-label {
@@ -298,7 +298,7 @@
     }
 
     &__brand {
-      width: 25rem; // 400px — Figma brand column; no size-* match
+      width: 25rem; // no exact $size-* match
       flex-shrink: 0;
     }
 
@@ -341,7 +341,7 @@
     }
 
     &__credit-icon-img {
-      width: 0.625rem;
+      width: $size-125;
     }
 
     &__credit--github &__credit-icon-img {
