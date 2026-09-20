@@ -9,7 +9,7 @@ $slider-info-min-width: 18rem; // no exact $size-* match
   width: 100%;
   max-width: $layout-max-width;
   margin-inline: auto;
-  padding: $size-2;
+  padding: $size-2 $size-125;
   display: flex;
   flex-direction: column;
   gap: $size-2;
@@ -118,8 +118,8 @@ $slider-info-min-width: 18rem; // no exact $size-* match
 
   &__nav-icon {
     display: block;
-    width: 0.7rem;
-    height: 0.7rem;
+    width: 0.7rem; // no exact $size-* match
+    height: 0.7rem; // no exact $size-* match
 
     @include media-up('desktop') {
       width: $size-2;
@@ -134,12 +134,13 @@ $slider-info-min-width: 18rem; // no exact $size-* match
   &__track {
     display: flex;
     align-items: stretch;
-    justify-content: space-between;
+    justify-content: flex-start;
     box-sizing: border-box;
     width: 100%;
     height: 12.875rem; // no exact $size-* match
     padding-inline: $size-05;
     overflow: hidden;
+    gap: 6px; // no exact $size-* match
 
     @include media-up('phablet') {
       height: 18rem; // no exact $size-* match
@@ -147,6 +148,8 @@ $slider-info-min-width: 18rem; // no exact $size-* match
     }
 
     @include media-up('desktop') {
+      justify-content: space-between;
+      gap: 0;
       height: 24.25rem; // no exact $size-* match
     }
   }
@@ -186,14 +189,18 @@ $slider-info-min-width: 18rem; // no exact $size-* match
   }
 
   &--secondary {
-    width: $size-7;
+    flex: 1 1 0;
+    width: auto;
+    min-width: $size-7;
 
     @include media-up('phablet') {
-      width: 6.5625rem; // no exact $size-* match
+      min-width: 6.5625rem; // no exact $size-* match
     }
 
     @include media-up('desktop') {
+      flex: 0 0 auto;
       width: 18rem; // no exact $size-* match
+      min-width: 0;
     }
   }
 
@@ -301,7 +308,7 @@ $slider-info-min-width: 18rem; // no exact $size-* match
   &__stat-icon {
     display: block;
     width: 1.3rem; // no exact $size-* match
-    height: 1.3rem;
+    height: 1.3rem; // no exact $size-* match
     flex-shrink: 0;
 
     @include media-up('desktop') {

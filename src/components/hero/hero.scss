@@ -116,7 +116,7 @@
     padding: $size-9 $size-5;
 
     &__card {
-      width: 30rem; // 480px — used once
+      width: 30rem; // no exact $size-* match
       border-width: 2.5px; // no exact $border-width-* match
       border-radius: $corner-large;
       box-shadow: $shadow-level-2;
@@ -150,10 +150,10 @@
     }
 
     &__card {
-      width: 40rem; // 640px — used once
+      width: 40rem; // no exact $size-* match
       gap: $size-3;
       padding: $size-6;
-      border-width: 3px;
+      border-width: 3px; // no exact $border-width-* match
       border-radius: $corner-extra-large;
       box-shadow: $shadow-level-3;
     }

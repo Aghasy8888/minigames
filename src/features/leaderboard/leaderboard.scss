@@ -5,6 +5,7 @@
 $leaderboard-border: 2.5px;
 // 12px — no exact $size-* match ($corner-medium is radius-only)
 $leaderboard-tablet-sm-header-gap: 12px;
+$leaderboard-mobile-name-overflow: 1.8125rem; // 29px — no exact $size-* match
 
 .leaderboard {
   box-sizing: border-box;
@@ -215,12 +216,20 @@ $leaderboard-tablet-sm-header-gap: 12px;
 
     @include media-up('tablet-sm') {
       flex: 0 0 10rem; // no exact $size-* match
-      width: 10rem;
+      width: 10rem; // no exact $size-* match
     }
 
     @include media-up('desktop') {
       flex: 1 1 0;
       width: auto;
+    }
+  }
+
+  &__cell--player {
+    margin-right: -$leaderboard-mobile-name-overflow;
+
+    @include media-up('phablet') {
+      margin-right: 0;
     }
   }
 

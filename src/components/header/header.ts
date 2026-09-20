@@ -12,7 +12,7 @@ const MENU_TRANSITION_MS = 250;
 function createLogo(): HTMLAnchorElement {
   const logoLink = document.createElement('a');
   logoLink.className = 'header__logo';
-  logoLink.href = '#/';
+  logoLink.href = '/';
 
   const logoMark = document.createElement('img');
   logoMark.className = 'header__logo-mark';
@@ -43,7 +43,7 @@ function createNav(): HTMLElement {
 
     const link = document.createElement('a');
     link.className = 'header__nav-link';
-    link.href = '#/';
+    link.href = '/';
     link.textContent = item;
 
     if (item === 'Home') {

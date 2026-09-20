@@ -1,6 +1,6 @@
 import { chatIcon, codeIcon, rsIcon, rssFeedIcon, shareIcon } from '../../assets/icons';
 
-export const HOME_HREF = '#/';
+export const HOME_HREF = '/';
 
 export const FOOTER_BRAND = {
   name: 'MiniGames',

@@ -77,6 +77,7 @@
       height: 30rem; // 480px — no exact $size-* match
     }
 
+    // no exact $breakpoints-* match
     @media (min-width: map.get($breakpoints, 'desktop')) and (max-width: 1400px) {
       width: 40%;
       max-width: 28rem; // 448px — no exact $size-* match
