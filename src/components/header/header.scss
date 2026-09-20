@@ -4,7 +4,7 @@
 .header {
   width: 100%;
   background-color: $color-bg;
-  border-bottom: 2px solid $color-on-primary;
+  border-bottom: $border-width solid $color-on-primary;
 
   &__inner {
     display: flex;
@@ -29,8 +29,8 @@
 
   &__logo-mark {
     display: block;
-    width: 1.875rem; // no size-* match
-    height: 1.875rem; // no size-* match
+    width: $size-375;
+    height: $size-375;
     flex-shrink: 0;
   }
 
@@ -148,7 +148,7 @@
     }
 
     &:hover .header__menu-frame {
-      box-shadow: inset 0 0 0 2px $color-primary;
+      box-shadow: inset 0 0 0 $border-width $color-primary;
     }
   }
 

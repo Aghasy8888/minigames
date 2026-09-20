@@ -1,7 +1,7 @@
 @use '../../styles/tokens' as *;
 @use '../../styles/mixins' as *;
 
-// Figma fixed dialog width 420px — no size token matches
+// no exact $size-* match
 $dialog-width: 26.25rem;
 
 .auth-dialog {
@@ -67,7 +67,7 @@ $dialog-width: 26.25rem;
 
   &__tab {
     margin: 0;
-    padding: 0.82rem $size-2; // no size-* match
+    padding: 0.82rem $size-2; // no exact $size-* match
     border: 0;
     background-color: $color-white;
     font-family: $font-family-text;
@@ -198,7 +198,7 @@ $dialog-width: 26.25rem;
     align-items: center;
     gap: $size-1;
     color: $color-on-bg;
-    padding: 0.094rem 0; // no size-* match
+    padding: 0.094rem 0; // no exact $size-* match
     &::before,
     &::after {
       content: '';

@@ -19,7 +19,7 @@
     align-items: center;
     gap: $size-2;
     padding: $size-125 $size-2;
-    border: 2px solid $color-on-primary;
+    border: $border-width solid $color-on-primary;
     border-radius: $corner-small;
     background-color: $color-white;
     transition:

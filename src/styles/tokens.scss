@@ -31,7 +31,7 @@ $color-avatar-random-1: #e9eef6;
 $color-avatar-random-2: #a3e2c9;
 $color-avatar-random-3: #bce3ff;
 $color-avatar-random-4: #ffc6ff;
-$color-avatar-random-5: #e2e4ff;
+$color-avatar-random-5: #e8dff5;
 
 // Font families — style guide: Inter, Roboto (both text)
 $font-family-inter: 'Inter', system-ui, sans-serif;
@@ -78,6 +78,8 @@ $size-12: 6rem;
 $size-13: 6.5rem;
 $size-14: 7rem;
 $size-15: 7.5rem;
+$size-375: 1.875rem;
+$size-6875: 6.875rem;
 
 // Corners
 $corner-extra-small: 4px;
@@ -87,11 +89,15 @@ $corner-large: 16px;
 $corner-extra-large: 24px;
 $corner-full: 9999px;
 
+// Border widths
+$border-width: 2px;
+$border-width-sm: 1.5px;
+
 // Button padding
 $btn-padding-large: $size-2 $size-3;
 $btn-padding-medium: $size-125 $size-25;
-$btn-padding-medium-compact: $size-1 0.8rem; // 0.8rem — no exact $size-* match
-$btn-padding-medium-mobile: $size-125 0.8rem; // 0.8rem — no exact $size-* match
+$btn-padding-medium-compact: $size-1 0.8rem; // no exact $size-* match
+$btn-padding-medium-mobile: $size-125 0.8rem; // no exact $size-* match
 $btn-padding-small: $size-1 $size-2;
 $btn-padding-icon: $size-1;
 

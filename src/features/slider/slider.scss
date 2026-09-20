@@ -1,9 +1,8 @@
 @use '../../styles/tokens' as *;
 @use '../../styles/mixins' as *;
 
-// no exact $size-* match
-$slider-card-border: 2.5px;
-$slider-info-min-width: 18rem; // no size-* match
+$slider-card-border: 2.5px; // no exact $border-width-* match
+$slider-info-min-width: 18rem; // no exact $size-* match
 
 .slider {
   box-sizing: border-box;
@@ -43,7 +42,7 @@ $slider-info-min-width: 18rem; // no size-* match
     flex-shrink: 0;
     width: $size-1;
     height: $size-3;
-    border: 1.5px solid $color-on-primary; // no size-* match
+    border: $border-width-sm solid $color-on-primary;
     border-radius: $corner-extra-small;
     background-color: $color-primary;
 
@@ -85,7 +84,7 @@ $slider-info-min-width: 18rem; // no size-* match
     width: $size-5;
     height: $size-5;
     padding: 0;
-    border: 2px solid $color-on-primary;
+    border: $border-width solid $color-on-primary;
     border-radius: $corner-full;
     background-color: $color-white;
     cursor: default;
@@ -121,17 +120,17 @@ $slider-info-min-width: 18rem; // no size-* match
     justify-content: space-between;
     box-sizing: border-box;
     width: 100%;
-    height: 12.875rem; // no size-* match
+    height: 12.875rem; // no exact $size-* match
     padding-inline: $size-05;
     overflow: hidden;
 
     @include media-up('phablet') {
-      height: 18rem; // no size-* match
+      height: 18rem; // no exact $size-* match
       padding-inline: $size-1;
     }
 
     @include media-up('desktop') {
-      height: 24.25rem; // no size-* match
+      height: 24.25rem; // no exact $size-* match
     }
   }
 }
@@ -143,7 +142,7 @@ $slider-info-min-width: 18rem; // no size-* match
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  height: 12.5rem; // no size-* match
+  height: 12.5rem; // no exact $size-* match
   overflow: hidden;
   border: $slider-card-border solid $color-on-primary;
   border-radius: $corner-large;
@@ -152,11 +151,11 @@ $slider-info-min-width: 18rem; // no size-* match
   flex-shrink: 0;
 
   @include media-up('phablet') {
-    height: 17.5rem; // no size-* match
+    height: 17.5rem; // no exact $size-* match
   }
 
   @include media-up('desktop') {
-    height: 24rem; // no size-* match
+    height: 24rem; // no exact $size-* match
     border-radius: $corner-extra-large;
   }
 
@@ -165,34 +164,34 @@ $slider-info-min-width: 18rem; // no size-* match
 
     @include media-up('desktop') {
       display: flex;
-      width: 7.5rem; // no size-* match
+      width: $size-15;
     }
   }
 
   &--secondary {
-    width: 3.5rem; // no size-* match
+    width: $size-7;
 
     @include media-up('phablet') {
-      width: 6.5625rem; // no size-* match
+      width: 6.5625rem; // no exact $size-* match
     }
 
     @include media-up('desktop') {
-      width: 18rem; // no size-* match
+      width: 18rem; // no exact $size-* match
     }
   }
 
   &--featured {
-    width: 13.625rem; // 218px — no size-* match
+    width: 13.625rem; // no exact $size-* match
     flex: 0 0 auto;
     min-width: 0;
 
     @include media-up('phablet') {
-      width: 28rem; // 448px — no size-* match
+      width: 28rem; // no exact $size-* match
       flex: 0 0 auto;
     }
 
     @include media-up('desktop') {
-      width: 51rem; // no size-* match
+      width: 51rem; // no exact $size-* match
       flex: 0 0 auto;
     }
 
@@ -226,7 +225,7 @@ $slider-info-min-width: 18rem; // no size-* match
     position: absolute;
     inset-inline: 0;
     bottom: 0;
-    height: 3.5rem; // no size-* match
+    height: $size-7;
     background: linear-gradient(
       to bottom,
       rgba($color-black, 0) 0%,
@@ -284,7 +283,7 @@ $slider-info-min-width: 18rem; // no size-* match
 
   &__stat-icon {
     display: block;
-    width: 1.3rem; // no size-* match
+    width: 1.3rem; // no exact $size-* match
     height: 1.3rem;
     flex-shrink: 0;
 
