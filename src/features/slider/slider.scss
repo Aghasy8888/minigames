@@ -87,7 +87,16 @@ $slider-info-min-width: 18rem; // no exact $size-* match
     border: $border-width solid $color-on-primary;
     border-radius: $corner-full;
     background-color: $color-white;
-    cursor: default;
+    cursor: pointer;
+    appearance: none;
+
+    &:hover {
+      background-color: $color-surface;
+    }
+
+    &:active {
+      background-color: $color-surface;
+    }
 
     @include media-up('desktop') {
       width: $size-6;
@@ -96,6 +105,14 @@ $slider-info-min-width: 18rem; // no exact $size-* match
 
     &--next {
       background-color: $color-primary;
+
+      &:hover {
+        background-color: $color-primary-high;
+      }
+
+      &:active {
+        background-color: $color-primary-high;
+      }
     }
   }
 
