@@ -1,0 +1,170 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/mixins' as *;
+
+.developer-cta {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: $size-2;
+  width: 100%;
+  max-width: $layout-max-width;
+  margin-inline: auto;
+  padding: $size-2;
+
+  @include media-up('phablet') {
+    gap: $size-3;
+    padding: $size-3 $size-5;
+  }
+
+  @include media-up('desktop') {
+    flex-direction: row;
+    align-items: center;
+    gap: $size-5;
+    padding: $size-5 $size-15;
+  }
+
+  .button {
+    font-family: $font-family-roboto;
+
+    @include media-up('tablet') {
+      font-family: $font-family-inter;
+    }
+
+    @include media-up('desktop') {
+      font-family: $font-family-roboto;
+    }
+  }
+
+  .button--medium {
+    border-radius: $corner-medium;
+    padding: $size-1 $size-2;
+    font-size: $font-size-label-medium;
+
+    @include media-up('phablet') {
+      padding: $btn-padding-medium;
+      font-size: $font-size-label-large;
+    }
+  }
+
+  .button--large {
+    border-radius: $corner-medium;
+    font-size: $font-size-body-large;
+    // no exact $shadow-* match
+    box-shadow: 0 10px 10px rgba($color-black, 0.1);
+
+    .button__icon {
+      width: $size-3;
+      height: $size-3;
+    }
+  }
+
+  &__media {
+    box-sizing: border-box;
+    width: 100%;
+    height: 14.1875rem; // 227px — no exact $size-* match
+    overflow: hidden;
+    border-radius: $corner-extra-large;
+    flex-shrink: 0;
+
+    @include media-up('phablet') {
+      height: 18.75rem; // 300px — no exact $size-* match
+    }
+
+    @include media-up('desktop') {
+      width: 42.5rem; // 680px — no exact $size-* match
+      height: 30rem; // 480px — no exact $size-* match
+    }
+  }
+
+  &__picture {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  &__image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  &__card {
+    position: relative;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: $size-2;
+    width: 100%;
+    padding: $size-3;
+    border: $border-width solid $color-on-primary;
+    border-radius: $corner-extra-large;
+    background-color: $color-white;
+    // no exact $shadow-* match
+    box-shadow:
+      0 2px 4px rgba($color-black, 0.04),
+      0 14px 15px rgba($color-black, 0.08);
+
+    @include media-up('phablet') {
+      padding: $size-4;
+    }
+
+    @include media-up('desktop') {
+      flex: 1 0 0;
+      min-width: 0;
+      gap: $size-3;
+      padding: $size-5;
+    }
+  }
+
+  &__title {
+    margin: 0;
+    width: 100%;
+    font-family: $font-family-text;
+    font-size: $font-size-headline-medium;
+    font-weight: $font-weight-bold;
+    line-height: 1.2;
+    color: $color-on-primary;
+
+    @include media-up('desktop') {
+      font-size: $font-size-headline-large;
+    }
+  }
+
+  &__body {
+    margin: 0;
+    width: 100%;
+    font-family: $font-family-text;
+    font-size: $font-size-label-medium;
+    font-weight: $font-weight-regular;
+    line-height: 1.5;
+    color: $color-on-bg;
+
+    @include media-up('phablet') {
+      max-width: 32rem; // no exact $size-* match
+      font-size: $font-size-body-small;
+    }
+
+    @include media-up('desktop') {
+      max-width: 37rem; // no exact $size-* match
+      font-size: $font-size-body-large;
+    }
+  }
+
+  &__contact {
+    margin: 0;
+    width: 100%;
+    font-family: $font-family-text;
+    font-size: $font-size-label-medium;
+    font-weight: $font-weight-regular;
+    line-height: normal;
+    color: $color-on-bg-low;
+
+    @include media-up('desktop') {
+      font-size: $font-size-body-small;
+    }
+  }
+}
