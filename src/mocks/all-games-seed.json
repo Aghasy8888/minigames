@@ -1,0 +1,64 @@
+{
+  "data": [
+    {
+      "slug": "organized-inside",
+      "name": "Organized Inside",
+      "category": "puzzle",
+      "price": "Free",
+      "shortDescription": "A slow-paced life sim and tidying up game about a cat, passion, transformation and growth. Categorize household items while uncovering the meaning of life through organization.",
+      "rating": 4.8,
+      "likesCount": 22700,
+      "cardImage": "/assets/images/games/organized-inside-card.jpg",
+      "featured": false
+    },
+    {
+      "slug": "islanders-new-shores",
+      "name": "ISLANDERS: New Shores",
+      "category": "strategy",
+      "price": "Free",
+      "shortDescription": "Build your island retreat in a calm, minimalist world with exciting new features that keep the classic charm while inspiring fresh creativity.",
+      "rating": 4.9,
+      "likesCount": 54200,
+      "cardImage": "/assets/images/games/islanders-new-shores-card.jpg",
+      "featured": true
+    },
+    {
+      "slug": "vacation-cafe-simulator",
+      "name": "Vacation Cafe Simulator",
+      "category": "strategy",
+      "price": "Free",
+      "shortDescription": "Cozy Italian Vacation Cafe 🏖️ No timers, No stress 😌 cook traditional dishes 🍝 upgrade and customize 🏠 just drink Prosecco 🥂 relax and grow your dream cafe ✨",
+      "rating": 4.8,
+      "likesCount": 28750,
+      "cardImage": "/assets/images/games/vacation-cafe-simulator-card.jpg",
+      "featured": true
+    },
+    {
+      "slug": "winter-burrow",
+      "name": "Winter Burrow",
+      "category": "farm",
+      "price": "Free",
+      "shortDescription": "A cozy woodland survival game about a mouse restoring their childhood burrow. Explore, gather resources, craft, knit warm sweaters, bake pies and meet the locals.",
+      "rating": 4.9,
+      "likesCount": 32400,
+      "cardImage": "/assets/images/games/winter-burrow-card.jpg",
+      "featured": true
+    },
+    {
+      "slug": "camper-van-make-it-home",
+      "name": "Camper Van: Make it Home",
+      "category": "puzzle",
+      "price": "Free",
+      "shortDescription": "Decorate and organize the camper van of your dreams! Build your own home-on-wheels using creative block organization puzzles and relaxing interior design.",
+      "rating": 4.7,
+      "likesCount": 29300,
+      "cardImage": "/assets/images/games/camper-van-make-it-home-card.jpg",
+      "featured": false
+    }
+  ],
+  "meta": {
+    "totalItems": 24,
+    "description": "Full MiniGames library — seed snapshot (24 cozy titles), resets daily 03:00 UTC",
+    "featuredCount": 9
+  }
+}
