@@ -4,7 +4,7 @@
 // 2.5px — no exact $border-width-* match
 $leaderboard-border: 2.5px;
 // 12px — no exact $size-* match ($corner-medium is radius-only)
-$leaderboard-phablet-header-gap: 12px;
+$leaderboard-tablet-sm-header-gap: 12px;
 
 .leaderboard {
   box-sizing: border-box;
@@ -16,7 +16,7 @@ $leaderboard-phablet-header-gap: 12px;
   flex-direction: column;
   gap: $size-2;
 
-  @include media-up('phablet') {
+  @include media-up('tablet-sm') {
     padding: $size-3 $size-5;
     gap: $size-3;
   }
@@ -62,7 +62,7 @@ $leaderboard-phablet-header-gap: 12px;
   &__title-text--full {
     display: none;
 
-    @include media-up('phablet') {
+    @include media-up('tablet-sm') {
       display: inline;
     }
   }
@@ -70,7 +70,7 @@ $leaderboard-phablet-header-gap: 12px;
   &__title-text--short {
     display: inline;
 
-    @include media-up('phablet') {
+    @include media-up('tablet-sm') {
       display: none;
     }
   }
@@ -112,8 +112,8 @@ $leaderboard-phablet-header-gap: 12px;
     background-color: $color-tertiary;
     border-bottom: $border-width-sm solid $color-on-primary;
 
-    @include media-up('phablet') {
-      gap: $leaderboard-phablet-header-gap;
+    @include media-up('tablet-sm') {
+      gap: $leaderboard-tablet-sm-header-gap;
     }
 
     @include media-up('desktop') {
@@ -133,7 +133,7 @@ $leaderboard-phablet-header-gap: 12px;
     gap: $size-1;
     border-bottom: 1px solid $color-outline;
 
-    @include media-up('phablet') {
+    @include media-up('tablet-sm') {
       min-height: 3.75rem; // no exact $size-* match
       gap: $size-2;
     }
@@ -202,7 +202,7 @@ $leaderboard-phablet-header-gap: 12px;
     flex: 0 0 $size-5;
     width: $size-5;
 
-    @include media-up('phablet') {
+    @include media-up('tablet-sm') {
       flex: 0 0 $size-10;
       width: $size-10;
     }
@@ -213,7 +213,7 @@ $leaderboard-phablet-header-gap: 12px;
     flex: 1 1 0;
     justify-content: center;
 
-    @include media-up('phablet') {
+    @include media-up('tablet-sm') {
       flex: 0 0 10rem; // no exact $size-* match
       width: 10rem;
     }
@@ -227,7 +227,7 @@ $leaderboard-phablet-header-gap: 12px;
   &__col--games {
     display: none;
 
-    @include media-up('phablet') {
+    @include media-up('tablet-sm') {
       display: flex;
       flex: 0 0 $size-6875;
       width: $size-6875;
@@ -243,7 +243,7 @@ $leaderboard-phablet-header-gap: 12px;
   &__cell--score {
     flex: 0 0 $size-10;
 
-    @include media-up('phablet') {
+    @include media-up('tablet-sm') {
       flex: 0 0 $size-6875;
       width: $size-6875;
     }
@@ -258,7 +258,7 @@ $leaderboard-phablet-header-gap: 12px;
   &__cell--streak {
     flex: 0 0 4.375rem; // no exact $size-* match
 
-    @include media-up('phablet') {
+    @include media-up('tablet-sm') {
       flex: 0 0 $size-6875;
       width: $size-6875;
     }
@@ -318,7 +318,7 @@ $leaderboard-phablet-header-gap: 12px;
     min-width: 0;
     width: 100%;
 
-    @include media-up('phablet') {
+    @include media-up('tablet-sm') {
       gap: $size-1;
     }
 
@@ -342,7 +342,7 @@ $leaderboard-phablet-header-gap: 12px;
     font-weight: $font-weight-bold;
     color: $color-on-primary;
 
-    @include media-up('phablet') {
+    @include media-up('tablet-sm') {
       width: 1.75rem; // no exact $size-* match
       height: 1.75rem; // no exact $size-* match
       border-radius: 14px; // no exact $corner-* match
@@ -387,7 +387,7 @@ $leaderboard-phablet-header-gap: 12px;
   &__score--compact {
     display: inline;
 
-    @include media-up('phablet') {
+    @include media-up('tablet-sm') {
       display: none;
     }
   }
@@ -395,7 +395,7 @@ $leaderboard-phablet-header-gap: 12px;
   &__score--full {
     display: none;
 
-    @include media-up('phablet') {
+    @include media-up('tablet-sm') {
       display: inline;
     }
   }

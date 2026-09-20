@@ -13,4 +13,5 @@ export { default as rsIcon } from './RS.svg';
 export { default as rssFeedIcon } from './rss_feed.svg';
 export { default as shareIcon } from './share.svg';
 export { default as starIcon } from './star.svg';
+export { default as submitIcon } from './submit-icon.svg';
 export { default as visibilityIcon } from './visibility.svg';
