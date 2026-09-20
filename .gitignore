@@ -1,6 +1,9 @@
 # Cursor
 .cursor/
 
+# GitHub Pages
+.github/
+
 # Dependencies
 node_modules/
 

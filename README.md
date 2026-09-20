@@ -2,6 +2,12 @@
 
 Web application with 2 pages and 2 dialogs, built from a design mockup using **TypeScript + HTML + SCSS only** (no frameworks or ready-made UI libraries).
 
+## Live demo
+
+https://aghasy8888.github.io/minigames/
+
+Deployed from the `gh-pages` branch (GitHub Pages → Deploy from a branch → `gh-pages` / root).
+
 ## Pages and dialogs
 
 - **Home**

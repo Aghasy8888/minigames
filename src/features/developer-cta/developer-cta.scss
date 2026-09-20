@@ -1,3 +1,4 @@
+@use 'sass:map';
 @use '../../styles/tokens' as *;
 @use '../../styles/mixins' as *;
 
@@ -74,6 +75,13 @@
     @include media-up('desktop') {
       width: 42.5rem; // 680px — no exact $size-* match
       height: 30rem; // 480px — no exact $size-* match
+    }
+
+    @media (min-width: map.get($breakpoints, 'desktop')) and (max-width: 1400px) {
+      width: 40%;
+      max-width: 28rem; // 448px — no exact $size-* match
+      height: auto;
+      aspect-ratio: 680 / 480;
     }
   }
 
