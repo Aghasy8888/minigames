@@ -1,4 +1,5 @@
 import { logoImage } from '../../assets/images';
+import { HOME_HREF } from '../../utils/home-href';
 import {
   EXTERNAL_LINK_REL,
   EXTERNAL_LINK_TARGET,
@@ -9,7 +10,6 @@ import {
   FOOTER_DESIGNED_WITH_LOVE,
   FOOTER_NAV_COLUMNS,
   FOOTER_SOCIAL_LINKS,
-  HOME_HREF,
   type FooterCreditLink,
   type FooterNavColumn,
   type FooterSocialLink,

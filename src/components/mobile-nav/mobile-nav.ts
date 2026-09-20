@@ -1,5 +1,6 @@
 import { logoImage } from '../../assets/images';
 import type { AuthDialogMode } from '../../store/auth-dialog-store';
+import { HOME_HREF } from '../../utils/home-href';
 import { createButton } from '../button';
 import './mobile-nav.scss';
 
@@ -26,7 +27,7 @@ export function createMobileNav(options: CreateMobileNavOptions = {}): HTMLEleme
 
   const logoLink = document.createElement('a');
   logoLink.className = 'mobile-nav__logo';
-  logoLink.href = '/';
+  logoLink.href = HOME_HREF;
   logoLink.addEventListener('click', () => {
     onNavigate?.();
   });
@@ -58,7 +59,7 @@ export function createMobileNav(options: CreateMobileNavOptions = {}): HTMLEleme
 
     const link = document.createElement('a');
     link.className = 'mobile-nav__link';
-    link.href = '/';
+    link.href = HOME_HREF;
     link.textContent = item;
     link.addEventListener('click', () => {
       onNavigate?.();
