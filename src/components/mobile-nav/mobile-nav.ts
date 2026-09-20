@@ -26,7 +26,7 @@ export function createMobileNav(options: CreateMobileNavOptions = {}): HTMLEleme
 
   const logoLink = document.createElement('a');
   logoLink.className = 'mobile-nav__logo';
-  logoLink.href = '#/';
+  logoLink.href = '/';
   logoLink.addEventListener('click', () => {
     onNavigate?.();
   });
@@ -58,7 +58,7 @@ export function createMobileNav(options: CreateMobileNavOptions = {}): HTMLEleme
 
     const link = document.createElement('a');
     link.className = 'mobile-nav__link';
-    link.href = '#/';
+    link.href = '/';
     link.textContent = item;
     link.addEventListener('click', () => {
       onNavigate?.();

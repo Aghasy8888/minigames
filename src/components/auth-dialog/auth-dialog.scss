@@ -9,7 +9,7 @@ $dialog-width: 26.25rem;
   max-height: calc(100dvh - #{$size-4});
   // Padding lives on __content so backdrop clicks resolve on the dialog itself
   padding: 0;
-  border: 3px solid $color-on-primary;
+  border: 3px solid $color-on-primary; // no exact $border-width-* match
   border-radius: $corner-extra-large;
   background-color: $color-bg;
   box-shadow: $shadow-level-3;
@@ -59,7 +59,7 @@ $dialog-width: 26.25rem;
     display: grid;
     flex-shrink: 0;
     grid-template-columns: repeat(2, 1fr);
-    border: 3px solid $color-on-primary;
+    border: 3px solid $color-on-primary; // no exact $border-width-* match
     border-radius: $corner-medium;
     background-color: $color-white;
     overflow: hidden;
@@ -203,7 +203,7 @@ $dialog-width: 26.25rem;
     &::after {
       content: '';
       flex: 1;
-      height: 1px;
+      height: 1px; // no exact $border-width-* match
       background-color: $color-outline-variant;
     }
   }
