@@ -1,6 +1,8 @@
+import { createHero } from '../../components/hero';
 import { createSlider } from '../../features/slider/slider';
 import './home-page.scss';
 
 export function renderHomePage(container: HTMLElement): void {
-  container.replaceChildren(createSlider());
+  container.className = 'home-page';
+  container.replaceChildren(createHero(), createSlider());
 }
