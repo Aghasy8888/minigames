@@ -1,0 +1,346 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/mixins' as *;
+
+$slider-card-border: 2.5px; // no exact $border-width-* match
+$slider-info-min-width: 18rem; // no exact $size-* match
+
+.slider {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: $layout-max-width;
+  margin-inline: auto;
+  padding: $size-2 $size-125;
+  display: flex;
+  flex-direction: column;
+  gap: $size-2;
+
+  @include media-up('phablet') {
+    padding: $size-3 $size-5;
+    gap: $size-3;
+  }
+
+  @include media-up('desktop') {
+    padding: $size-5 $size-15;
+    gap: $size-5;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  &__heading {
+    display: flex;
+    align-items: center;
+    gap: $size-1;
+    min-width: 0;
+  }
+
+  &__accent {
+    flex-shrink: 0;
+    width: $size-1;
+    height: $size-3;
+    border: $border-width-sm solid $color-on-primary;
+    border-radius: $corner-extra-small;
+    background-color: $color-primary;
+
+    @include media-up('desktop') {
+      height: $size-4;
+    }
+  }
+
+  &__title {
+    margin: 0;
+    font-family: $font-family-text;
+    font-size: $font-size-headline-medium;
+    font-weight: $font-weight-bold;
+    line-height: normal;
+    color: $color-on-primary;
+    white-space: nowrap;
+
+    @include media-up('desktop') {
+      font-size: $font-size-headline-large;
+    }
+  }
+
+  &__nav {
+    display: none;
+    align-items: flex-start;
+    gap: $size-2;
+    flex-shrink: 0;
+
+    @include media-up('phablet') {
+      display: flex;
+    }
+  }
+
+  &__nav-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: $size-5;
+    height: $size-5;
+    padding: 0;
+    border: $border-width solid $color-on-primary;
+    border-radius: $corner-full;
+    background-color: $color-white;
+    cursor: pointer;
+    appearance: none;
+
+    &:hover {
+      background-color: $color-surface;
+    }
+
+    &:active {
+      background-color: $color-surface;
+    }
+
+    @include media-up('desktop') {
+      width: $size-6;
+      height: $size-6;
+    }
+
+    &--next {
+      background-color: $color-primary;
+
+      &:hover {
+        background-color: $color-primary-high;
+      }
+
+      &:active {
+        background-color: $color-primary-high;
+      }
+    }
+  }
+
+  &__nav-icon {
+    display: block;
+    width: 0.7rem; // no exact $size-* match
+    height: 0.7rem; // no exact $size-* match
+
+    @include media-up('desktop') {
+      width: $size-2;
+      height: $size-2;
+    }
+  }
+
+  &__nav-btn--next &__nav-icon {
+    transform: scaleX(-1);
+  }
+
+  &__track {
+    display: flex;
+    align-items: stretch;
+    justify-content: flex-start;
+    box-sizing: border-box;
+    width: 100%;
+    height: 12.875rem; // no exact $size-* match
+    padding-inline: $size-05;
+    overflow: hidden;
+    gap: 6px; // no exact $size-* match
+
+    @include media-up('phablet') {
+      height: 18rem; // no exact $size-* match
+      padding-inline: $size-1;
+    }
+
+    @include media-up('desktop') {
+      justify-content: space-between;
+      gap: 0;
+      height: 24.25rem; // no exact $size-* match
+    }
+  }
+}
+
+.slider-card {
+  position: relative;
+  container-type: inline-size;
+  container-name: slider-card;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  height: 12.5rem; // no exact $size-* match
+  overflow: hidden;
+  border: $slider-card-border solid $color-on-primary;
+  border-radius: $corner-large;
+  background-color: $color-white;
+  box-shadow: $shadow-level-1;
+  flex-shrink: 0;
+
+  @include media-up('phablet') {
+    height: 17.5rem; // no exact $size-* match
+  }
+
+  @include media-up('desktop') {
+    height: 24rem; // no exact $size-* match
+    border-radius: $corner-extra-large;
+  }
+
+  &--peek {
+    display: none;
+
+    @include media-up('desktop') {
+      display: flex;
+      width: $size-15;
+    }
+  }
+
+  &--secondary {
+    flex: 1 1 0;
+    width: auto;
+    min-width: $size-7;
+
+    @include media-up('phablet') {
+      min-width: 6.5625rem; // no exact $size-* match
+    }
+
+    @include media-up('desktop') {
+      flex: 0 0 auto;
+      width: 18rem; // no exact $size-* match
+      min-width: 0;
+    }
+  }
+
+  &--featured {
+    width: 13.625rem; // no exact $size-* match
+    flex: 0 0 auto;
+    min-width: 0;
+
+    @include media-up('phablet') {
+      width: 28rem; // no exact $size-* match
+      flex: 0 0 auto;
+    }
+
+    @include media-up('desktop') {
+      width: 51rem; // no exact $size-* match
+      flex: 0 0 auto;
+    }
+
+    .slider-card__info {
+      display: flex;
+    }
+
+    .slider-card__gradient {
+      display: none;
+    }
+  }
+
+  &__media {
+    position: relative;
+    flex: 1 0 auto;
+    width: 100%;
+    min-height: 0;
+  }
+
+  &__image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    object-fit: cover;
+    pointer-events: none;
+  }
+
+  &__gradient {
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    height: $size-7;
+    background: linear-gradient(
+      to bottom,
+      rgba($color-black, 0) 0%,
+      rgba($color-black, 0.4) 17.308%,
+      rgba($color-black, 0.85) 46.154%,
+      rgba($color-black, 0.85) 100%
+    );
+    pointer-events: none;
+  }
+
+  &__info {
+    display: none;
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: $size-1;
+    box-sizing: border-box;
+    padding: $size-2;
+    background: linear-gradient(
+      to bottom,
+      rgba($color-black, 0) 0%,
+      rgba($color-black, 0.4) 17.308%,
+      rgba($color-black, 0.85) 46.154%,
+      rgba($color-black, 0.85) 100%
+    );
+  }
+
+  &__title {
+    margin: 0;
+    width: 100%;
+    overflow: hidden;
+    font-family: $font-family-text;
+    font-size: $font-size-body-large;
+    font-weight: $font-weight-bold;
+    line-height: normal;
+    color: $color-white;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  &__stat {
+    display: inline-flex;
+    align-items: center;
+    gap: $size-05;
+  }
+
+  &__stat-icon {
+    display: block;
+    width: 1.3rem; // no exact $size-* match
+    height: 1.3rem; // no exact $size-* match
+    flex-shrink: 0;
+
+    @include media-up('desktop') {
+      width: $size-2;
+      height: $size-2;
+    }
+  }
+
+  &__stat-value {
+    font-family: $font-family-text;
+    font-size: $font-size-label-medium;
+    font-weight: $font-weight-bold;
+    line-height: normal;
+    color: $color-white;
+    white-space: nowrap;
+
+    @include media-up('phablet') {
+      font-size: $font-size-body-small;
+    }
+
+    @include media-up('desktop') {
+      font-size: $font-size-body-medium;
+    }
+  }
+}
+
+@container slider-card (min-width: #{$slider-info-min-width}) {
+  .slider-card__info {
+    display: flex;
+  }
+
+  .slider-card__gradient {
+    display: none;
+  }
+}

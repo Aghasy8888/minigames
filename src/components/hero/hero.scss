@@ -1,0 +1,171 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/mixins' as *;
+
+.hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  padding: $size-8 $size-2;
+  overflow: hidden;
+
+  &__media {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  &__overlay {
+    position: absolute;
+    inset: 0;
+    background-color: rgba($color-bg-footer, 0.65);
+  }
+
+  &__image-wrap {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    opacity: 0.2;
+  }
+
+  &__image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    object-fit: cover;
+  }
+
+  &__inner {
+    position: relative;
+    z-index: 1;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: $layout-max-width;
+    margin-inline: auto;
+  }
+
+  &__card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: $size-2;
+    box-sizing: border-box;
+    width: 100%;
+    padding: $size-3;
+    border: $border-width solid $color-on-primary;
+    border-radius: $corner-medium;
+    background-color: $color-bg;
+    box-shadow: $shadow-level-1;
+
+    .button {
+      padding: $btn-padding-small;
+
+      @include media-up('phablet') {
+        padding: $btn-padding-medium;
+      }
+
+      @include media-up('desktop') {
+        padding: $btn-padding-large;
+      }
+    }
+
+    .button__label {
+      font-size: $font-size-label-medium;
+
+      @include media-up('phablet') {
+        font-size: $font-size-body-small;
+      }
+
+      @include media-up('desktop') {
+        font-size: $font-size-body-large;
+      }
+    }
+  }
+
+  &__title {
+    margin: 0;
+    font-family: $font-family-text;
+    font-size: $font-size-display-small;
+    font-weight: $font-weight-bold;
+    line-height: 1.2;
+    color: $color-on-primary;
+  }
+
+  &__description {
+    margin: 0;
+    font-family: $font-family-text;
+    font-weight: $font-weight-medium;
+    color: $color-on-bg;
+
+    &--short {
+      font-size: $font-size-label-medium;
+      line-height: 1.4;
+    }
+
+    &--long {
+      display: none;
+      font-size: $font-size-body-small;
+      line-height: 1.4;
+    }
+  }
+
+  @include media-up('phablet') {
+    padding: $size-9 $size-5;
+
+    &__card {
+      width: 30rem; // no exact $size-* match
+      border-width: 2.5px; // no exact $border-width-* match
+      border-radius: $corner-large;
+      box-shadow: $shadow-level-2;
+    }
+
+    &__title {
+      font-size: $font-size-display-medium;
+      line-height: 1.15;
+    }
+
+    &__description--short {
+      display: none;
+    }
+
+    &__description--long {
+      display: block;
+    }
+  }
+
+  @include media-up('desktop') {
+    padding: $size-14 $size-15;
+
+    &__image {
+      inset: auto;
+      // no exact $size-* match
+      top: -13.76%;
+      left: -9.33%;
+      width: 119.29%;
+      height: 118.9%;
+      object-fit: unset;
+    }
+
+    &__card {
+      width: 40rem; // no exact $size-* match
+      gap: $size-3;
+      padding: $size-6;
+      border-width: 3px; // no exact $border-width-* match
+      border-radius: $corner-extra-large;
+      box-shadow: $shadow-level-3;
+    }
+
+    &__title {
+      font-size: $font-size-display-large;
+      line-height: 1.1;
+    }
+
+    &__description--long {
+      font-size: $font-size-body-large;
+      line-height: 1.5;
+    }
+  }
+}

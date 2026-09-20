@@ -1,0 +1,351 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/mixins' as *;
+
+.footer {
+  width: 100%;
+  background-color: $color-bg-footer;
+  color: $color-on-bg-footer;
+
+  &__inner {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: $size-3;
+    width: 100%;
+    max-width: $layout-max-width;
+    margin-inline: auto;
+    padding: $size-4 $size-2;
+  }
+
+  &__top {
+    display: flex;
+    flex-direction: column;
+    gap: $size-3;
+    width: 100%;
+  }
+
+  &__brand {
+    display: flex;
+    flex-direction: column;
+    gap: $size-3;
+    width: 100%;
+  }
+
+  &__logo {
+    display: inline-flex;
+    align-items: center;
+    gap: $size-1;
+    width: fit-content;
+    color: $color-white;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  &__logo-mark {
+    display: block;
+    width: $size-4;
+    height: $size-4;
+    flex-shrink: 0;
+  }
+
+  &__logo-text {
+    font-family: $font-family-text;
+    font-size: $font-size-headline-small;
+    font-weight: $font-weight-bold;
+    line-height: normal;
+    color: $color-white;
+  }
+
+  &__tagline {
+    margin: 0;
+    font-family: $font-family-text;
+    font-size: $font-size-body-small;
+    font-weight: $font-weight-regular;
+    line-height: 1.5;
+    color: $color-on-bg-footer;
+  }
+
+  &__columns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $size-3 $size-5;
+    width: 100%;
+  }
+
+  &__column {
+    display: flex;
+    flex-direction: column;
+    gap: $size-2;
+    flex: 1 0 0;
+    min-width: 0;
+
+    &--community {
+      flex: 1 0 100%;
+    }
+  }
+
+  &__column-title {
+    margin: 0;
+    font-family: $font-family-text;
+    font-size: $font-size-body-medium;
+    font-weight: $font-weight-bold;
+    line-height: normal;
+    color: $color-white;
+  }
+
+  &__link-list {
+    display: flex;
+    flex-direction: column;
+    gap: $size-2;
+  }
+
+  &__link-item {
+    margin: 0;
+    padding: 0;
+  }
+
+  &__link {
+    display: block;
+    font-family: $font-family-text;
+    font-size: $font-size-body-small;
+    font-weight: $font-weight-regular;
+    line-height: normal;
+    color: $color-on-bg-footer;
+    text-decoration: none;
+    cursor: pointer;
+
+    &:hover {
+      color: $color-white;
+    }
+
+    &:active {
+      color: $color-primary;
+    }
+  }
+
+  &__socials {
+    display: flex;
+    gap: $size-2;
+    align-items: flex-start;
+  }
+
+  &__social {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: $size-4;
+    height: $size-4;
+    border-radius: $corner-full;
+    background-color: $color-bg-footer-low;
+    text-decoration: none;
+    cursor: pointer;
+
+    &:hover {
+      background-color: $color-bg-footer-lowest;
+    }
+
+    &:active {
+      background-color: $color-bg-footer-lowest;
+    }
+  }
+
+  &__social-icon {
+    display: block;
+    width: $size-2;
+    height: $size-2;
+  }
+
+  &__bottom {
+    display: flex;
+    flex-direction: column;
+    gap: $size-1;
+    width: 100%;
+    padding-top: $size-1;
+    border-top: 1px solid rgba($color-white, 0.12); // no exact $color-* match
+  }
+
+  &__copyright {
+    margin: 0;
+    font-family: $font-family-text;
+    font-size: $font-size-body-small;
+    font-weight: $font-weight-regular;
+    line-height: normal;
+    color: $color-on-bg-footer;
+  }
+
+  &__credits {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $size-2;
+    align-items: center;
+  }
+
+  &__credit {
+    display: inline-flex;
+    align-items: center;
+    gap: $size-1;
+    color: $color-on-bg-footer;
+    text-decoration: none;
+    cursor: pointer;
+
+    &:hover {
+      color: $color-white;
+    }
+
+    &:active {
+      color: $color-primary;
+    }
+  }
+
+  &__credit-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: $size-25;
+    height: $size-25;
+    border-radius: 10px; // no exact $corner-* match
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+
+  &__credit--rs &__credit-icon {
+    background-color: $color-on-primary;
+  }
+
+  &__credit--github &__credit-icon {
+    background-color: $color-white;
+  }
+
+  &__credit-icon-img {
+    display: block;
+    width: $size-125;
+    height: auto;
+  }
+
+  &__credit--github &__credit-icon-img {
+    width: 0.875rem; // no exact $size-* match
+  }
+
+  &__credit-label {
+    font-family: $font-family-text;
+    font-size: $font-size-body-small;
+    font-weight: $font-weight-regular;
+    line-height: normal;
+  }
+
+  &__designed {
+    display: none;
+    margin: 0;
+    font-family: $font-family-text;
+    font-size: $font-size-body-small;
+    font-weight: $font-weight-regular;
+    line-height: normal;
+    color: $color-on-bg-footer;
+  }
+
+  @include media-up('phablet') {
+    &__inner {
+      gap: $size-5;
+      padding: $size-5;
+    }
+
+    &__top {
+      gap: $size-3;
+    }
+
+    &__columns {
+      flex-wrap: nowrap;
+      gap: $size-5;
+    }
+
+    &__column {
+      flex: 0 0 auto;
+
+      &--community {
+        flex: 0 0 auto;
+      }
+    }
+
+    &__bottom {
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: $size-2;
+      padding-top: $size-2;
+    }
+
+    &__credits {
+      display: contents;
+    }
+
+    &__designed {
+      display: block;
+    }
+  }
+
+  @include media-up('desktop') {
+    &__inner {
+      gap: $size-8;
+      padding: $size-5 $size-15;
+    }
+
+    &__top {
+      flex-direction: row;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: $size-5;
+    }
+
+    &__brand {
+      width: 25rem; // no exact $size-* match
+      flex-shrink: 0;
+    }
+
+    &__logo-text {
+      font-size: $font-size-headline-medium;
+    }
+
+    &__columns {
+      gap: $size-10;
+      width: auto;
+      flex: 0 0 auto;
+    }
+
+    &__social {
+      width: $size-5;
+      height: $size-5;
+    }
+
+    &__social-icon {
+      width: $size-25;
+      height: $size-25;
+    }
+
+    &__bottom {
+      gap: $size-3;
+      padding-top: $size-3;
+      align-items: center;
+    }
+
+    &__copyright,
+    &__credit,
+    &__designed {
+      min-height: $size-3;
+    }
+
+    &__credit-icon {
+      width: $size-3;
+      height: $size-3;
+      border-radius: $corner-medium;
+    }
+
+    &__credit-icon-img {
+      width: $size-125;
+    }
+
+    &__credit--github &__credit-icon-img {
+      width: $size-2;
+    }
+  }
+}
