@@ -1,6 +1,7 @@
 import { closeIcon, hamburgerButtonIcon } from '../../assets/icons';
 import { logoImage } from '../../assets/images';
 import { openAuthDialog, type AuthDialogMode } from '../../store/auth-dialog-store';
+import { HOME_HREF } from '../../utils/home-href';
 import { lockScroll, unlockScroll } from '../../utils/scroll-lock';
 import { createButton } from '../button';
 import { createMobileNav } from '../mobile-nav';
@@ -12,7 +13,7 @@ const MENU_TRANSITION_MS = 250;
 function createLogo(): HTMLAnchorElement {
   const logoLink = document.createElement('a');
   logoLink.className = 'header__logo';
-  logoLink.href = '/';
+  logoLink.href = HOME_HREF;
 
   const logoMark = document.createElement('img');
   logoMark.className = 'header__logo-mark';
@@ -43,7 +44,7 @@ function createNav(): HTMLElement {
 
     const link = document.createElement('a');
     link.className = 'header__nav-link';
-    link.href = '/';
+    link.href = HOME_HREF;
     link.textContent = item;
 
     if (item === 'Home') {

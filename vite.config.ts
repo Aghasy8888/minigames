@@ -1,12 +1,12 @@
 import { defineConfig } from 'vite';
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   // GitHub Pages project site: https://<user>.github.io/minigames/
-  base: process.env.NODE_ENV === 'production' ? '/minigames/' : '/',
+  base: mode === 'production' ? '/minigames/' : '/',
   root: '.',
   publicDir: 'public',
   build: {
     outDir: 'dist',
     emptyOutDir: true,
   },
-});
+}));
