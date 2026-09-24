@@ -1,4 +1,5 @@
 import { heroBgImage } from '../../assets/images';
+import { navigate } from '../../store/navigation-store';
 import { createButton } from '../button';
 import {
   HERO_CTA_LABEL,
@@ -60,6 +61,9 @@ export function createHero(): HTMLElement {
     label: HERO_CTA_LABEL,
     variant: 'primary',
     size: 'medium',
+    onClick: () => {
+      navigate('library');
+    },
   });
 
   // Keep in sync with $breakpoints 'desktop' in tokens.scss (1200px)
