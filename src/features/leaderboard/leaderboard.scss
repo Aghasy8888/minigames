@@ -1,8 +1,6 @@
 @use '../../styles/tokens' as *;
 @use '../../styles/mixins' as *;
 
-// 2.5px — no exact $border-width-* match
-$leaderboard-border: 2.5px;
 // 12px — no exact $size-* match ($corner-medium is radius-only)
 $leaderboard-tablet-sm-header-gap: 12px;
 $leaderboard-mobile-name-overflow: 1.8125rem; // 29px — no exact $size-* match
@@ -80,7 +78,7 @@ $leaderboard-mobile-name-overflow: 1.8125rem; // 29px — no exact $size-* match
     box-sizing: border-box;
     width: 100%;
     overflow: hidden;
-    border: $leaderboard-border solid $color-on-primary;
+    border: $border-width-md solid $color-on-primary;
     border-radius: $corner-large;
     background-color: $color-white;
     box-shadow: $shadow-level-1;

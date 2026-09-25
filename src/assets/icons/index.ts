@@ -3,6 +3,8 @@ export { default as arrowUpIcon } from './arrow-up.svg';
 export { default as chatIcon } from './chat.svg';
 export { default as closeIcon } from './close.svg';
 export { default as codeIcon } from './code.svg';
+export { default as disabledPaginationArrowIcon } from './disabled-pagination-arrow.svg';
+export { default as enabledPaginationArrowIcon } from './enabled-pagination-arrow.svg';
 export { default as favoriteIcon } from './favorite.svg';
 export { default as googleIcon } from './google-icon.svg';
 export { default as hamburgerButtonIcon } from './hamburger-button.svg';

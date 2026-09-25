@@ -1,7 +1,6 @@
 @use '../../styles/tokens' as *;
 @use '../../styles/mixins' as *;
 
-$slider-card-border: 2.5px; // no exact $border-width-* match
 $slider-info-min-width: 18rem; // no exact $size-* match
 
 .slider {
@@ -164,7 +163,7 @@ $slider-info-min-width: 18rem; // no exact $size-* match
   box-sizing: border-box;
   height: 12.5rem; // no exact $size-* match
   overflow: hidden;
-  border: $slider-card-border solid $color-on-primary;
+  border: $border-width-md solid $color-on-primary;
   border-radius: $corner-large;
   background-color: $color-white;
   box-shadow: $shadow-level-1;
