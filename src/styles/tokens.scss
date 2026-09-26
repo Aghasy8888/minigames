@@ -92,6 +92,7 @@ $corner-full: 9999px;
 // Border widths
 $border-width: 2px;
 $border-width-sm: 1.5px;
+$border-width-md: 2.5px;
 
 // Button padding
 $btn-padding-large: $size-2 $size-3;
@@ -113,6 +114,8 @@ $breakpoints: (
   'tablet-sm': 735px,
   'tablet': 769px,
   'desktop': 1200px,
+  'desktop-lg': 1500px,
+  'desktop-wide': 1830px,
 );
 
 // Content shell max width — Pixel Perfect at 1920; ≥1921 stays centered (side space grows).

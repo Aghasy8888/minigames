@@ -1,0 +1,274 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/mixins' as *;
+
+$game-card-image-height-mobile: 10rem; // no exact $size-* match (160px)
+$game-card-height-mobile: 24.5rem; // no exact $size-* match
+$game-card-height-tablet-sm: 9.75rem; // no exact $size-* match
+$game-card-image-width-tablet-sm: 16.875rem; // no exact $size-* match (270px)
+$game-card-height-desktop: 12.75rem; // no exact $size-* match
+$game-card-image-width-desktop: 20rem; // no exact $size-* match (320px)
+$game-card-image-width-desktop-lg: 26rem; // no exact $size-* match
+$game-card-badge-radius-mobile: 1.25rem; // no exact $corner-* match
+$game-card-badge-py-mobile: 2px; // no exact $size-* match
+
+.game-card {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: $game-card-height-mobile;
+  overflow: hidden;
+  border: $border-width-md solid $color-on-primary;
+  border-radius: $corner-large;
+  background-color: $color-white;
+  box-shadow: $shadow-level-1;
+
+  @include media-up('tablet-sm') {
+    flex-direction: row;
+    align-items: stretch;
+    height: $game-card-height-tablet-sm;
+  }
+
+  @include media-up('desktop') {
+    height: $game-card-height-desktop;
+  }
+
+  &__media {
+    position: relative;
+    flex-shrink: 0;
+    width: 100%;
+    height: $game-card-image-height-mobile;
+    overflow: hidden;
+
+    @include media-up('tablet-sm') {
+      width: $game-card-image-width-tablet-sm;
+      height: auto;
+      align-self: stretch;
+    }
+
+    @include media-up('desktop') {
+      width: $game-card-image-width-desktop;
+    }
+
+    @include media-up('desktop-lg') {
+      width: $game-card-image-width-desktop-lg;
+    }
+
+    @include media-up('desktop-wide') {
+      width: $game-card-image-width-desktop;
+    }
+  }
+
+  &__image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &__content {
+    box-sizing: border-box;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: $size-2;
+    min-width: 0;
+    padding: $size-2;
+
+    @include media-up('tablet-sm') {
+      justify-content: space-between;
+      gap: 0;
+    }
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $size-1;
+    width: 100%;
+
+    @include media-up('tablet-sm') {
+      gap: $size-2;
+    }
+  }
+
+  &__title-group {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: $size-1;
+    min-width: 0;
+
+    @include media-up('tablet-sm') {
+      flex-direction: row;
+      align-items: center;
+      gap: $size-2;
+    }
+  }
+
+  &__title {
+    margin: 0;
+    font-family: $font-family-text;
+    font-size: $font-size-headline-small;
+    font-weight: $font-weight-bold;
+    line-height: normal;
+    color: $color-on-primary;
+
+    @include media-up('desktop') {
+      font-size: $font-size-headline-medium;
+      white-space: nowrap;
+    }
+  }
+
+  &__badge {
+    box-sizing: border-box;
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: flex-start;
+    width: fit-content;
+    padding: $game-card-badge-py-mobile $size-1;
+    border: $border-width-sm solid $color-on-primary;
+    border-radius: $game-card-badge-radius-mobile;
+    background-color: $color-secondary;
+    font-family: $font-family-text;
+    font-size: $font-size-label-medium;
+    font-weight: $font-weight-bold;
+    line-height: normal;
+    color: $color-on-primary;
+    white-space: nowrap;
+
+    @include media-up('tablet-sm') {
+      padding: $size-05 $size-1;
+      border-radius: $corner-extra-large;
+    }
+  }
+
+  &__price {
+    margin: 0;
+    flex-shrink: 0;
+    font-family: $font-family-text;
+    font-size: $font-size-headline-small;
+    font-weight: $font-weight-bold;
+    line-height: normal;
+    white-space: nowrap;
+
+    &--free {
+      color: $color-price-free;
+    }
+
+    &--paid {
+      color: $color-on-primary;
+    }
+
+    &--header {
+      display: none;
+
+      @include media-up('tablet-sm') {
+        display: block;
+      }
+
+      @include media-up('desktop') {
+        font-size: $font-size-headline-medium;
+      }
+    }
+
+    &--mobile {
+      display: block;
+
+      @include media-up('tablet-sm') {
+        display: none;
+      }
+    }
+  }
+
+  &__description {
+    margin: 0;
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    font-family: $font-family-text;
+    font-size: $font-size-body-small;
+    font-weight: $font-weight-medium;
+    line-height: 1.4; // no exact $line-height-* match
+    color: $color-on-bg;
+    text-overflow: ellipsis;
+
+    @include media-up('desktop') {
+      -webkit-line-clamp: 3;
+      font-size: $font-size-body-medium;
+    }
+  }
+
+  &__footer {
+    display: flex;
+    flex-direction: column;
+    gap: $size-2;
+    width: 100%;
+
+    @include media-up('tablet-sm') {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: $size-2;
+    }
+  }
+
+  &__stats-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $size-2;
+    width: 100%;
+
+    @include media-up('tablet-sm') {
+      width: auto;
+      flex: 1;
+      justify-content: flex-start;
+    }
+  }
+
+  &__stats {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem; // no exact $size-* match
+
+    @include media-up('desktop') {
+      gap: $size-3;
+    }
+  }
+
+  &__stat {
+    display: inline-flex;
+    align-items: center;
+    gap: $size-05;
+  }
+
+  &__stat-icon {
+    display: block;
+    width: $size-25;
+    height: $size-25;
+  }
+
+  &__stat-value {
+    font-family: $font-family-text;
+    font-size: $font-size-label-medium;
+    font-weight: $font-weight-bold;
+    line-height: normal;
+    color: $color-on-primary;
+
+    @include media-up('desktop') {
+      font-size: $font-size-label-large;
+    }
+  }
+
+  &__details {
+    width: 100%;
+
+    @include media-up('tablet-sm') {
+      width: auto;
+      flex-shrink: 0;
+    }
+  }
+}
