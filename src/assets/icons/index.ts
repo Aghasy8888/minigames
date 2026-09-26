@@ -1,9 +1,11 @@
 export { default as arrowIcon } from './arrow.svg';
 export { default as arrowUpIcon } from './arrow-up.svg';
 export { default as chatIcon } from './chat.svg';
+export { default as checkIcon } from './check.svg';
 export { default as closeIcon } from './close.svg';
 export { default as codeIcon } from './code.svg';
 export { default as disabledPaginationArrowIcon } from './disabled-pagination-arrow.svg';
+export { default as dropdownArrowIcon } from './dropdown-arrow.svg';
 export { default as enabledPaginationArrowIcon } from './enabled-pagination-arrow.svg';
 export { default as favoriteIcon } from './favorite.svg';
 export { default as googleIcon } from './google-icon.svg';
