@@ -103,7 +103,7 @@
     font-family: $font-family-text;
     font-size: $font-size-label-large;
     font-weight: $font-weight-medium;
-    line-height: 1.143;
+    line-height: 1.143; // no exact $line-height-* match
     color: $color-on-primary;
     background-color: $color-white;
     cursor: pointer;

@@ -191,7 +191,7 @@ $game-card-badge-py-mobile: 2px; // no exact $size-* match
     font-family: $font-family-text;
     font-size: $font-size-body-small;
     font-weight: $font-weight-medium;
-    line-height: 1.4;
+    line-height: 1.4; // no exact $line-height-* match
     color: $color-on-bg;
     text-overflow: ellipsis;
 
