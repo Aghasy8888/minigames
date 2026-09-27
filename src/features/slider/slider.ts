@@ -17,6 +17,7 @@ import {
   SLIDER_FEATURED_SLUGS,
   SLIDER_SECTION_TITLE,
   SLIDER_SWIPE_THRESHOLD_PX,
+  SLIDER_TAP_MAX_MS,
 } from './slider-data';
 import './slider.scss';
 
@@ -197,7 +198,6 @@ export function createSlider(): HTMLElement {
   track.append(...cards);
 
   let featuredIndex = 0;
-  let suppressClick = false;
   applyCardRoles(cards, featuredIndex, false);
 
   function step(direction: 'prev' | 'next'): void {
@@ -228,32 +228,21 @@ export function createSlider(): HTMLElement {
     onHold() {
       autoplay.pause();
     },
-    onRelease({ didSwipe, direction }) {
+    onRelease({ didSwipe, direction, isTap, heldMs, pressTarget }) {
       if (didSwipe && direction) {
-        suppressClick = true;
         step(direction);
         autoplay.reset();
-        globalThis.setTimeout(() => {
-          suppressClick = false;
-        }, 0);
         return;
       }
 
       autoplay.resume();
+
+      const isQuickTap = isTap && heldMs <= SLIDER_TAP_MAX_MS;
+
+      if (isQuickTap && pressTarget instanceof Element && pressTarget.closest('.slider-card')) {
+        openGameDetailsDialog();
+      }
     },
-  });
-
-  track.addEventListener('click', (event) => {
-    if (suppressClick) {
-      event.preventDefault();
-      return;
-    }
-
-    if (!(event.target instanceof Element) || !event.target.closest('.slider-card')) {
-      return;
-    }
-
-    openGameDetailsDialog();
   });
 
   const observer = new MutationObserver(() => {

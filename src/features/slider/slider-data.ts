@@ -10,3 +10,4 @@ export type { SliderCardRole } from '../../utils/circular-index';
 
 export const SLIDER_AUTOPLAY_MS = 4000;
 export const SLIDER_SWIPE_THRESHOLD_PX = 40;
+export const SLIDER_TAP_MAX_MS = 400;
