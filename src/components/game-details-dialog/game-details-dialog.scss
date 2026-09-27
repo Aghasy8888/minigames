@@ -29,7 +29,7 @@ $game-details-dialog-hero-height: 13.75rem;
     margin: auto;
   }
 
-  @include media-up('tablet') {
+  @include media-up('tablet-sm') {
     width: $game-details-dialog-width;
   }
 
@@ -93,15 +93,32 @@ $game-details-dialog-hero-height: 13.75rem;
     height: $size-4;
     margin: 0;
     padding: 0;
-    border: $border-width solid $color-on-primary;
+    border: $border-width solid $color-shadow;
     border-radius: $corner-full;
     background-color: $color-white;
     // no exact $shadow-* match
     box-shadow: 2px 2px 0 $color-shadow;
     cursor: pointer;
     appearance: none;
+    transition:
+      background-color 0.2s ease-out,
+      border-color 0.2s ease-out;
 
-    @include media-up('tablet') {
+    &:hover,
+    &:focus-visible {
+      border-color: $color-on-primary;
+      background-color: $color-surface;
+
+      .game-details-dialog__close-icon--default {
+        display: none;
+      }
+
+      .game-details-dialog__close-icon--hover {
+        display: block;
+      }
+    }
+
+    @include media-up('tablet-sm') {
       width: $size-5;
       height: $size-5;
     }
@@ -109,8 +126,11 @@ $game-details-dialog-hero-height: 13.75rem;
 
   &__close-icon {
     display: block;
-    width: $size-3;
-    height: $size-3;
+    flex-shrink: 0;
+
+    &--hover {
+      display: none;
+    }
   }
 
   &__body {
@@ -128,7 +148,7 @@ $game-details-dialog-hero-height: 13.75rem;
     gap: $size-1;
     width: 100%;
 
-    @include media-up('tablet') {
+    @include media-up('tablet-sm') {
       flex-direction: row;
       align-items: center;
       justify-content: space-between;
@@ -192,7 +212,7 @@ $game-details-dialog-hero-height: 13.75rem;
     justify-content: center;
     width: 100%;
 
-    @include media-up('tablet') {
+    @include media-up('tablet-sm') {
       flex-wrap: nowrap;
       justify-content: stretch;
     }
@@ -214,7 +234,7 @@ $game-details-dialog-hero-height: 13.75rem;
     // no exact $shadow-* match
     box-shadow: 3px 3px 0 $color-on-primary;
 
-    @include media-up('tablet') {
+    @include media-up('tablet-sm') {
       flex: 1 1 0;
       min-width: 0;
     }
@@ -255,18 +275,10 @@ $game-details-dialog-hero-height: 13.75rem;
     flex: 0 0 $size-6;
     width: $size-6;
 
-    .button__label {
-      display: none;
-    }
-
-    @include media-up('tablet') {
+    @include media-up('tablet-sm') {
       flex: 1 1 0;
       width: auto;
       min-width: 0;
-
-      .button__label {
-        display: inline-block;
-      }
     }
   }
 }

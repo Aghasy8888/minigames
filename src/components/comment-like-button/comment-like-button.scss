@@ -1,0 +1,40 @@
+@use '../../styles/tokens' as *;
+
+.comment-like-button {
+  display: inline-flex;
+  gap: $size-05;
+  align-items: center;
+  margin: calc(-1 * #{$size-05}) 0 calc(-1 * #{$size-05}) calc(-1 * #{$size-1});
+  padding: 0.313rem $size-1; // no exact $size-* match
+  border: 0;
+  border-radius: $corner-medium;
+  background-color: transparent;
+  color: $color-on-bg;
+  cursor: pointer;
+  appearance: none;
+  transition: background-color 0.2s ease-out;
+
+  &:hover,
+  &:focus-visible {
+    background-color: $color-surface;
+    color: $color-on-primary;
+  }
+
+  &__count {
+    font-family: $font-family-text;
+    font-size: $font-size-label-medium;
+    font-weight: $font-weight-bold;
+    line-height: normal;
+    color: $color-black;
+  }
+
+  &--liked,
+  &--liked:hover,
+  &--liked:focus-visible {
+    color: $color-like;
+  }
+
+  &--liked &__count {
+    color: $color-like;
+  }
+}

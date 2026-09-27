@@ -1,4 +1,10 @@
-import { addToFavoriteIcon, closeDarkIcon, favoriteIcon, starIcon } from '../../assets/icons';
+import {
+  addToFavoriteIcon,
+  closeDarkIcon,
+  closeDefaultIcon,
+  favoriteIcon,
+  starIcon,
+} from '../../assets/icons';
 import { tukoniHeroImage } from '../../assets/images';
 import {
   closeGameDetailsDialog,
@@ -7,9 +13,12 @@ import {
 import { formatCompactCount } from '../../utils/format-compact-count';
 import { lockScroll, unlockScroll } from '../../utils/scroll-lock';
 import { createButton } from '../button';
+import { createComments } from '../comments';
+import { createTopRecords } from '../top-records';
 import {
   ADD_TO_FAVORITES_LABEL,
   CLOSE_DIALOG_ARIA_LABEL,
+  GAME_COMMENTS,
   GAME_DETAILS,
   PLAY_NOW_LABEL,
   REMOVE_FROM_FAVORITES_LABEL,
@@ -90,7 +99,16 @@ export function createGameDetailsDialog(): HTMLDialogElement {
   closeButton.type = 'button';
   closeButton.className = 'game-details-dialog__close';
   closeButton.setAttribute('aria-label', CLOSE_DIALOG_ARIA_LABEL);
-  closeButton.append(createIconImage(closeDarkIcon, 'game-details-dialog__close-icon'));
+  closeButton.append(
+    createIconImage(
+      closeDefaultIcon,
+      'game-details-dialog__close-icon game-details-dialog__close-icon--default',
+    ),
+    createIconImage(
+      closeDarkIcon,
+      'game-details-dialog__close-icon game-details-dialog__close-icon--hover',
+    ),
+  );
 
   hero.append(heroImage, closeButton);
 
@@ -166,13 +184,27 @@ export function createGameDetailsDialog(): HTMLDialogElement {
   });
 
   actions.append(playButton, favoriteButton);
-  body.append(header, description, widgets, actions);
+
+  const comments = createComments({
+    comments: GAME_COMMENTS.data,
+    totalCount: GAME_COMMENTS.meta.totalComments,
+  });
+
+  body.append(
+    header,
+    description,
+    widgets,
+    actions,
+    createTopRecords(game.topRecords),
+    comments.element,
+  );
   content.append(hero, body);
   dialog.append(content);
 
   function resetTransientState(): void {
     isFavorited = game.isLikedByCurrentUser;
     syncFavoriteState();
+    comments.reset();
   }
 
   function requestClose(): void {
