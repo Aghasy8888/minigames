@@ -7,6 +7,7 @@ import {
 import { formatCompactCount } from '../../utils/format-compact-count';
 import { lockScroll, unlockScroll } from '../../utils/scroll-lock';
 import { createButton } from '../button';
+import { createTopRecords } from '../top-records';
 import {
   ADD_TO_FAVORITES_LABEL,
   CLOSE_DIALOG_ARIA_LABEL,
@@ -166,7 +167,7 @@ export function createGameDetailsDialog(): HTMLDialogElement {
   });
 
   actions.append(playButton, favoriteButton);
-  body.append(header, description, widgets, actions);
+  body.append(header, description, widgets, actions, createTopRecords(game.topRecords));
   content.append(hero, body);
   dialog.append(content);
 
