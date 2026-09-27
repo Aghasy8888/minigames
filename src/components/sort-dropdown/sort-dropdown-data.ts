@@ -12,6 +12,7 @@ export const SORT_OPTIONS: readonly SortOption[] = [
 ] as const;
 
 export const SORT_TRIGGER_PREFIX = 'Sort by:';
+export const SORT_TRIGGER_ARIA_LABEL = 'Sort games';
 
 export const DEFAULT_SORT_OPTION =
   SORT_OPTIONS.find((option) => option.isDefault) ?? SORT_OPTIONS[0];

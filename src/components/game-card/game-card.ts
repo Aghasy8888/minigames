@@ -67,7 +67,7 @@ export function createGameCard(game: GameSeed): HTMLElement {
   const titleGroup = document.createElement('div');
   titleGroup.className = 'game-card__title-group';
 
-  const title = document.createElement('h3');
+  const title = document.createElement('h2');
   title.className = 'game-card__title';
   title.textContent = game.name;
 
