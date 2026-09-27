@@ -9,6 +9,7 @@ import {
   KEY_HOME,
   KEY_SPACE,
   SORT_OPTIONS,
+  SORT_TRIGGER_ARIA_LABEL,
   SORT_TRIGGER_PREFIX,
   type SortOption,
 } from './sort-dropdown-data';
@@ -45,6 +46,8 @@ export function createSortDropdown(options: CreateSortDropdownOptions = {}): HTM
   const trigger = document.createElement('button');
   trigger.type = 'button';
   trigger.className = 'sort-dropdown__trigger';
+  trigger.setAttribute('role', 'combobox');
+  trigger.setAttribute('aria-label', SORT_TRIGGER_ARIA_LABEL);
   trigger.setAttribute('aria-haspopup', 'listbox');
   trigger.setAttribute('aria-expanded', 'false');
   trigger.setAttribute('aria-controls', listboxId);
@@ -108,7 +111,7 @@ export function createSortDropdown(options: CreateSortDropdownOptions = {}): HTM
       option.setAttribute('aria-selected', String(isSelected));
     }
     const highlighted = optionElements[highlightedIndex];
-    if (highlighted) {
+    if (isOpen && highlighted) {
       trigger.setAttribute('aria-activedescendant', highlighted.id);
     } else {
       trigger.removeAttribute('aria-activedescendant');

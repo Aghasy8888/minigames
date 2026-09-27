@@ -49,7 +49,7 @@ function createCommentCard(
   avatar.textContent = getNameInitial(comment.authorName);
   avatar.setAttribute('aria-hidden', 'true');
 
-  const name = document.createElement('span');
+  const name = document.createElement('h3');
   name.className = 'comments__author-name';
   name.textContent = comment.authorName;
 

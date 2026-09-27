@@ -29,8 +29,8 @@ export function createPagination(options: CreatePaginationOptions = {}): HTMLEle
   const { totalPages = TOTAL_PAGES } = options;
   let currentPage = 1;
 
-  const section = document.createElement('section');
-  section.className = 'pagination';
+  const root = document.createElement('div');
+  root.className = 'pagination';
 
   const nav = document.createElement('nav');
   nav.className = 'pagination__controls';
@@ -55,7 +55,7 @@ export function createPagination(options: CreatePaginationOptions = {}): HTMLEle
   nextButton.append(nextIcon);
 
   nav.append(previousButton, pageList, nextButton);
-  section.append(nav);
+  root.append(nav);
 
   const tabletSmMediaQuery = globalThis.matchMedia(PAGINATION_TABLET_SM_MEDIA_QUERY);
 
@@ -132,5 +132,5 @@ export function createPagination(options: CreatePaginationOptions = {}): HTMLEle
   tabletSmMediaQuery.addEventListener('change', onViewportChange);
 
   syncControls();
-  return section;
+  return root;
 }
