@@ -1,3 +1,4 @@
+export { tukoniComments as GAME_COMMENTS } from '../../mocks/comments';
 export { tukoniForestKeepers as GAME_DETAILS } from '../../mocks/game-details';
 
 export const PLAY_NOW_LABEL = 'Play Now';

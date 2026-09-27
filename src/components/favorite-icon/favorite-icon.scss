@@ -1,0 +1,9 @@
+@use '../../styles/tokens' as *;
+
+.favorite-icon {
+  display: block;
+  flex-shrink: 0;
+  width: 0.813rem; // no exact $size-* match
+  height: 0.813rem; // no exact $size-* match
+  transition: color 0.2s ease-out;
+}

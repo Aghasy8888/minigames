@@ -1,13 +1,9 @@
 import { cupImage } from '../../assets/images';
 import type { GameDetailsTopRecord } from '../../mocks/game-details';
+import { MOCK_REFERENCE_DATE } from '../../mocks/mock-reference-date';
 import { formatRelativeTime } from '../../utils/format-relative-time';
 import { formatScore } from '../../utils/format-score';
-import {
-  MEDAL_IMAGES,
-  POINTS_SUFFIX,
-  RECORDS_REFERENCE_DATE,
-  TOP_RECORDS_TITLE,
-} from './top-records-data';
+import { MEDAL_IMAGES, POINTS_SUFFIX, TOP_RECORDS_TITLE } from './top-records-data';
 import './top-records.scss';
 
 const TITLE_ID = 'top-records-title';
@@ -48,7 +44,7 @@ function createRecordRow(record: GameDetailsTopRecord): HTMLLIElement {
   const time = document.createElement('time');
   time.className = 'top-records__time';
   time.dateTime = record.achievedAt;
-  time.textContent = formatRelativeTime(record.achievedAt, RECORDS_REFERENCE_DATE);
+  time.textContent = formatRelativeTime(record.achievedAt, MOCK_REFERENCE_DATE);
 
   result.append(score, time);
   row.append(player, result);

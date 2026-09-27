@@ -1,0 +1,126 @@
+@use '../../styles/tokens' as *;
+
+// no exact $size-* match — Figma 28px comment avatar
+$comments-avatar-size: 1.75rem;
+
+.comments {
+  display: flex;
+  flex-direction: column;
+  gap: $size-2;
+  width: 100%;
+
+  &__title {
+    margin: 0;
+    font-family: $font-family-text;
+    font-size: $font-size-body-medium;
+    font-weight: $font-weight-bold;
+    line-height: normal;
+    color: $color-on-primary;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: $size-2;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__card {
+    display: flex;
+    flex-direction: column;
+    gap: $size-1;
+    box-sizing: border-box;
+    width: 100%;
+    padding: $size-2;
+    border-radius: $corner-medium;
+    background-color: $color-white;
+    // no exact $shadow-* match
+    box-shadow: 3px 3px 0 $color-on-primary;
+  }
+
+  &__card-header {
+    display: flex;
+    gap: $size-1;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__author {
+    display: flex;
+    flex: 1 1 auto;
+    gap: $size-1;
+    align-items: center;
+    min-width: 0;
+  }
+
+  &__avatar {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: $comments-avatar-size;
+    height: $comments-avatar-size;
+    border: $border-width-xs solid $color-on-primary;
+    border-radius: $corner-full;
+    font-family: $font-family-text;
+    font-size: $font-size-label-medium;
+    font-weight: $font-weight-bold;
+    line-height: normal;
+    color: $color-on-primary;
+
+    &--random-3 {
+      background-color: $color-avatar-random-3;
+    }
+
+    &--primary {
+      background-color: $color-primary;
+    }
+
+    &--random-1 {
+      background-color: $color-avatar-random-1;
+    }
+  }
+
+  &__author-name {
+    min-width: 0;
+    overflow: hidden;
+    font-family: $font-family-text;
+    font-size: $font-size-body-small;
+    font-weight: $font-weight-bold;
+    line-height: normal;
+    color: $color-on-primary;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__time {
+    flex-shrink: 0;
+    font-family: $font-family-text;
+    font-size: $font-size-label-medium;
+    font-weight: $font-weight-regular;
+    line-height: normal;
+    color: $color-on-bg;
+    white-space: nowrap;
+  }
+
+  &__text {
+    margin: 0;
+    font-family: $font-family-text;
+    font-size: $font-size-body-small;
+    font-weight: $font-weight-regular;
+    // no exact $line-height-* match — Figma 18px
+    line-height: 1.125rem;
+    letter-spacing: -0.01px; // no exact $letter-spacing-* match
+    color: $color-on-primary;
+    overflow-wrap: anywhere;
+  }
+
+  &__card-footer {
+    display: flex;
+    align-items: center;
+  }
+}

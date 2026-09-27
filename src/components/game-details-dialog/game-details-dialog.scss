@@ -93,13 +93,30 @@ $game-details-dialog-hero-height: 13.75rem;
     height: $size-4;
     margin: 0;
     padding: 0;
-    border: $border-width solid $color-on-primary;
+    border: $border-width solid $color-shadow;
     border-radius: $corner-full;
     background-color: $color-white;
     // no exact $shadow-* match
     box-shadow: 2px 2px 0 $color-shadow;
     cursor: pointer;
     appearance: none;
+    transition:
+      background-color 0.2s ease-out,
+      border-color 0.2s ease-out;
+
+    &:hover,
+    &:focus-visible {
+      border-color: $color-on-primary;
+      background-color: $color-surface;
+
+      .game-details-dialog__close-icon--default {
+        display: none;
+      }
+
+      .game-details-dialog__close-icon--hover {
+        display: block;
+      }
+    }
 
     @include media-up('tablet-sm') {
       width: $size-5;
@@ -109,8 +126,11 @@ $game-details-dialog-hero-height: 13.75rem;
 
   &__close-icon {
     display: block;
-    width: $size-3;
-    height: $size-3;
+    flex-shrink: 0;
+
+    &--hover {
+      display: none;
+    }
   }
 
   &__body {
