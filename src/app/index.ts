@@ -2,6 +2,7 @@ import '../styles/globals.scss';
 import './app.scss';
 import { createAuthDialog } from '../components/auth-dialog';
 import { createFooter } from '../components/footer';
+import { createGameDetailsDialog } from '../components/game-details-dialog';
 import { createHeader } from '../components/header';
 import { startRouter } from './router';
 
@@ -13,7 +14,13 @@ function bootstrap(): void {
 
   const main = document.createElement('main');
   main.className = 'app__main';
-  app.replaceChildren(createHeader(), main, createFooter(), createAuthDialog());
+  app.replaceChildren(
+    createHeader(),
+    main,
+    createFooter(),
+    createAuthDialog(),
+    createGameDetailsDialog(),
+  );
   startRouter(main);
 }
 

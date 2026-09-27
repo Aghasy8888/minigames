@@ -203,7 +203,7 @@ $dialog-width: 26.25rem;
     &::after {
       content: '';
       flex: 1;
-      height: 1px; // no exact $border-width-* match
+      height: $border-width-xs;
       background-color: $color-outline-variant;
     }
   }

@@ -130,7 +130,7 @@ $leaderboard-mobile-name-overflow: 1.8125rem; // 29px — no exact $size-* match
     min-height: $size-7;
     padding: 0.9rem $size-2; // no exact $size-* match
     gap: $size-1;
-    border-bottom: 1px solid $color-outline;
+    border-bottom: $border-width-xs solid $color-outline;
 
     @include media-up('tablet-sm') {
       min-height: 3.75rem; // no exact $size-* match
@@ -342,7 +342,7 @@ $leaderboard-mobile-name-overflow: 1.8125rem; // 29px — no exact $size-* match
     box-sizing: border-box;
     width: $size-3;
     height: $size-3;
-    border: 1px solid $color-on-primary;
+    border: $border-width-xs solid $color-on-primary;
     border-radius: $corner-medium;
     font-family: $font-family-roboto;
     font-size: $font-size-label-small;

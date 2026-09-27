@@ -98,8 +98,7 @@
     box-sizing: border-box;
     width: 100%;
     padding: $size-2;
-    // no exact $border-width-* match
-    border-bottom: 1px solid $color-on-primary;
+    border-bottom: $border-width-xs solid $color-on-primary;
     font-family: $font-family-text;
     font-size: $font-size-label-large;
     font-weight: $font-weight-medium;
