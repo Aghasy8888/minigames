@@ -132,10 +132,18 @@
     max-width: $size-6;
     padding: 0;
 
-    @include media-up('tablet') {
+    .button__label {
+      display: none;
+    }
+
+    @include media-up('tablet-sm') {
       width: 100%;
       max-width: none;
       padding: 0 $size-3;
+
+      .button__label {
+        display: inline-block;
+      }
     }
   }
 
