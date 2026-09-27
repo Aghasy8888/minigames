@@ -1,0 +1,34 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/mixins' as *;
+
+.filter-sort-bar {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: $size-2;
+  width: 100%;
+  max-width: $layout-max-width;
+  margin-inline: auto;
+  padding: $size-2;
+
+  @include media-up('tablet-sm') {
+    padding: $size-2 $size-5;
+  }
+
+  @include media-up('desktop') {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: $size-2 $size-15;
+  }
+
+  .filter-chips {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .sort-dropdown {
+    flex-shrink: 0;
+  }
+}

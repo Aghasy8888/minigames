@@ -1,7 +1,9 @@
 import { closeIcon, hamburgerButtonIcon } from '../../assets/icons';
 import { logoImage } from '../../assets/images';
+import { navigate, subscribeNavigation, type AppPage } from '../../store/navigation-store';
 import { openAuthDialog, type AuthDialogMode } from '../../store/auth-dialog-store';
 import { HOME_HREF } from '../../utils/home-href';
+import { hrefForNavLabel, pageForNavLabel } from '../../utils/nav-target';
 import { lockScroll, unlockScroll } from '../../utils/scroll-lock';
 import { createButton } from '../button';
 import { createMobileNav } from '../mobile-nav';
@@ -9,11 +11,35 @@ import './header.scss';
 
 const NAV_ITEMS: readonly string[] = ['Home', 'Library', 'Tournaments', 'Community'];
 const MENU_TRANSITION_MS = 250;
+const ACTIVE_LINK_CLASS = 'header__nav-link--active';
+
+function syncActiveNavLinks(root: ParentNode, page: AppPage): void {
+  const links = root.querySelectorAll<HTMLAnchorElement>('.header__nav-link');
+
+  for (const link of links) {
+    // Only Home / Library represent real pages; placeholders never stay active
+    const label = link.textContent ?? '';
+    const representsCurrent =
+      (label === 'Home' && page === 'home') || (label === 'Library' && page === 'library');
+
+    link.classList.toggle(ACTIVE_LINK_CLASS, representsCurrent);
+
+    if (representsCurrent) {
+      link.setAttribute('aria-current', 'page');
+    } else {
+      link.removeAttribute('aria-current');
+    }
+  }
+}
 
 function createLogo(): HTMLAnchorElement {
   const logoLink = document.createElement('a');
   logoLink.className = 'header__logo';
   logoLink.href = HOME_HREF;
+  logoLink.addEventListener('click', (event) => {
+    event.preventDefault();
+    navigate('home');
+  });
 
   const logoMark = document.createElement('img');
   logoMark.className = 'header__logo-mark';
@@ -44,13 +70,12 @@ function createNav(): HTMLElement {
 
     const link = document.createElement('a');
     link.className = 'header__nav-link';
-    link.href = HOME_HREF;
+    link.href = hrefForNavLabel(item);
     link.textContent = item;
-
-    if (item === 'Home') {
-      link.classList.add('header__nav-link--active');
-      link.setAttribute('aria-current', 'page');
-    }
+    link.addEventListener('click', (event) => {
+      event.preventDefault();
+      navigate(pageForNavLabel(item));
+    });
 
     listItem.append(link);
     list.append(listItem);
@@ -204,9 +229,14 @@ export function createHeader(): HTMLElement {
   handleTabletChange(tabletMediaQuery);
   tabletMediaQuery.addEventListener('change', handleTabletChange);
 
-  actions.append(createNav(), logInButton, signUpButton, menuButton);
+  const nav = createNav();
+  actions.append(nav, logInButton, signUpButton, menuButton);
   inner.append(createLogo(), actions);
   header.append(inner, mobileNav);
+
+  subscribeNavigation((page) => {
+    syncActiveNavLinks(nav, page);
+  });
 
   return header;
 }

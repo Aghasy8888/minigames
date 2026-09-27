@@ -117,7 +117,7 @@
 
     &__card {
       width: 30rem; // no exact $size-* match
-      border-width: 2.5px; // no exact $border-width-* match
+      border-width: $border-width-md;
       border-radius: $corner-large;
       box-shadow: $shadow-level-2;
     }

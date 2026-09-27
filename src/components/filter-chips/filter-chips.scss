@@ -1,0 +1,50 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/mixins' as *;
+
+.filter-chips {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: $size-1;
+  width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+
+  @include media-up('desktop') {
+    gap: $size-2;
+  }
+
+  &__chip {
+    flex-shrink: 0;
+    margin: 0;
+    padding: $btn-padding-small;
+    border: $border-width solid $color-on-primary;
+    border-radius: $corner-large;
+    font-family: $font-family-text;
+    font-size: $font-size-label-medium;
+    font-weight: $font-weight-bold;
+    line-height: 1;
+    letter-spacing: -0.5px; // no exact $letter-spacing-* match
+    color: $color-on-primary;
+    background-color: $color-white;
+    cursor: pointer;
+    appearance: none;
+    white-space: nowrap;
+
+    @include media-up('tablet-sm') {
+      border-radius: $corner-extra-large;
+      font-size: $font-size-label-large;
+    }
+
+    &:hover {
+      background-color: $color-surface;
+    }
+
+    &--active {
+      background-color: $color-primary;
+
+      &:hover {
+        background-color: $color-primary;
+      }
+    }
+  }
+}

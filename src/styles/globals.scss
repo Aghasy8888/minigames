@@ -13,6 +13,7 @@
   // Base
   --color-white: #{$color-white};
   --color-black: #{$color-black};
+  --color-shadow: #{$color-shadow};
 
   // General
   --color-bg: #{$color-bg};
@@ -102,8 +103,10 @@
   --corner-full: #{$corner-full};
 
   // Border widths
+  --border-width-xs: #{$border-width-xs};
   --border-width: #{$border-width};
   --border-width-sm: #{$border-width-sm};
+  --border-width-md: #{$border-width-md};
 
   // Button padding
   --btn-padding-large: #{$btn-padding-large};
@@ -116,6 +119,7 @@
   --shadow-level-1: #{$shadow-level-1};
   --shadow-level-2: #{$shadow-level-2};
   --shadow-level-3: #{$shadow-level-3};
+  --shadow-level-3-dark: #{$shadow-level-3-dark};
 
   // Layout
   --layout-max-width: #{$layout-max-width};

@@ -1,5 +1,5 @@
 import { chatIcon, codeIcon, rsIcon, rssFeedIcon, shareIcon } from '../../assets/icons';
-import { HOME_HREF } from '../../utils/home-href';
+import { HOME_HREF, LIBRARY_HREF } from '../../utils/home-href';
 
 export const FOOTER_BRAND = {
   name: 'MiniGames',
@@ -22,7 +22,7 @@ export const FOOTER_NAV_COLUMNS: readonly FooterNavColumn[] = [
     title: 'Explore',
     links: [
       { label: 'Home', href: HOME_HREF },
-      { label: 'Library', href: HOME_HREF },
+      { label: 'Library', href: LIBRARY_HREF },
       { label: 'Categories', href: HOME_HREF },
       { label: 'Tournaments', href: HOME_HREF },
     ],

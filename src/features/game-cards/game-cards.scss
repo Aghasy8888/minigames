@@ -1,0 +1,50 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/mixins' as *;
+
+.game-cards {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: $layout-max-width;
+  margin-inline: auto;
+  padding: 0 $size-2;
+
+  @include media-up('tablet-sm') {
+    padding: 0 $size-5;
+  }
+
+  @include media-up('desktop') {
+    padding: 0 $size-15;
+  }
+
+  &__list {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: $size-2;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    @include media-up('tablet-sm') {
+      gap: $size-25;
+    }
+
+    @include media-up('desktop-wide') {
+      row-gap: $size-25;
+      column-gap: $size-3;
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: flex-start;
+    }
+  }
+
+  &__item {
+    width: 100%;
+    min-width: 0;
+
+    @include media-up('desktop-wide') {
+      // half of row minus half gap ($size-3 / 2)
+      width: calc((100% - #{$size-3}) / 2);
+    }
+  }
+}

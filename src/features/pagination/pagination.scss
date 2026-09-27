@@ -1,0 +1,106 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/mixins' as *;
+
+.pagination {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: $layout-max-width;
+  margin-inline: auto;
+  padding: $size-3 $size-2;
+
+  @include media-up('phablet') {
+    padding: $size-5;
+  }
+
+  @include media-up('desktop') {
+    padding: $size-5 $size-15;
+  }
+
+  &__controls {
+    display: flex;
+    align-items: center;
+    gap: $size-1;
+
+    @include media-up('desktop') {
+      gap: $size-2;
+    }
+  }
+
+  &__pages {
+    display: flex;
+    align-items: center;
+    gap: inherit;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__page-item {
+    display: flex;
+    flex-shrink: 0;
+  }
+
+  &__button {
+    box-sizing: border-box;
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: $size-5;
+    height: $size-5;
+    margin: 0;
+    padding: 0;
+    border: $border-width solid $color-on-primary;
+    border-radius: $corner-full;
+    background-color: $color-white;
+    font-family: $font-family-text;
+    font-size: $font-size-label-large;
+    font-weight: $font-weight-bold;
+    line-height: normal;
+    color: $color-on-primary;
+    cursor: pointer;
+    appearance: none;
+
+    &:hover:not(:disabled):not(.pagination__button--active) {
+      background-color: $color-surface;
+    }
+
+    &:disabled {
+      background-color: $color-bg;
+      border-color: $color-outline-variant;
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    &--page {
+      &:hover:not(:disabled):not(.pagination__button--active) {
+        border-width: $border-width-sm;
+      }
+    }
+
+    &--active {
+      background-color: $color-bg-footer-low;
+      color: $color-white;
+      cursor: default;
+
+      &:hover {
+        background-color: $color-bg-footer-low;
+      }
+    }
+
+    &--next {
+      .pagination__arrow-icon {
+        transform: scaleX(-1);
+      }
+    }
+  }
+
+  &__arrow-icon {
+    display: block;
+    width: auto;
+    height: auto;
+  }
+}

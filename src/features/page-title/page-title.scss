@@ -1,0 +1,58 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/mixins' as *;
+
+.page-title {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: $size-1;
+  width: 100%;
+  max-width: $layout-max-width;
+  margin-inline: auto;
+  padding: $size-2;
+
+  @include media-up('phablet') {
+    padding: $size-3 $size-5;
+  }
+
+  @include media-up('desktop') {
+    padding: $size-5 $size-15;
+  }
+
+  &__heading {
+    margin: 0;
+    width: 100%;
+    font-family: $font-family-text;
+    font-size: $font-size-display-small;
+    font-weight: $font-weight-bold;
+    line-height: normal;
+    color: $color-on-primary;
+
+    @include media-up('phablet') {
+      font-size: $font-size-display-medium;
+    }
+
+    @include media-up('desktop') {
+      font-size: $font-size-display-large;
+    }
+  }
+
+  &__subtitle {
+    margin: 0;
+    width: 100%;
+    font-family: $font-family-text;
+    font-size: $font-size-body-small;
+    font-weight: $font-weight-medium;
+    line-height: normal;
+    color: $color-on-bg;
+
+    @include media-up('phablet') {
+      font-size: $font-size-body-medium;
+    }
+
+    @include media-up('desktop') {
+      font-size: $font-size-body-large;
+    }
+  }
+}

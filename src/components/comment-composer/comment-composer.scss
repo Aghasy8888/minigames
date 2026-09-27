@@ -1,0 +1,129 @@
+@use '../../styles/tokens' as *;
+
+// no exact $color-* match — Figma text-placeholder
+$comment-composer-placeholder-color: #969696;
+// no exact $color-* match — Figma scrollbar track
+$comment-composer-scrollbar-track: #ebebeb;
+// no exact $color-* match — Figma scrollbar thumb
+$comment-composer-scrollbar-thumb: #a0a0a0;
+// no exact $corner-* match — Figma scrollbar 2px
+$comment-composer-scrollbar-radius: 2px;
+
+.comment-composer {
+  display: flex;
+  gap: $size-2;
+  align-items: center;
+  width: 100%;
+  margin: 0;
+
+  &__avatar {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: $size-5;
+    height: $size-5;
+    border: $border-width-sm solid $color-on-primary;
+    border-radius: $corner-full;
+    background-color: $color-primary;
+    font-family: $font-family-text;
+    font-size: $font-size-label-large;
+    font-weight: $font-weight-bold;
+    line-height: normal;
+    color: $color-on-primary;
+  }
+
+  &__textarea {
+    display: block;
+    flex: 1 1 auto;
+    box-sizing: border-box;
+    min-width: 0;
+    min-height: $size-6;
+    max-height: $size-11;
+    margin: 0;
+    padding: $size-1 $size-2;
+    border: $border-width-xs solid $color-shadow;
+    border-radius: $corner-small;
+    background-color: $color-white;
+    font-family: $font-family-text;
+    font-size: $font-size-label-large;
+    font-weight: $font-weight-regular;
+    line-height: normal;
+    color: $color-on-primary;
+    overflow-y: hidden;
+    resize: none;
+    transition: border-color 0.2s ease-out;
+
+    &::placeholder {
+      color: $comment-composer-placeholder-color;
+      opacity: 1;
+    }
+
+    &:focus {
+      // padding shrinks by the extra border width so the text doesn't shift
+      padding: calc(#{$size-1} - #{$border-width - $border-width-xs})
+        calc(#{$size-2} - #{$border-width - $border-width-xs});
+      border: $border-width solid $color-on-primary;
+      outline: none;
+    }
+
+    @supports not selector(::-webkit-scrollbar) {
+      scrollbar-width: thin;
+      scrollbar-color: $comment-composer-scrollbar-thumb $comment-composer-scrollbar-track;
+    }
+
+    &::-webkit-scrollbar {
+      width: $size-05;
+    }
+
+    &::-webkit-scrollbar-track {
+      margin: $size-1 0;
+      border-radius: $comment-composer-scrollbar-radius;
+      background-color: $comment-composer-scrollbar-track;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border-radius: $comment-composer-scrollbar-radius;
+      background-color: $comment-composer-scrollbar-thumb;
+    }
+  }
+
+  &__send {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: $size-5;
+    height: $size-5;
+    margin: 0;
+    padding: 0;
+    border: $border-width-sm solid $color-on-primary;
+    border-radius: $corner-small;
+    background-color: $color-bg-footer-low;
+    cursor: pointer;
+    appearance: none;
+    transition:
+      background-color 0.2s ease-out,
+      opacity 0.2s ease-out;
+
+    &:not(:disabled):hover,
+    &:not(:disabled):focus-visible {
+      background-color: $color-tertiary;
+    }
+
+    &:disabled {
+      border-color: transparent;
+      background-color: $color-outline-variant;
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  &__send-icon {
+    display: block;
+    width: $size-3;
+    height: $size-3;
+  }
+}

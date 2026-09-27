@@ -1,11 +1,18 @@
 import {
   camperVanMakeItHomeCard,
+  catMailCoCard,
+  heartopiaCard,
   islandersNewShoresCard,
   organizedInsideCard,
+  paliaCard,
+  shelveThePotionsCard,
+  tailsideCozyCafeSimCard,
+  tinyGladeCard,
   vacationCafeSimulatorCard,
   winterBurrowCard,
 } from '../assets/images';
 import allGamesSeed from './all-games-seed.json';
+import allGamesSeedLibrary from './all-games-seed-lib.json';
 
 export type GameSeed = {
   slug: string;
@@ -29,8 +36,10 @@ export type GamesSeedResponse = {
 };
 
 export const gamesSeed = allGamesSeed as GamesSeedResponse;
+export const libraryGamesSeed = allGamesSeedLibrary as GamesSeedResponse;
 
 export const mockGames: readonly GameSeed[] = gamesSeed.data;
+export const allLibraryGames: readonly GameSeed[] = libraryGamesSeed.data;
 
 const gameCardImagesBySlug: Readonly<Record<string, string>> = {
   'organized-inside': organizedInsideCard,
@@ -38,6 +47,12 @@ const gameCardImagesBySlug: Readonly<Record<string, string>> = {
   'vacation-cafe-simulator': vacationCafeSimulatorCard,
   'winter-burrow': winterBurrowCard,
   'camper-van-make-it-home': camperVanMakeItHomeCard,
+  'shelve-the-potions': shelveThePotionsCard,
+  heartopia: heartopiaCard,
+  palia: paliaCard,
+  'cat-mail-co': catMailCoCard,
+  'tiny-glade': tinyGladeCard,
+  'tailside-cozy-cafe-sim': tailsideCozyCafeSimCard,
 };
 
 export function getGameCardImage(slug: string): string {
@@ -58,4 +73,18 @@ export function getGameBySlug(slug: string): GameSeed {
   }
 
   return game;
+}
+
+export function getLibraryGameBySlug(slug: string): GameSeed {
+  const game = allLibraryGames.find((item) => item.slug === slug);
+
+  if (!game) {
+    throw new Error(`Missing library game seed for slug: ${slug}`);
+  }
+
+  return game;
+}
+
+export function getLibraryGamesBySlugs(slugs: readonly string[]): GameSeed[] {
+  return slugs.map((slug) => getLibraryGameBySlug(slug));
 }

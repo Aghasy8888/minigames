@@ -1,6 +1,7 @@
 // Base — Place: white → bg, text-color; black → gradient
 $color-white: #ffffff;
 $color-black: #000000;
+$color-shadow: #111111; // hard drop shadow (Figma #111)
 
 // General
 $color-bg: #f9f8f3; // base background
@@ -90,8 +91,10 @@ $corner-extra-large: 24px;
 $corner-full: 9999px;
 
 // Border widths
+$border-width-xs: 1px;
 $border-width: 2px;
 $border-width-sm: 1.5px;
+$border-width-md: 2.5px;
 
 // Button padding
 $btn-padding-large: $size-2 $size-3;
@@ -105,6 +108,7 @@ $btn-padding-icon: $size-1;
 $shadow-level-1: 4px 4px $color-on-primary;
 $shadow-level-2: 6px 6px $color-on-primary;
 $shadow-level-3: 8px 8px $color-on-primary;
+$shadow-level-3-dark: 8px 8px 0 0 $color-shadow;
 
 // Breakpoints — media-query widths only (layout changes). Mobile-first: base = mobile.
 $breakpoints: (
@@ -113,6 +117,8 @@ $breakpoints: (
   'tablet-sm': 735px,
   'tablet': 769px,
   'desktop': 1200px,
+  'desktop-lg': 1500px,
+  'desktop-wide': 1830px,
 );
 
 // Content shell max width — Pixel Perfect at 1920; ≥1921 stays centered (side space grows).
