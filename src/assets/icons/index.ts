@@ -1,7 +1,9 @@
+export { default as addToFavoriteIcon } from './add-to-favorite.svg';
 export { default as arrowIcon } from './arrow.svg';
 export { default as arrowUpIcon } from './arrow-up.svg';
 export { default as chatIcon } from './chat.svg';
 export { default as checkIcon } from './check.svg';
+export { default as closeDarkIcon } from './close-dark.svg';
 export { default as closeIcon } from './close.svg';
 export { default as codeIcon } from './code.svg';
 export { default as disabledPaginationArrowIcon } from './disabled-pagination-arrow.svg';

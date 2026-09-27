@@ -110,6 +110,35 @@
     box-shadow: 0 4px 0 $color-on-primary;
   }
 
+  &--dialog-cta {
+    box-sizing: border-box;
+    width: 100%;
+    height: $size-6;
+    padding: 0 $size-3;
+    border: $border-width-xs;
+    border-radius: $corner-medium;
+    font-size: $font-size-label-extra-large;
+    box-shadow: $shadow-level-1;
+
+    .button__icon {
+      width: $size-25;
+      height: $size-25;
+    }
+  }
+
+  &--dialog-cta-icon {
+    flex-shrink: 0;
+    width: $size-6;
+    max-width: $size-6;
+    padding: 0;
+
+    @include media-up('tablet') {
+      width: 100%;
+      max-width: none;
+      padding: 0 $size-3;
+    }
+  }
+
   &--icon {
     width: $size-6;
     height: $size-6;

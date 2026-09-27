@@ -1,5 +1,6 @@
 import { favoriteIcon, starIcon } from '../../assets/icons';
 import { getGameCardImage, type GameSeed } from '../../mocks/games';
+import { openGameDetailsDialog } from '../../store/game-details-dialog-store';
 import { formatCategoryLabel } from '../../utils/format-category-label';
 import { formatCompactCount } from '../../utils/format-compact-count';
 import { createButton } from '../button';
@@ -101,6 +102,9 @@ export function createGameCard(game: GameSeed): HTMLElement {
     variant: 'primary',
     size: 'medium',
     className: 'game-card__details',
+    onClick: () => {
+      openGameDetailsDialog();
+    },
   });
 
   footer.append(statsRow, detailsButton);
