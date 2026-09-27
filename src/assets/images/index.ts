@@ -14,6 +14,8 @@ export { default as medalThirdImage } from './third.png';
 export { default as organizedInsideCard } from './games/organized-inside-card.jpg';
 export { default as paliaCard } from './games/palia-card.jpg';
 export { default as shelveThePotionsCard } from './games/shelve-the-potions-card.jpg';
+export { default as tailsideCozyCafeSimCard } from './games/tailside-cozy-cafe-sim-card.jpg';
+export { default as tinyGladeCard } from './games/tiny-glade-card.jpg';
 export { default as tukoniHeroImage } from './tukoni-hero-image.png';
 export { default as vacationCafeSimulatorCard } from './games/vacation-cafe-simulator-card.jpg';
 export { default as winterBurrowCard } from './games/winter-burrow-card.jpg';

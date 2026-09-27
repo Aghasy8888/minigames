@@ -6,6 +6,8 @@ import {
   organizedInsideCard,
   paliaCard,
   shelveThePotionsCard,
+  tailsideCozyCafeSimCard,
+  tinyGladeCard,
   vacationCafeSimulatorCard,
   winterBurrowCard,
 } from '../assets/images';
@@ -49,6 +51,8 @@ const gameCardImagesBySlug: Readonly<Record<string, string>> = {
   heartopia: heartopiaCard,
   palia: paliaCard,
   'cat-mail-co': catMailCoCard,
+  'tiny-glade': tinyGladeCard,
+  'tailside-cozy-cafe-sim': tailsideCozyCafeSimCard,
 };
 
 export function getGameCardImage(slug: string): string {

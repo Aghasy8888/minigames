@@ -140,6 +140,8 @@ $slider-info-min-width: 18rem; // no exact $size-* match
     padding-inline: $size-05;
     overflow: hidden;
     gap: 6px; // no exact $size-* match
+    touch-action: pan-y;
+    user-select: none;
 
     @include media-up('phablet') {
       height: 18rem; // no exact $size-* match
@@ -168,6 +170,30 @@ $slider-info-min-width: 18rem; // no exact $size-* match
   background-color: $color-white;
   box-shadow: $shadow-level-1;
   flex-shrink: 0;
+  cursor: pointer;
+  transition-property: width, min-width, flex-grow, flex-basis;
+  transition-duration: 0.4s;
+  transition-timing-function: ease;
+
+  &--hidden {
+    display: none;
+  }
+
+  &--no-transition {
+    transition: none;
+  }
+
+  &__name {
+    position: absolute;
+    width: 1px; // no exact $size-* match
+    height: 1px; // no exact $size-* match
+    padding: 0;
+    margin: -1px; // no exact $size-* match
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
 
   @include media-up('phablet') {
     height: 17.5rem; // no exact $size-* match
