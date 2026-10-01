@@ -1,11 +1,13 @@
 import { logoImage } from '../../assets/images';
 import { navigate, subscribeNavigation, type AppPage } from '../../store/navigation-store';
 import type { AuthDialogMode } from '../../store/auth-dialog-store';
+import { APP_PAGE } from '../../utils/app-page';
 import { HOME_HREF } from '../../utils/home-href';
 import { hrefForNavLabel, pageForNavLabel } from '../../utils/nav-target';
 import { createButton } from '../button';
 import './mobile-nav.scss';
 
+const { home, library } = APP_PAGE;
 const NAV_ITEMS: readonly string[] = ['Home', 'Library', 'Tournaments', 'Community'];
 const ACTIVE_LINK_CLASS = 'mobile-nav__link--active';
 
@@ -20,7 +22,7 @@ function syncActiveNavLinks(root: ParentNode, page: AppPage): void {
   for (const link of links) {
     const label = link.textContent ?? '';
     const representsCurrent =
-      (label === 'Home' && page === 'home') || (label === 'Library' && page === 'library');
+      (label === 'Home' && page === home) || (label === 'Library' && page === library);
 
     link.classList.toggle(ACTIVE_LINK_CLASS, representsCurrent);
 
@@ -51,7 +53,7 @@ export function createMobileNav(options: CreateMobileNavOptions = {}): HTMLEleme
   logoLink.href = HOME_HREF;
   logoLink.addEventListener('click', (event) => {
     event.preventDefault();
-    navigate('home');
+    navigate(home);
     onNavigate?.();
   });
 

@@ -2,6 +2,7 @@ import { closeIcon, hamburgerButtonIcon } from '../../assets/icons';
 import { logoImage } from '../../assets/images';
 import { navigate, subscribeNavigation, type AppPage } from '../../store/navigation-store';
 import { openAuthDialog, type AuthDialogMode } from '../../store/auth-dialog-store';
+import { APP_PAGE } from '../../utils/app-page';
 import { HOME_HREF } from '../../utils/home-href';
 import { hrefForNavLabel, pageForNavLabel } from '../../utils/nav-target';
 import { lockScroll, unlockScroll } from '../../utils/scroll-lock';
@@ -9,6 +10,7 @@ import { createButton } from '../button';
 import { createMobileNav } from '../mobile-nav';
 import './header.scss';
 
+const { home, library } = APP_PAGE;
 const NAV_ITEMS: readonly string[] = ['Home', 'Library', 'Tournaments', 'Community'];
 const MENU_TRANSITION_MS = 250;
 const ACTIVE_LINK_CLASS = 'header__nav-link--active';
@@ -20,7 +22,7 @@ function syncActiveNavLinks(root: ParentNode, page: AppPage): void {
     // Only Home / Library represent real pages; placeholders never stay active
     const label = link.textContent ?? '';
     const representsCurrent =
-      (label === 'Home' && page === 'home') || (label === 'Library' && page === 'library');
+      (label === 'Home' && page === home) || (label === 'Library' && page === library);
 
     link.classList.toggle(ACTIVE_LINK_CLASS, representsCurrent);
 
@@ -38,7 +40,7 @@ function createLogo(): HTMLAnchorElement {
   logoLink.href = HOME_HREF;
   logoLink.addEventListener('click', (event) => {
     event.preventDefault();
-    navigate('home');
+    navigate(home);
   });
 
   const logoMark = document.createElement('img');

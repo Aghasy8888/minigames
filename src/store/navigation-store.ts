@@ -1,11 +1,20 @@
-export type AppPage = 'home' | 'library';
+import type { AppPage, RoutablePage } from '../utils/app-page';
+import { pathForPage, resolvePageFromPath } from '../utils/route-path';
+
+export type { AppPage } from '../utils/app-page';
 
 type NavigationListener = (page: AppPage) => void;
 
-let currentPage: AppPage = 'home';
+let currentPage: AppPage = resolvePageFromPath(globalThis.location.pathname);
 const listeners = new Set<NavigationListener>();
 
-function notifyListeners(): void {
+function setCurrentPage(page: AppPage): void {
+  if (page === currentPage) {
+    return;
+  }
+
+  currentPage = page;
+
   for (const listener of listeners) {
     listener(currentPage);
   }
@@ -24,11 +33,16 @@ export function subscribeNavigation(listener: NavigationListener): () => void {
   };
 }
 
-export function navigate(page: AppPage): void {
+export function navigate(page: RoutablePage): void {
   if (page === currentPage) {
     return;
   }
 
-  currentPage = page;
-  notifyListeners();
+  globalThis.history.pushState(undefined, '', pathForPage(page));
+  setCurrentPage(page);
+  globalThis.scrollTo({ top: 0 });
+}
+
+export function syncPageFromLocation(): void {
+  setCurrentPage(resolvePageFromPath(globalThis.location.pathname));
 }

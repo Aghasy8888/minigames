@@ -1,0 +1,21 @@
+@use 'sass:map';
+@use './tokens' as *;
+
+$_space-scale: ();
+
+@for $step from 0 through $space-max-step {
+  $_space-scale: map.merge(
+    $_space-scale,
+    (
+      $step: $space-unit * $step,
+    )
+  );
+}
+
+@function space($step) {
+  @if not map.has-key($_space-scale, $step) {
+    @error 'Unknown space step: #{$step}. Use an integer from 0 to #{$space-max-step} (multiples of 8px).';
+  }
+
+  @return map.get($_space-scale, $step);
+}
