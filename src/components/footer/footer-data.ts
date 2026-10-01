@@ -1,5 +1,6 @@
 import { chatIcon, codeIcon, rsIcon, rssFeedIcon, shareIcon } from '../../assets/icons';
-import { HOME_HREF, LIBRARY_HREF } from '../../utils/home-href';
+import { APP_PAGE } from '../../utils/app-page';
+import type { NavItem } from '../../utils/nav-items';
 
 export const FOOTER_BRAND = {
   name: 'MiniGames',
@@ -7,49 +8,42 @@ export const FOOTER_BRAND = {
     'Take a short break and have fun. Hundreds of curated casual mini-games right in your web browser. No download required.',
 } as const;
 
-export interface FooterNavLink {
-  readonly label: string;
-  readonly href: string;
-}
-
 export interface FooterNavColumn {
   readonly title: string;
-  readonly links: readonly FooterNavLink[];
+  readonly links: readonly NavItem[];
 }
 
 export const FOOTER_NAV_COLUMNS: readonly FooterNavColumn[] = [
   {
     title: 'Explore',
     links: [
-      { label: 'Home', href: HOME_HREF },
-      { label: 'Library', href: LIBRARY_HREF },
-      { label: 'Categories', href: HOME_HREF },
-      { label: 'Tournaments', href: HOME_HREF },
+      { label: 'Home', page: APP_PAGE.home },
+      { label: 'Library', page: APP_PAGE.library },
+      { label: 'Categories' },
+      { label: 'Tournaments' },
     ],
   },
   {
     title: 'Company',
     links: [
-      { label: 'About Us', href: HOME_HREF },
-      { label: 'Contact', href: HOME_HREF },
-      { label: 'Privacy Policy', href: HOME_HREF },
-      { label: 'Terms of Service', href: HOME_HREF },
+      { label: 'About Us' },
+      { label: 'Contact' },
+      { label: 'Privacy Policy' },
+      { label: 'Terms of Service' },
     ],
   },
 ] as const;
 
-export interface FooterSocialLink {
-  readonly label: string;
-  readonly href: string;
+export interface FooterSocialLink extends NavItem {
   readonly icon: string;
 }
 
 export const FOOTER_COMMUNITY_TITLE = 'Community' as const;
 
 export const FOOTER_SOCIAL_LINKS: readonly FooterSocialLink[] = [
-  { label: 'Share', href: HOME_HREF, icon: shareIcon },
-  { label: 'Chat', href: HOME_HREF, icon: chatIcon },
-  { label: 'RSS feed', href: HOME_HREF, icon: rssFeedIcon },
+  { label: 'Share', icon: shareIcon },
+  { label: 'Chat', icon: chatIcon },
+  { label: 'RSS feed', icon: rssFeedIcon },
 ] as const;
 
 export const FOOTER_COPYRIGHT = '© 2026 MiniGames. All rights reserved.' as const;

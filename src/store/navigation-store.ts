@@ -1,5 +1,5 @@
 import type { AppPage, RoutablePage } from '../utils/app-page';
-import { pathForPage, resolvePageFromPath } from '../utils/route-path';
+import { hrefForPage, resolvePageFromPath } from '../utils/route-path';
 
 export type { AppPage } from '../utils/app-page';
 
@@ -38,7 +38,7 @@ export function navigate(page: RoutablePage): void {
     return;
   }
 
-  globalThis.history.pushState(undefined, '', pathForPage(page));
+  globalThis.history.pushState(undefined, '', hrefForPage(page));
   setCurrentPage(page);
   globalThis.scrollTo({ top: 0 });
 }

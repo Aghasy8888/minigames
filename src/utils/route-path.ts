@@ -1,13 +1,11 @@
-import { APP_PAGE, type AppPage, type RoutablePage } from './app-page';
-import { HOME_HREF, LIBRARY_HREF, ROUTE_SEGMENT } from './home-href';
+import { APP_PAGE, ROUTES, type AppPage, type RoutablePage } from './app-page';
 
-const { home, library, notFound } = APP_PAGE;
-
-const PAGE_BY_SEGMENT: Readonly<Record<string, RoutablePage>> = {
-  [ROUTE_SEGMENT.root]: home,
-  [ROUTE_SEGMENT.home]: home,
-  [ROUTE_SEGMENT.library]: library,
-};
+const PAGE_BY_SEGMENT = new Map<string, RoutablePage>(
+  (Object.keys(ROUTES) as RoutablePage[]).flatMap((page) => {
+    const { path, aliases = [] } = ROUTES[page];
+    return [path, ...aliases].map((segment) => [segment, page] as const);
+  }),
+);
 
 function trimSlashes(value: string): string {
   return value.replaceAll(/^\/+|\/+$/g, '');
@@ -26,18 +24,18 @@ export function resolvePageFromPath(pathname: string): AppPage {
   const normalizedPath = pathname.endsWith('/') ? pathname : `${pathname}/`;
 
   if (!normalizedPath.startsWith(base)) {
-    return notFound;
+    return APP_PAGE.notFound;
   }
 
   const decoded = safeDecode(trimSlashes(normalizedPath.slice(base.length)));
 
-  if (decoded === undefined || !Object.hasOwn(PAGE_BY_SEGMENT, decoded)) {
-    return notFound;
+  if (decoded === undefined) {
+    return APP_PAGE.notFound;
   }
 
-  return PAGE_BY_SEGMENT[decoded];
+  return PAGE_BY_SEGMENT.get(decoded) ?? APP_PAGE.notFound;
 }
 
-export function pathForPage(page: RoutablePage): string {
-  return page === library ? LIBRARY_HREF : HOME_HREF;
+export function hrefForPage(page: RoutablePage): string {
+  return `${import.meta.env.BASE_URL}${ROUTES[page].path}`;
 }
