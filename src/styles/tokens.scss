@@ -82,6 +82,10 @@ $size-15: 7.5rem;
 $size-375: 1.875rem;
 $size-6875: 6.875rem;
 
+// Space scale — space($step) = $space-unit * $step (see functions.scss)
+$space-unit: 0.5rem; // 8px
+$space-max-step: 80; // up to 40rem / 640px
+
 // Corners
 $corner-extra-small: 4px;
 $corner-small: 8px;

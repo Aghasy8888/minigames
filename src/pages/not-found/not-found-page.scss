@@ -1,0 +1,113 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/functions' as *;
+@use '../../styles/mixins' as *;
+
+.not-found-page {
+  box-sizing: border-box;
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: $layout-max-width;
+  margin-inline: auto;
+  padding: $size-5 $size-2;
+
+  @include media-up('phablet') {
+    padding: $size-8 $size-5;
+  }
+
+  @include media-up('desktop') {
+    padding: $size-12 $size-15;
+  }
+
+  &__card {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $size-2;
+    width: 100%;
+    max-width: space(80);
+    padding: $size-4 $size-3;
+    border: $border-width solid $color-on-primary;
+    border-radius: $corner-extra-large;
+    background-color: $color-white;
+    box-shadow: $shadow-level-2;
+    text-align: center;
+
+    @include media-up('phablet') {
+      gap: $size-3;
+      padding: $size-5;
+    }
+
+    @include media-up('desktop') {
+      padding: $size-6 $size-8;
+    }
+  }
+
+  &__code {
+    margin: 0;
+    padding: $size-1 $size-3;
+    border: $border-width solid $color-on-primary;
+    border-radius: $corner-large;
+    background-color: $color-primary;
+    box-shadow: $shadow-level-1;
+    font-family: $font-family-text;
+    font-size: $font-size-display-medium;
+    font-weight: $font-weight-extra-bold;
+    color: $color-on-primary;
+
+    @include media-up('desktop') {
+      font-size: $font-size-display-large;
+    }
+  }
+
+  &__title {
+    margin: 0;
+    font-family: $font-family-text;
+    font-size: $font-size-display-small;
+    font-weight: $font-weight-bold;
+    color: $color-on-primary;
+
+    @include media-up('phablet') {
+      font-size: $font-size-headline-large;
+    }
+
+    @include media-up('desktop') {
+      font-size: $font-size-display-medium;
+    }
+  }
+
+  &__message {
+    margin: 0;
+    font-family: $font-family-text;
+    font-size: $font-size-body-small;
+    font-weight: $font-weight-medium;
+    color: $color-on-bg;
+
+    @include media-up('phablet') {
+      font-size: $font-size-body-medium;
+    }
+
+    @include media-up('desktop') {
+      font-size: $font-size-body-large;
+    }
+  }
+
+  &__path {
+    margin: 0;
+    max-width: 100%;
+    font-family: $font-family-text;
+    font-size: $font-size-label-large;
+    color: $color-on-bg-low;
+    overflow-wrap: anywhere;
+  }
+
+  &__path-value {
+    padding: $size-05 $size-1;
+    border-radius: $corner-small;
+    background-color: $color-secondary;
+    color: $color-on-primary;
+  }
+}

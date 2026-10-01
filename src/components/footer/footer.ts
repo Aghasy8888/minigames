@@ -1,7 +1,6 @@
 import { logoImage } from '../../assets/images';
-import { navigate } from '../../store/navigation-store';
-import { HOME_HREF } from '../../utils/home-href';
-import { pageForAppHref } from '../../utils/nav-target';
+import { useNavLink } from '../../hooks/use-nav-link';
+import { HOME_LINK } from '../../utils/nav-items';
 import {
   EXTERNAL_LINK_REL,
   EXTERNAL_LINK_TARGET,
@@ -18,21 +17,13 @@ import {
 } from './footer-data';
 import './footer.scss';
 
-function bindSpaNavigation(link: HTMLAnchorElement, href: string): void {
-  link.addEventListener('click', (event) => {
-    event.preventDefault();
-    navigate(pageForAppHref(href));
-  });
-}
-
 function createBrand(): HTMLElement {
   const brand = document.createElement('div');
   brand.className = 'footer__brand';
 
   const logoLink = document.createElement('a');
   logoLink.className = 'footer__logo';
-  logoLink.href = HOME_HREF;
-  bindSpaNavigation(logoLink, HOME_HREF);
+  useNavLink(logoLink, HOME_LINK);
 
   const logoMark = document.createElement('img');
   logoMark.className = 'footer__logo-mark';
@@ -72,9 +63,8 @@ function createNavColumn(column: FooterNavColumn): HTMLElement {
 
     const link = document.createElement('a');
     link.className = 'footer__link';
-    link.href = item.href;
     link.textContent = item.label;
-    bindSpaNavigation(link, item.href);
+    useNavLink(link, item);
 
     listItem.append(link);
     list.append(listItem);
@@ -87,9 +77,8 @@ function createNavColumn(column: FooterNavColumn): HTMLElement {
 function createSocialLink(social: FooterSocialLink): HTMLAnchorElement {
   const link = document.createElement('a');
   link.className = 'footer__social';
-  link.href = social.href;
   link.setAttribute('aria-label', social.label);
-  bindSpaNavigation(link, social.href);
+  useNavLink(link, social);
 
   const icon = document.createElement('img');
   icon.className = 'footer__social-icon';
