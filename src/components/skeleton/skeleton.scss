@@ -1,0 +1,30 @@
+@use '../../styles/tokens' as *;
+
+.skeleton {
+  display: block;
+  overflow: hidden;
+  background-color: $color-outline-variant;
+  background-image: linear-gradient(
+    90deg,
+    $color-outline-variant 0%,
+    $color-surface 40%,
+    $color-outline-variant 80%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.4s ease-in-out infinite;
+
+  @media (prefers-reduced-motion: reduce) {
+    background-image: none;
+    animation: none;
+  }
+}
+
+@keyframes skeleton-shimmer {
+  from {
+    background-position: 100% 0;
+  }
+
+  to {
+    background-position: -100% 0;
+  }
+}

@@ -4,6 +4,7 @@ import { createAuthDialog } from '../components/auth-dialog';
 import { createFooter } from '../components/footer';
 import { createGameDetailsDialog } from '../components/game-details-dialog';
 import { createHeader } from '../components/header';
+import { createSnackbarHost } from '../components/snackbar';
 import { startRouter } from './router';
 
 function bootstrap(): void {
@@ -20,6 +21,7 @@ function bootstrap(): void {
     createFooter(),
     createAuthDialog(),
     createGameDetailsDialog(),
+    createSnackbarHost(),
   );
   startRouter(main);
 }

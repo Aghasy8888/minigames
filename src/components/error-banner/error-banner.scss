@@ -1,0 +1,59 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/mixins' as *;
+
+.error-banner {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: $size-2;
+  box-sizing: border-box;
+  width: 100%;
+  padding: $size-3 $size-2;
+  border: $border-width solid $color-error;
+  border-radius: $corner-large;
+  background-color: $color-white;
+  box-shadow: $shadow-level-1;
+
+  @include media-up('phablet') {
+    flex-direction: row;
+    align-items: center;
+    padding: $size-3;
+  }
+
+  &__icon {
+    display: block;
+    flex-shrink: 0;
+    width: $size-4;
+    height: $size-4;
+  }
+
+  &__body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: $size-05;
+    min-width: 0;
+  }
+
+  &__title {
+    margin: 0;
+    font-family: $font-family-text;
+    font-size: $font-size-headline-small;
+    font-weight: $font-weight-bold;
+    line-height: normal;
+    color: $color-error;
+  }
+
+  &__message {
+    margin: 0;
+    font-family: $font-family-text;
+    font-size: $font-size-body-small;
+    font-weight: $font-weight-medium;
+    line-height: 1.4;
+    color: $color-on-primary;
+  }
+
+  &__retry {
+    flex-shrink: 0;
+  }
+}

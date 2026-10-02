@@ -1,0 +1,138 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/mixins' as *;
+
+.snackbar-host {
+  position: fixed;
+  z-index: 90;
+  bottom: $size-2;
+  left: 50%;
+  display: flex;
+  flex-direction: column;
+  gap: $size-1;
+  box-sizing: border-box;
+  width: calc(100% - #{$size-4});
+  max-width: 22.5rem; // no exact $size-* match
+  transform: translateX(-50%);
+  pointer-events: none;
+
+  @include media-up('desktop') {
+    right: $size-3;
+    bottom: $size-3;
+    left: auto;
+    transform: none;
+  }
+}
+
+.snackbar {
+  display: flex;
+  align-items: flex-start;
+  gap: $size-1;
+  box-sizing: border-box;
+  width: 100%;
+  padding: $size-125 $size-1;
+  border: $border-width solid $color-on-primary;
+  border-radius: $corner-small;
+  background-color: $color-white;
+  box-shadow: $shadow-level-1;
+  pointer-events: auto;
+  animation: snackbar-enter 0.2s ease-out;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+
+  &--success {
+    border-color: $color-price-free;
+  }
+
+  &--error {
+    border-color: $color-error;
+  }
+
+  &--warning {
+    border-color: $color-primary;
+    background-color: $color-surface;
+  }
+
+  &--info {
+    border-color: $color-tertiary;
+    background-color: $color-secondary;
+  }
+
+  &__icon {
+    display: block;
+    flex-shrink: 0;
+    width: $size-3;
+    height: $size-3;
+  }
+
+  &__message {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    font-family: $font-family-text;
+    font-size: $font-size-body-small;
+    font-weight: $font-weight-medium;
+    line-height: 1.4;
+    color: $color-on-primary;
+  }
+
+  &__close {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: $size-3;
+    height: $size-3;
+    padding: 0;
+    border: 0;
+    border-radius: $corner-extra-small;
+    background-color: transparent;
+    cursor: pointer;
+    appearance: none;
+
+    @include hover {
+      background-color: $color-surface;
+    }
+
+    &:focus-visible {
+      background-color: $color-surface;
+    }
+
+    &:active {
+      background-color: $color-surface;
+    }
+  }
+
+  &__close-icon {
+    display: block;
+    width: $size-2;
+    height: $size-2;
+  }
+}
+
+@keyframes snackbar-enter {
+  from {
+    opacity: 0;
+    transform: translateY($size-1);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @keyframes snackbar-enter {
+    from {
+      opacity: 1;
+      transform: none;
+    }
+
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
