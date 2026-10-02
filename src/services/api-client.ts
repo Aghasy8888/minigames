@@ -1,5 +1,7 @@
 export const API_BASE_URL = 'https://faxb76kxra.execute-api.eu-central-1.amazonaws.com';
 
+export const NETWORK_ERROR_STATUS = 0;
+
 export class ApiError extends Error {
   readonly status: number;
 
@@ -91,7 +93,7 @@ export async function request<TData, TMeta = never>(
       throw error;
     }
 
-    throw new ApiError(NETWORK_ERROR_MESSAGE, 0);
+    throw new ApiError(NETWORK_ERROR_MESSAGE, NETWORK_ERROR_STATUS);
   }
 
   const body = await parseJson(response);

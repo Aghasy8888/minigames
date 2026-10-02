@@ -1,5 +1,6 @@
 import { request, type ApiListResponse } from './api-client';
 import type { GameListItem, GamesListMeta, GamesListParameters } from './games-types';
+import type { LeaderboardRequestOptions, LeaderboardResponse } from './leaderboard-api';
 
 export type GamesRequestOptions = {
   signal?: AbortSignal;
@@ -13,6 +14,7 @@ export type GamesApi = {
     options?: GamesRequestOptions,
   ) => Promise<GamesListResponse>;
   fetchFeaturedGames: (options?: GamesRequestOptions) => Promise<GamesListResponse>;
+  fetchLeaderboard: (options?: LeaderboardRequestOptions) => Promise<LeaderboardResponse>;
 };
 
 export function fetchGames(
