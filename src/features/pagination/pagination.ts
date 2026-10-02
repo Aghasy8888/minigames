@@ -1,4 +1,7 @@
 import { disabledPaginationArrowIcon, enabledPaginationArrowIcon } from '../../assets/icons';
+import { useDisconnectCleanup } from '../../hooks/use-disconnect-cleanup';
+import type { LibraryGamesController, LibraryGamesState } from '../../hooks/use-library-games';
+import { getLibraryQuery } from '../../store/library-query-store';
 import { getVisiblePageNumbers } from '../../utils/get-visible-page-numbers';
 import {
   getPageButtonAriaLabel,
@@ -8,13 +11,18 @@ import {
   PAGINATION_NEXT_ARIA_LABEL,
   PAGINATION_PREV_ARIA_LABEL,
   PAGINATION_TABLET_SM_MEDIA_QUERY,
-  TOTAL_PAGES,
 } from './pagination-data';
 import './pagination.scss';
 
-export interface CreatePaginationOptions {
-  totalPages?: number;
-}
+export type CreatePaginationOptions = {
+  controller: LibraryGamesController;
+  onPageChange: (page: number) => void;
+};
+
+type PaginationView = {
+  currentPage: number;
+  totalPages: number;
+};
 
 function createArrowIcon(source: string, className: string): HTMLImageElement {
   const img = document.createElement('img');
@@ -25,9 +33,16 @@ function createArrowIcon(source: string, className: string): HTMLImageElement {
   return img;
 }
 
-export function createPagination(options: CreatePaginationOptions = {}): HTMLElement {
-  const { totalPages = TOTAL_PAGES } = options;
-  let currentPage = 1;
+function displayedPageCount(currentPage: number, totalPages: number): number {
+  return Math.max(totalPages, currentPage, 1);
+}
+
+export function createPagination({
+  controller,
+  onPageChange,
+}: CreatePaginationOptions): HTMLElement {
+  let lastKnownTotalPages = 1;
+  let view: PaginationView = { currentPage: 1, totalPages: 1 };
 
   const root = document.createElement('div');
   root.className = 'pagination';
@@ -74,8 +89,8 @@ export function createPagination(options: CreatePaginationOptions = {}): HTMLEle
     icon.src = disabled ? disabledPaginationArrowIcon : enabledPaginationArrowIcon;
   }
 
-  function renderPageButtons(): void {
-    const visiblePages = getVisiblePageNumbers(currentPage, totalPages, getMaxVisible());
+  function renderPageButtons(currentPage: number, displayedTotal: number): void {
+    const visiblePages = getVisiblePageNumbers(currentPage, displayedTotal, getMaxVisible());
     pageList.replaceChildren(
       ...visiblePages.map((page) => {
         const item = document.createElement('li');
@@ -102,35 +117,61 @@ export function createPagination(options: CreatePaginationOptions = {}): HTMLEle
     );
   }
 
-  function syncControls(): void {
-    syncArrowButton(previousButton, previousIcon, currentPage <= 1);
-    syncArrowButton(nextButton, nextIcon, currentPage >= totalPages);
-    renderPageButtons();
+  function syncControls(nextView: PaginationView): void {
+    view = nextView;
+    const displayedTotal = displayedPageCount(nextView.currentPage, nextView.totalPages);
+    syncArrowButton(previousButton, previousIcon, nextView.currentPage <= 1);
+    syncArrowButton(nextButton, nextIcon, nextView.currentPage >= displayedTotal);
+    renderPageButtons(nextView.currentPage, displayedTotal);
+  }
+
+  function resolveView(state: LibraryGamesState): PaginationView {
+    const requestedPage = getLibraryQuery().page;
+
+    if (state.status === 'success' || state.status === 'empty') {
+      const totalPages = state.meta?.totalPages ?? 0;
+      const currentPage = totalPages === 0 ? 1 : (state.meta?.page ?? requestedPage);
+      lastKnownTotalPages = totalPages;
+      return { currentPage, totalPages };
+    }
+
+    return { currentPage: requestedPage, totalPages: lastKnownTotalPages };
   }
 
   function goToPage(page: number): void {
-    const nextPage = Math.min(Math.max(page, 1), totalPages);
-    if (nextPage === currentPage) {
+    const displayedTotal = displayedPageCount(view.currentPage, view.totalPages);
+    const nextPage = Math.min(Math.max(page, 1), displayedTotal);
+    if (nextPage === view.currentPage) {
       return;
     }
-    currentPage = nextPage;
-    syncControls();
+    onPageChange(nextPage);
+  }
+
+  function render(state: LibraryGamesState): void {
+    syncControls(resolveView(state));
   }
 
   previousButton.addEventListener('click', () => {
-    goToPage(currentPage - 1);
+    goToPage(view.currentPage - 1);
   });
 
   nextButton.addEventListener('click', () => {
-    goToPage(currentPage + 1);
+    goToPage(view.currentPage + 1);
   });
 
   const onViewportChange = (): void => {
-    syncControls();
+    syncControls(view);
   };
 
   tabletSmMediaQuery.addEventListener('change', onViewportChange);
 
-  syncControls();
+  const unsubscribe = controller.subscribe(render);
+  render(controller.getState());
+
+  useDisconnectCleanup(root, () => {
+    unsubscribe();
+    tabletSmMediaQuery.removeEventListener('change', onViewportChange);
+  });
+
   return root;
 }

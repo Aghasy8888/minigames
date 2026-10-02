@@ -16,6 +16,7 @@ const PAGE_RENDERERS: Readonly<Record<AppPage, (outlet: HTMLElement) => void>> =
 };
 
 export function startRouter(outlet: HTMLElement): void {
+  syncPageFromLocation();
   globalThis.addEventListener('popstate', syncPageFromLocation);
   subscribeNavigation((page) => {
     PAGE_RENDERERS[page](outlet);

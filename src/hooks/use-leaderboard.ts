@@ -9,7 +9,7 @@ export function useLeaderboard(): LeaderboardController {
   return useLoadState<LeaderboardEntry>({
     async load(signal) {
       const { data } = await gamesApi.fetchLeaderboard({ signal });
-      return data;
+      return { items: data };
     },
     fallbackErrorMessage: 'Top players are unavailable right now. Please try again.',
     retrySuccessMessage: 'Top players loaded',

@@ -1,6 +1,3 @@
-/** Placeholder total until Library cards own real pagination. */
-export const TOTAL_PAGES = 8;
-
 /** Keep in sync with $breakpoints 'tablet-sm' in tokens.scss (735px). */
 export const PAGINATION_TABLET_SM_MEDIA_QUERY = '(min-width: 735px)' as const;
 
