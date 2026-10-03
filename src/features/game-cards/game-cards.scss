@@ -16,6 +16,10 @@
     padding: 0 $size-15;
   }
 
+  &__content {
+    width: 100%;
+  }
+
   &__list {
     box-sizing: border-box;
     display: flex;

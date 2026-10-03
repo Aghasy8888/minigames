@@ -1,5 +1,6 @@
 import type { AppPage, RoutablePage } from '../utils/app-page';
 import { hrefForPage, resolvePageFromPath } from '../utils/route-path';
+import { syncLibraryQueryFromLocation } from './library-query-store';
 
 export type { AppPage } from '../utils/app-page';
 
@@ -39,10 +40,12 @@ export function navigate(page: RoutablePage): void {
   }
 
   globalThis.history.pushState(undefined, '', hrefForPage(page));
+  syncLibraryQueryFromLocation();
   setCurrentPage(page);
   globalThis.scrollTo({ top: 0 });
 }
 
 export function syncPageFromLocation(): void {
+  syncLibraryQueryFromLocation();
   setCurrentPage(resolvePageFromPath(globalThis.location.pathname));
 }

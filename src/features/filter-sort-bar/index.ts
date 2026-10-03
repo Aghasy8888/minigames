@@ -1,1 +1,1 @@
-export { createFilterSortBar } from './filter-sort-bar';
+export { createFilterSortBar, type CreateFilterSortBarOptions } from './filter-sort-bar';

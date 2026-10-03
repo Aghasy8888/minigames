@@ -1,37 +1,43 @@
 import { isAbortError, toUserFacingMessage } from '../services/games-api-provider';
 import { showSnackbar } from '../store/snackbar-store';
 
-export type LoadState<T> =
+export type LoadResult<T, TMeta = undefined> = {
+  items: readonly T[];
+  meta?: TMeta;
+};
+
+export type LoadState<T, TMeta = undefined> =
   | { status: 'loading' }
-  | { status: 'success'; data: T[] }
-  | { status: 'empty' }
+  | { status: 'success'; data: T[]; meta?: TMeta }
+  | { status: 'empty'; meta?: TMeta }
   | { status: 'error'; message: string; retry: () => void };
 
-export type LoadStateController<T> = {
-  getState: () => LoadState<T>;
-  subscribe: (listener: (state: LoadState<T>) => void) => () => void;
+export type LoadStateController<T, TMeta = undefined> = {
+  getState: () => LoadState<T, TMeta>;
+  subscribe: (listener: (state: LoadState<T, TMeta>) => void) => () => void;
+  reload: () => void;
   destroy: () => void;
 };
 
-export type UseLoadStateOptions<T> = {
-  load: (signal: AbortSignal) => Promise<readonly T[]>;
+export type UseLoadStateOptions<T, TMeta = undefined> = {
+  load: (signal: AbortSignal) => Promise<LoadResult<T, TMeta>>;
   fallbackErrorMessage: string;
   retrySuccessMessage: string;
 };
 
 /** Snackbar feedback is reserved for Retry outcomes; an empty result never triggers one. */
-export function useLoadState<T>({
+export function useLoadState<T, TMeta = undefined>({
   load,
   fallbackErrorMessage,
   retrySuccessMessage,
-}: UseLoadStateOptions<T>): LoadStateController<T> {
-  let state: LoadState<T> = { status: 'loading' };
+}: UseLoadStateOptions<T, TMeta>): LoadStateController<T, TMeta> {
+  let state: LoadState<T, TMeta> = { status: 'loading' };
   let requestId = 0;
   let controller: AbortController | undefined;
   let isDestroyed = false;
-  const listeners = new Set<(state: LoadState<T>) => void>();
+  const listeners = new Set<(state: LoadState<T, TMeta>) => void>();
 
-  function setState(next: LoadState<T>): void {
+  function setState(next: LoadState<T, TMeta>): void {
     if (isDestroyed) {
       return;
     }
@@ -47,6 +53,10 @@ export function useLoadState<T>({
     void run({ fromRetry: true });
   }
 
+  function reload(): void {
+    void run({ fromRetry: false });
+  }
+
   async function run({ fromRetry }: { fromRetry: boolean }): Promise<void> {
     controller?.abort();
     controller = new AbortController();
@@ -56,18 +66,18 @@ export function useLoadState<T>({
     setState({ status: 'loading' });
 
     try {
-      const data = await load(signal);
+      const { items, meta } = await load(signal);
 
       if (isDestroyed || currentId !== requestId) {
         return;
       }
 
-      if (data.length === 0) {
-        setState({ status: 'empty' });
+      if (items.length === 0) {
+        setState({ status: 'empty', meta });
         return;
       }
 
-      setState({ status: 'success', data: [...data] });
+      setState({ status: 'success', data: [...items], meta });
 
       if (fromRetry) {
         showSnackbar({ variant: 'success', message: retrySuccessMessage });
@@ -98,6 +108,7 @@ export function useLoadState<T>({
         listeners.delete(listener);
       };
     },
+    reload,
     destroy() {
       isDestroyed = true;
       controller?.abort();

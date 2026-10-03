@@ -1,9 +1,11 @@
 import { favoriteIcon, starIcon } from '../../assets/icons';
-import { getGameCardImage, type GameSeed } from '../../mocks/games';
+import type { GameListItem } from '../../services/games-api-provider';
 import { openGameDetailsDialog } from '../../store/game-details-dialog-store';
 import { formatCategoryLabel } from '../../utils/format-category-label';
 import { formatCompactCount } from '../../utils/format-compact-count';
+import { resolveGameImage } from '../../utils/resolve-game-image';
 import { createButton } from '../button';
+import { createSkeleton } from '../skeleton';
 import './game-card.scss';
 
 const DETAILS_LABEL = 'Details';
@@ -41,22 +43,35 @@ function createPriceElement(
   return priceElement;
 }
 
-export function createGameCard(game: GameSeed): HTMLElement {
+function createMedia(cardImage: string): HTMLElement {
+  const media = document.createElement('div');
+  media.className = 'game-card__media';
+
+  const imageUrl = resolveGameImage(cardImage);
+
+  if (!imageUrl) {
+    const placeholder = document.createElement('div');
+    placeholder.className = 'game-card__placeholder';
+    placeholder.setAttribute('aria-hidden', 'true');
+    media.append(placeholder);
+    return media;
+  }
+
+  const image = document.createElement('img');
+  image.className = 'game-card__image';
+  image.src = imageUrl;
+  image.alt = '';
+  image.decoding = 'async';
+  media.append(image);
+  return media;
+}
+
+export function createGameCard(game: GameListItem): HTMLElement {
   const isFree = game.price.toLowerCase() === 'free';
 
   const card = document.createElement('article');
   card.className = 'game-card';
   card.setAttribute('aria-label', game.name);
-
-  const media = document.createElement('div');
-  media.className = 'game-card__media';
-
-  const image = document.createElement('img');
-  image.className = 'game-card__image';
-  image.src = getGameCardImage(game.slug);
-  image.alt = '';
-  image.decoding = 'async';
-  media.append(image);
 
   const content = document.createElement('div');
   content.className = 'game-card__content';
@@ -109,7 +124,28 @@ export function createGameCard(game: GameSeed): HTMLElement {
 
   footer.append(statsRow, detailsButton);
   content.append(header, description, footer);
-  card.append(media, content);
+  card.append(createMedia(game.cardImage), content);
 
+  return card;
+}
+
+export function createGameCardSkeleton(): HTMLElement {
+  const card = document.createElement('article');
+  card.className = 'game-card game-card--skeleton';
+  card.setAttribute('aria-hidden', 'true');
+
+  const media = document.createElement('div');
+  media.className = 'game-card__media';
+  media.append(createSkeleton({ className: 'game-card__skeleton game-card__skeleton--image' }));
+
+  const content = document.createElement('div');
+  content.className = 'game-card__content';
+  content.append(
+    createSkeleton({ className: 'game-card__skeleton game-card__skeleton--title' }),
+    createSkeleton({ className: 'game-card__skeleton game-card__skeleton--description' }),
+    createSkeleton({ className: 'game-card__skeleton game-card__skeleton--footer' }),
+  );
+
+  card.append(media, content);
   return card;
 }

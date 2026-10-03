@@ -11,7 +11,7 @@ export function useFeaturedGames(): FeaturedGamesController {
   return useLoadState<GameListItem>({
     async load(signal) {
       const { data } = await gamesApi.fetchFeaturedGames({ signal });
-      return data;
+      return { items: data };
     },
     fallbackErrorMessage: 'New games are unavailable right now. Please try again.',
     retrySuccessMessage: 'New games loaded',

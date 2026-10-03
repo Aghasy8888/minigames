@@ -1,4 +1,5 @@
 import { request, type ApiListResponse } from './api-client';
+import type { CategoriesRequestOptions, CategoriesResponse } from './categories-api';
 import type { GameListItem, GamesListMeta, GamesListParameters } from './games-types';
 import type { LeaderboardRequestOptions, LeaderboardResponse } from './leaderboard-api';
 
@@ -15,6 +16,7 @@ export type GamesApi = {
   ) => Promise<GamesListResponse>;
   fetchFeaturedGames: (options?: GamesRequestOptions) => Promise<GamesListResponse>;
   fetchLeaderboard: (options?: LeaderboardRequestOptions) => Promise<LeaderboardResponse>;
+  fetchCategories: (options?: CategoriesRequestOptions) => Promise<CategoriesResponse>;
 };
 
 export function fetchGames(
