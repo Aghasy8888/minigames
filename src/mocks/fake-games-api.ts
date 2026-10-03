@@ -1,8 +1,11 @@
 import { ApiError } from '../services/api-client';
+import type { CategoriesResponse } from '../services/categories-api';
+import type { CategoriesMeta } from '../services/categories-types';
 import type { GamesApi, GamesListResponse } from '../services/games-api';
 import type { GamesListMeta, GamesListParameters } from '../services/games-types';
 import type { LeaderboardResponse } from '../services/leaderboard-api';
 import type { LeaderboardMeta } from '../services/leaderboard-types';
+import categoriesFixture from './categories.json';
 import featuredGamesFixture from './featured-games.json';
 import leaderboardFixture from './leaderboard.json';
 import libraryGamesFixture from './library-games.json';
@@ -87,6 +90,21 @@ const LEADERBOARD_FAKE: EndpointFake<LeaderboardResponse> = {
   },
 };
 
+const CATEGORIES_EMPTY_META: CategoriesMeta = {
+  totalItems: 0,
+  description: 'Game categories for Library filter chips',
+};
+
+const CATEGORIES_FAKE: EndpointFake<CategoriesResponse> = {
+  success: categoriesFixture as CategoriesResponse,
+  empty: { data: [], meta: CATEGORIES_EMPTY_META },
+  errors: {
+    '401': 'Authentication required',
+    '404': 'Categories not found',
+    '429': RATE_LIMIT_MESSAGE,
+  },
+};
+
 function createAbortError(): DOMException {
   return new DOMException('Aborted', 'AbortError');
 }
@@ -141,6 +159,9 @@ export function createFakeGamesApi(scenario: FakeGamesScenario): GamesApi {
     },
     fetchLeaderboard(options = {}) {
       return respond(scenario, LEADERBOARD_FAKE, options.signal);
+    },
+    fetchCategories(options = {}) {
+      return respond(scenario, CATEGORIES_FAKE, options.signal);
     },
   };
 }

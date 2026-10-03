@@ -35,16 +35,27 @@
       font-size: $font-size-label-large;
     }
 
-    &:hover {
+    @include hover {
       background-color: $color-surface;
     }
 
     &--active {
       background-color: $color-primary;
 
-      &:hover {
+      @include hover {
         background-color: $color-primary;
       }
+    }
+  }
+
+  &__skeleton {
+    flex-shrink: 0;
+    width: $size-11;
+    height: $size-375;
+    border-radius: $corner-large;
+
+    @include media-up('tablet-sm') {
+      border-radius: $corner-extra-large;
     }
   }
 }

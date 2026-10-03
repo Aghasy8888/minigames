@@ -8,3 +8,5 @@ export const GAME_CARDS_RETRY_LABEL = 'Retry';
 
 export const GAME_CARDS_EMPTY_TITLE = 'No games available';
 export const GAME_CARDS_EMPTY_MESSAGE = 'No games to show right now.';
+export const GAME_CARDS_EMPTY_FILTERED_MESSAGE = 'No games match the selected category.';
+export const GAME_CARDS_RESET_FILTERS_LABEL = 'Reset filters';

@@ -40,12 +40,12 @@ export function navigate(page: RoutablePage): void {
   }
 
   globalThis.history.pushState(undefined, '', hrefForPage(page));
-  setCurrentPage(page);
   syncLibraryQueryFromLocation();
+  setCurrentPage(page);
   globalThis.scrollTo({ top: 0 });
 }
 
 export function syncPageFromLocation(): void {
-  setCurrentPage(resolvePageFromPath(globalThis.location.pathname));
   syncLibraryQueryFromLocation();
+  setCurrentPage(resolvePageFromPath(globalThis.location.pathname));
 }

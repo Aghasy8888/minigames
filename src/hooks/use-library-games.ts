@@ -1,7 +1,11 @@
 import { LIBRARY_PAGE_SIZE } from '../features/game-cards/game-cards-data';
 import { gamesApi, type GameListItem, type GamesListMeta } from '../services/games-api-provider';
+import {
+  getLibraryQuery,
+  getResolvedCategory,
+  subscribeLibraryQuery,
+} from '../store/library-query-store';
 import { getCurrentPage } from '../store/navigation-store';
-import { getLibraryQuery, subscribeLibraryQuery } from '../store/library-query-store';
 import { APP_PAGE } from '../utils/app-page';
 import { useLoadState, type LoadState, type LoadStateController } from './use-load-state';
 
@@ -12,9 +16,9 @@ export type LibraryGamesController = LoadStateController<GameListItem, GamesList
 export function useLibraryGames(): LibraryGamesController {
   const controller = useLoadState<GameListItem, GamesListMeta>({
     async load(signal) {
-      const { page } = getLibraryQuery();
+      const { page, sort } = getLibraryQuery();
       const { data, meta } = await gamesApi.fetchGames(
-        { page, limit: LIBRARY_PAGE_SIZE },
+        { page, limit: LIBRARY_PAGE_SIZE, category: getResolvedCategory(), sort },
         { signal },
       );
       return { items: data, meta };

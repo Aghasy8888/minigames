@@ -4,16 +4,23 @@ import { createGameCard, createGameCardSkeleton } from '../../components/game-ca
 import { useDisconnectCleanup } from '../../hooks/use-disconnect-cleanup';
 import type { LibraryGamesController, LibraryGamesState } from '../../hooks/use-library-games';
 import type { GameListItem } from '../../services/games-api-provider';
+import { getLibraryQuery, resetLibraryFilters } from '../../store/library-query-store';
 import {
   GAME_CARDS_ARIA_LABEL,
+  GAME_CARDS_EMPTY_FILTERED_MESSAGE,
   GAME_CARDS_EMPTY_MESSAGE,
   GAME_CARDS_EMPTY_TITLE,
   GAME_CARDS_ERROR_FALLBACK_MESSAGE,
   GAME_CARDS_ERROR_TITLE,
+  GAME_CARDS_RESET_FILTERS_LABEL,
   GAME_CARDS_RETRY_LABEL,
   LIBRARY_PAGE_SIZE,
 } from './game-cards-data';
 import './game-cards.scss';
+
+function hasActiveFilters(): boolean {
+  return getLibraryQuery().category !== undefined;
+}
 
 function createCardList(cards: readonly HTMLElement[]): HTMLUListElement {
   const list = document.createElement('ul');
@@ -46,10 +53,13 @@ function createStatusView(state: LibraryGamesState): HTMLElement {
       return createGamesList(state.data);
     }
     case 'empty': {
-      return createEmptyState({
-        title: GAME_CARDS_EMPTY_TITLE,
-        message: GAME_CARDS_EMPTY_MESSAGE,
-      });
+      return hasActiveFilters()
+        ? createEmptyState({
+            title: GAME_CARDS_EMPTY_TITLE,
+            message: GAME_CARDS_EMPTY_FILTERED_MESSAGE,
+            action: { label: GAME_CARDS_RESET_FILTERS_LABEL, onClick: resetLibraryFilters },
+          })
+        : createEmptyState({ title: GAME_CARDS_EMPTY_TITLE, message: GAME_CARDS_EMPTY_MESSAGE });
     }
     case 'error': {
       return createErrorBanner({
