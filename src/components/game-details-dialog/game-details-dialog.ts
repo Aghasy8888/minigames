@@ -6,6 +6,7 @@ import {
   starIcon,
 } from '../../assets/icons';
 import { tukoniHeroImage } from '../../assets/images';
+import { useBackdropDismiss } from '../../hooks/use-backdrop-dismiss';
 import {
   closeGameDetailsDialog,
   subscribeGameDetailsDialog,
@@ -248,11 +249,7 @@ export function createGameDetailsDialog(): HTMLDialogElement {
     requestClose();
   });
 
-  dialog.addEventListener('click', (event) => {
-    if (event.target === dialog) {
-      requestClose();
-    }
-  });
+  useBackdropDismiss(dialog, requestClose);
 
   dialog.addEventListener('close', () => {
     dialog.classList.remove('game-details-dialog--open', 'game-details-dialog--closing');

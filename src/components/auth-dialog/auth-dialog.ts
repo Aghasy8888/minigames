@@ -1,4 +1,5 @@
 import { googleIcon, lockIcon, mailIcon, personIcon } from '../../assets/icons';
+import { useBackdropDismiss } from '../../hooks/use-backdrop-dismiss';
 import {
   closeAuthDialog,
   subscribeAuthDialog,
@@ -369,11 +370,7 @@ export function createAuthDialog(): HTMLDialogElement {
     requestClose();
   });
 
-  dialog.addEventListener('click', (event) => {
-    if (event.target === dialog) {
-      requestClose();
-    }
-  });
+  useBackdropDismiss(dialog, requestClose);
 
   dialog.addEventListener('close', () => {
     dialog.classList.remove('auth-dialog--open', 'auth-dialog--closing');
