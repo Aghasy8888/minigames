@@ -1,5 +1,6 @@
 import type { AppPage, RoutablePage } from '../utils/app-page';
 import { hrefForPage, resolvePageFromPath } from '../utils/route-path';
+import { syncGameDetailsFromLocation } from './game-details-dialog-store';
 import { syncLibraryQueryFromLocation } from './library-query-store';
 
 export type { AppPage } from '../utils/app-page';
@@ -41,6 +42,7 @@ export function navigate(page: RoutablePage): void {
 
   globalThis.history.pushState(undefined, '', hrefForPage(page));
   syncLibraryQueryFromLocation();
+  syncGameDetailsFromLocation();
   setCurrentPage(page);
   globalThis.scrollTo({ top: 0 });
 }
@@ -48,4 +50,5 @@ export function navigate(page: RoutablePage): void {
 export function syncPageFromLocation(): void {
   syncLibraryQueryFromLocation();
   setCurrentPage(resolvePageFromPath(globalThis.location.pathname));
+  syncGameDetailsFromLocation();
 }

@@ -57,7 +57,7 @@ function writeUrl(query: LibraryQuery, mode: 'push' | 'replace'): void {
   if (mode === 'push') {
     globalThis.history.pushState(undefined, '', href);
   } else {
-    globalThis.history.replaceState(undefined, '', href);
+    globalThis.history.replaceState(globalThis.history.state, '', href);
   }
 }
 

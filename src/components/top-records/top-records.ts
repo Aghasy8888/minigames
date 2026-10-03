@@ -1,9 +1,15 @@
 import { cupImage } from '../../assets/images';
-import type { GameDetailsTopRecord } from '../../mocks/game-details';
-import { MOCK_REFERENCE_DATE } from '../../mocks/mock-reference-date';
+import type { GameDetailsTopRecord } from '../../services/games-api-provider';
 import { formatRelativeTime } from '../../utils/format-relative-time';
 import { formatScore } from '../../utils/format-score';
-import { MEDAL_IMAGES, POINTS_SUFFIX, TOP_RECORDS_TITLE } from './top-records-data';
+import { createEmptyState } from '../empty-state';
+import {
+  MEDAL_IMAGES,
+  POINTS_SUFFIX,
+  TOP_RECORDS_EMPTY_MESSAGE,
+  TOP_RECORDS_EMPTY_TITLE,
+  TOP_RECORDS_TITLE,
+} from './top-records-data';
 import './top-records.scss';
 
 const TITLE_ID = 'top-records-title';
@@ -44,7 +50,7 @@ function createRecordRow(record: GameDetailsTopRecord): HTMLLIElement {
   const time = document.createElement('time');
   time.className = 'top-records__time';
   time.dateTime = record.achievedAt;
-  time.textContent = formatRelativeTime(record.achievedAt, MOCK_REFERENCE_DATE);
+  time.textContent = formatRelativeTime(record.achievedAt);
 
   result.append(score, time);
   row.append(player, result);
@@ -63,6 +69,14 @@ export function createTopRecords(records: GameDetailsTopRecord[]): HTMLElement {
   const titleText = document.createElement('span');
   titleText.textContent = TOP_RECORDS_TITLE;
   title.append(createDecorativeImage(cupImage, 'top-records__title-icon'), titleText);
+
+  if (records.length === 0) {
+    section.append(
+      title,
+      createEmptyState({ title: TOP_RECORDS_EMPTY_TITLE, message: TOP_RECORDS_EMPTY_MESSAGE }),
+    );
+    return section;
+  }
 
   const list = document.createElement('ol');
   list.className = 'top-records__list';

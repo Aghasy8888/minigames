@@ -145,8 +145,9 @@ export function createSlider(): HTMLElement {
         applySliderCardRoles(cards, index, animate);
       },
       onTap(target) {
-        if (target.closest('.slider-card')) {
-          openGameDetailsDialog();
+        const slug = target.closest<HTMLElement>('.slider-card')?.dataset.slug;
+        if (slug) {
+          openGameDetailsDialog(slug);
         }
       },
     });
