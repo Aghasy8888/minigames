@@ -2,12 +2,18 @@ import { closeIcon, hamburgerButtonIcon } from '../../assets/icons';
 import { logoImage } from '../../assets/images';
 import { useNavLink } from '../../hooks/use-nav-link';
 import { subscribeNavigation } from '../../store/navigation-store';
-import { openAuthDialog, type AuthDialogMode } from '../../store/auth-dialog-store';
+import {
+  AUTH_DIALOG_MODE,
+  openAuthDialog,
+  type AuthDialogMode,
+} from '../../store/auth-dialog-store';
 import { HOME_LINK, MAIN_NAV_ITEMS, syncActiveNavLinks } from '../../utils/nav-items';
 import { lockScroll, unlockScroll } from '../../utils/scroll-lock';
 import { createButton } from '../button';
 import { createMobileNav } from '../mobile-nav';
 import './header.scss';
+
+const { login, register } = AUTH_DIALOG_MODE;
 
 const MENU_TRANSITION_MS = 250;
 const ACTIVE_LINK_CLASS = 'header__nav-link--active';
@@ -103,7 +109,7 @@ export function createHeader(): HTMLElement {
     variant: 'secondary',
     size: 'medium',
     onClick: () => {
-      openAuthDialog('login');
+      openAuthDialog(login);
     },
   });
   logInButton.classList.add('header__log-in');
@@ -113,7 +119,7 @@ export function createHeader(): HTMLElement {
     variant: 'primary',
     size: 'medium',
     onClick: () => {
-      openAuthDialog('register');
+      openAuthDialog(register);
     },
   });
   signUpButton.classList.add('header__sign-up');

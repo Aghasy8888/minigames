@@ -1,10 +1,12 @@
 import { logoImage } from '../../assets/images';
 import { useNavLink } from '../../hooks/use-nav-link';
 import { subscribeNavigation } from '../../store/navigation-store';
-import type { AuthDialogMode } from '../../store/auth-dialog-store';
+import { AUTH_DIALOG_MODE, type AuthDialogMode } from '../../store/auth-dialog-store';
 import { HOME_LINK, MAIN_NAV_ITEMS, syncActiveNavLinks } from '../../utils/nav-items';
 import { createButton } from '../button';
 import './mobile-nav.scss';
+
+const { login, register } = AUTH_DIALOG_MODE;
 
 const ACTIVE_LINK_CLASS = 'mobile-nav__link--active';
 
@@ -76,7 +78,7 @@ export function createMobileNav(options: CreateMobileNavOptions = {}): HTMLEleme
     size: 'medium',
     className: 'button--ghost-on-dark button--menu-auth',
     onClick: () => {
-      onAuthRequest?.('login');
+      onAuthRequest?.(login);
     },
   });
 
@@ -86,7 +88,7 @@ export function createMobileNav(options: CreateMobileNavOptions = {}): HTMLEleme
     size: 'medium',
     className: 'button--menu-auth',
     onClick: () => {
-      onAuthRequest?.('register');
+      onAuthRequest?.(register);
     },
   });
 
