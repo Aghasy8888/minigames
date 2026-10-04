@@ -139,6 +139,12 @@ $slider-info-min-width: 17.75rem; // no exact $size-* match
     pointer-events: none;
   }
 
+  &__image-skeleton {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
   &__gradient {
     position: absolute;
     inset-inline: 0;

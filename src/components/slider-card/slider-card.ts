@@ -1,4 +1,5 @@
 import { favoriteIcon, starIcon } from '../../assets/icons';
+import { useImageReady } from '../../hooks/use-image-ready';
 import type { GameListItem } from '../../services/games-api-provider';
 import {
   isWrapRoleTransition,
@@ -8,7 +9,7 @@ import {
 } from '../../utils/circular-index';
 import { formatCompactCount } from '../../utils/format-compact-count';
 import { resolveGameImage } from '../../utils/resolve-game-image';
-import { createSkeleton } from '../skeleton';
+import { createSkeleton, fadeOutSkeleton } from '../skeleton';
 import { SLIDER_CARD_ROLES } from './slider-card-data';
 import './slider-card.scss';
 
@@ -37,14 +38,18 @@ function createStat(iconSource: string, value: string): HTMLElement {
   return stat;
 }
 
-function createMediaFill(cardImage: string): HTMLElement {
+function createPlaceholder(): HTMLElement {
+  const placeholder = document.createElement('div');
+  placeholder.className = 'slider-card__placeholder';
+  placeholder.setAttribute('aria-hidden', 'true');
+  return placeholder;
+}
+
+function createMediaFill(cardImage: string): HTMLElement[] {
   const imageUrl = resolveGameImage(cardImage);
 
   if (!imageUrl) {
-    const placeholder = document.createElement('div');
-    placeholder.className = 'slider-card__placeholder';
-    placeholder.setAttribute('aria-hidden', 'true');
-    return placeholder;
+    return [createPlaceholder()];
   }
 
   const image = document.createElement('img');
@@ -52,7 +57,20 @@ function createMediaFill(cardImage: string): HTMLElement {
   image.src = imageUrl;
   image.alt = '';
   image.decoding = 'async';
-  return image;
+
+  const skeleton = createSkeleton({ className: 'slider-card__image-skeleton' });
+
+  useImageReady(image, {
+    onReady() {
+      fadeOutSkeleton(skeleton);
+    },
+    onError() {
+      skeleton.remove();
+      image.replaceWith(createPlaceholder());
+    },
+  });
+
+  return [image, skeleton];
 }
 
 export function createSliderCard(
@@ -91,7 +109,7 @@ export function createSliderCard(
   );
 
   info.append(title, meta);
-  media.append(createMediaFill(game.cardImage), gradient, info);
+  media.append(...createMediaFill(game.cardImage), gradient, info);
   card.append(name, media);
 
   card.addEventListener('keydown', (event) => {
