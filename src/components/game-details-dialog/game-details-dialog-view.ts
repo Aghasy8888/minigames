@@ -1,11 +1,11 @@
 import { favoriteIcon, starIcon } from '../../assets/icons';
+import type { GameCommentsController } from '../../hooks/use-game-comments';
 import type { GameDetails } from '../../services/games-api-provider';
 import { formatCompactCount } from '../../utils/format-compact-count';
 import { createButton } from '../button';
 import { createComments } from '../comments';
 import { createTopRecords } from '../top-records';
 import {
-  GAME_COMMENTS,
   GAME_DETAILS_TITLE_ID,
   PLAY_NOW_LABEL,
   SPEC_KEYS,
@@ -49,7 +49,10 @@ function createActions(game: GameDetails): HTMLElement {
 }
 
 /** Body children for a loaded game; all API text goes through `textContent`. */
-export function createGameDetailsBody(game: GameDetails): HTMLElement[] {
+export function createGameDetailsBody(
+  game: GameDetails,
+  comments: GameCommentsController,
+): HTMLElement[] {
   const description = document.createElement('p');
   description.className = 'game-details-dialog__description';
   description.textContent = game.fullDescription;
@@ -58,17 +61,12 @@ export function createGameDetailsBody(game: GameDetails): HTMLElement[] {
   widgets.className = 'game-details-dialog__widgets';
   widgets.append(...SPEC_KEYS.map((key) => createSpecWidget(SPEC_LABELS[key], game.specs[key])));
 
-  const comments = createComments({
-    comments: GAME_COMMENTS.data,
-    totalCount: GAME_COMMENTS.meta.totalComments,
-  });
-
   return [
     createHeader(game),
     description,
     widgets,
     createActions(game),
     createTopRecords(game.topRecords),
-    comments.element,
+    createComments({ controller: comments }),
   ];
 }

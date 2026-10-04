@@ -9,6 +9,7 @@ import {
 import { useCarousel, type Carousel } from '../../hooks/use-carousel';
 import { useDisconnectCleanup } from '../../hooks/use-disconnect-cleanup';
 import { useFeaturedGames, type FeaturedGamesState } from '../../hooks/use-featured-games';
+import { LOAD_STATUS } from '../../hooks/use-load-state';
 import type { GameListItem } from '../../services/games-api-provider';
 import { openGameDetailsDialog } from '../../store/game-details-dialog-store';
 import {
@@ -25,6 +26,8 @@ import {
   SLIDER_TAP_MAX_MS,
 } from './slider-data';
 import './slider.scss';
+
+const { loading, success, empty } = LOAD_STATUS;
 
 type SliderNav = {
   element: HTMLElement;
@@ -157,33 +160,34 @@ export function createSlider(): HTMLElement {
     carousel?.destroy();
     carousel = undefined;
     content.replaceChildren();
-    content.setAttribute('aria-busy', String(state.status === 'loading'));
+    content.setAttribute('aria-busy', String(state.status === loading));
 
-    if (state.status === 'success') {
+    if (state.status === success) {
       mountTrack(state.data);
       return;
     }
 
     nav.setEnabled(false);
 
-    if (state.status === 'loading') {
+    if (state.status === loading) {
       content.append(createSkeletonTrack());
       return;
     }
 
-    if (state.status === 'empty') {
+    if (state.status === empty) {
       content.append(
         createEmptyState({ title: SLIDER_EMPTY_TITLE, message: SLIDER_EMPTY_MESSAGE }),
       );
       return;
     }
 
+    const { message, retry } = state;
     content.append(
       createErrorBanner({
         title: SLIDER_ERROR_TITLE,
-        message: state.message === '' ? SLIDER_ERROR_FALLBACK_MESSAGE : state.message,
+        message: message === '' ? SLIDER_ERROR_FALLBACK_MESSAGE : message,
         retryLabel: SLIDER_RETRY_LABEL,
-        onRetry: state.retry,
+        onRetry: retry,
       }),
     );
   }

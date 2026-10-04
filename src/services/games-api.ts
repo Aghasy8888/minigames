@@ -1,5 +1,6 @@
 import { request, type ApiListResponse } from './api-client';
 import type { CategoriesRequestOptions, CategoriesResponse } from './categories-api';
+import type { GameCommentsRequestOptions, GameCommentsResponse } from './comments-api';
 import type { GameDetailsRequestOptions, GameDetailsResponse } from './game-details-api';
 import type { GameListItem, GamesListMeta, GamesListParameters } from './games-types';
 import type { LeaderboardRequestOptions, LeaderboardResponse } from './leaderboard-api';
@@ -22,6 +23,10 @@ export type GamesApi = {
     slug: string,
     options?: GameDetailsRequestOptions,
   ) => Promise<GameDetailsResponse>;
+  fetchGameComments: (
+    slug: string,
+    options?: GameCommentsRequestOptions,
+  ) => Promise<GameCommentsResponse>;
 };
 
 export function fetchGames(

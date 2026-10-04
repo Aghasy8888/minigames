@@ -1,5 +1,3 @@
-export { tukoniComments as GAME_COMMENTS } from '../../mocks/comments';
-
 export const PLAY_NOW_LABEL = 'Play Now';
 export const ADD_TO_FAVORITES_LABEL = 'Add to Favorites';
 export const REMOVE_FROM_FAVORITES_LABEL = 'Remove from Favorites';

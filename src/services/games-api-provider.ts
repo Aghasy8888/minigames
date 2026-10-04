@@ -1,5 +1,6 @@
 import { createFakeGamesApi, type FakeGamesScenario } from '../mocks/fake-games-api';
 import { fetchCategories } from './categories-api';
+import { fetchGameComments } from './comments-api';
 import { fetchGameDetails } from './game-details-api';
 import { fetchFeaturedGames, fetchGames, type GamesApi } from './games-api';
 import { fetchLeaderboard } from './leaderboard-api';
@@ -8,6 +9,8 @@ export { ApiError, isAbortError } from './api-client';
 export { toUserFacingMessage } from './api-error-message';
 export type { CategoriesRequestOptions, CategoriesResponse } from './categories-api';
 export type { CategoriesMeta, CategoryItem } from './categories-types';
+export type { GameCommentsRequestOptions, GameCommentsResponse } from './comments-api';
+export type { GameComment, GameCommentsMeta, GameCommentsSort } from './comments-types';
 export type { GameDetailsRequestOptions, GameDetailsResponse } from './game-details-api';
 export type { GameDetails, GameDetailsSpecs, GameDetailsTopRecord } from './game-details-types';
 export type { GamesApi, GamesListResponse, GamesRequestOptions } from './games-api';
@@ -35,4 +38,11 @@ const mockScenario = import.meta.env.VITE_API_MOCK;
 
 export const gamesApi: GamesApi = isMockScenario(mockScenario)
   ? createFakeGamesApi(mockScenario)
-  : { fetchGames, fetchFeaturedGames, fetchLeaderboard, fetchCategories, fetchGameDetails };
+  : {
+      fetchGames,
+      fetchFeaturedGames,
+      fetchLeaderboard,
+      fetchCategories,
+      fetchGameDetails,
+      fetchGameComments,
+    };

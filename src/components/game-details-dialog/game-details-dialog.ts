@@ -1,10 +1,14 @@
 import { useBackdropDismiss } from '../../hooks/use-backdrop-dismiss';
+import { useGameComments, type GameCommentsController } from '../../hooks/use-game-comments';
 import { useGameDetails, type GameDetailsState } from '../../hooks/use-game-details';
+import { GAME_SLUG_LOAD_STATUS } from '../../hooks/use-game-slug-load';
+import { LOAD_STATUS } from '../../hooks/use-load-state';
 import {
   closeGameDetailsDialog,
   getGameDetailsDialogState,
 } from '../../store/game-details-dialog-store';
 import { lockScroll, unlockScroll } from '../../utils/scroll-lock';
+import { createComments } from '../comments';
 import { createErrorBanner } from '../error-banner';
 import {
   GAME_DETAILS_ARIA_LABEL,
@@ -23,7 +27,10 @@ import './game-details-dialog.scss';
 
 const TRANSITION_MS = 250;
 
-type VisibleState = Exclude<GameDetailsState, { status: 'idle' }>;
+const { idle } = GAME_SLUG_LOAD_STATUS;
+const { loading, success, error } = LOAD_STATUS;
+
+type VisibleState = Exclude<GameDetailsState, { status: typeof idle }>;
 
 function nextFrame(callback: () => void): void {
   globalThis.requestAnimationFrame(() => {
@@ -31,26 +38,34 @@ function nextFrame(callback: () => void): void {
   });
 }
 
-function createView(state: VisibleState): { hero: HTMLElement; body: HTMLElement[] } {
+function createView(
+  state: VisibleState,
+  comments: GameCommentsController,
+): { hero: HTMLElement; body: HTMLElement[] } {
   switch (state.status) {
-    case 'loading': {
-      return { hero: createHeroSkeleton(), body: createGameDetailsSkeleton() };
-    }
-    case 'success': {
+    case loading: {
       return {
-        hero: createHeroMedia(state.game.heroImage),
-        body: createGameDetailsBody(state.game),
+        hero: createHeroSkeleton(),
+        body: [...createGameDetailsSkeleton(), createComments({ controller: comments })],
       };
     }
-    case 'error': {
+    case success: {
+      const { game } = state;
+      return {
+        hero: createHeroMedia(game.heroImage),
+        body: createGameDetailsBody(game, comments),
+      };
+    }
+    case error: {
+      const { message, retry } = state;
       return {
         hero: createHeroPlaceholder(),
         body: [
           createErrorBanner({
             title: GAME_DETAILS_ERROR_TITLE,
-            message: state.message,
+            message,
             retryLabel: GAME_DETAILS_RETRY_LABEL,
-            onRetry: state.retry,
+            onRetry: retry,
           }),
         ],
       };
@@ -130,20 +145,21 @@ export function createGameDetailsDialog(): HTMLDialogElement {
   }
 
   function render(state: GameDetailsState): void {
-    if (state.status === 'idle') {
+    if (state.status === idle) {
       requestClose();
       return;
     }
 
-    const isNewSlug = state.slug !== renderedSlug;
-    renderedSlug = state.slug;
+    const { slug, status } = state;
+    const isNewSlug = slug !== renderedSlug;
+    renderedSlug = slug;
 
-    const view = createView(state);
-    heroMedia.replaceWith(view.hero);
-    heroMedia = view.hero;
-    body.replaceChildren(...view.body);
-    body.setAttribute('aria-busy', String(state.status === 'loading'));
-    setAccessibleName(state.status === 'success');
+    const { hero: nextHero, body: nextBody } = createView(state, comments);
+    heroMedia.replaceWith(nextHero);
+    heroMedia = nextHero;
+    body.replaceChildren(...nextBody);
+    body.setAttribute('aria-busy', String(status === loading));
+    setAccessibleName(status === success);
     open();
 
     if (isNewSlug) {
@@ -175,10 +191,11 @@ export function createGameDetailsDialog(): HTMLDialogElement {
     }
   });
 
-  const gameDetails = useGameDetails();
-  gameDetails.subscribe(render);
+  const comments = useGameComments();
+  const { subscribe, getState } = useGameDetails();
+  subscribe(render);
   setAccessibleName(false);
-  render(gameDetails.getState());
+  render(getState());
 
   return dialog;
 }

@@ -1,12 +1,14 @@
 import { ApiError } from '../services/api-client';
 import type { CategoriesResponse } from '../services/categories-api';
 import type { CategoriesMeta } from '../services/categories-types';
+import type { GameCommentsResponse } from '../services/comments-api';
 import type { GameDetailsResponse } from '../services/game-details-api';
 import type { GamesApi, GamesListResponse } from '../services/games-api';
 import type { GamesListMeta, GamesListParameters } from '../services/games-types';
 import type { LeaderboardResponse } from '../services/leaderboard-api';
 import type { LeaderboardMeta } from '../services/leaderboard-types';
 import categoriesFixture from './categories.json';
+import { tukoniCommentsResponse } from './comments';
 import featuredGamesFixture from './featured-games.json';
 import { tukoniForestKeepersResponse } from './game-details';
 import leaderboardFixture from './leaderboard.json';
@@ -118,6 +120,16 @@ const GAME_DETAILS_FAKE: EndpointFake<GameDetailsResponse> = {
   },
 };
 
+const COMMENTS_FAKE: EndpointFake<GameCommentsResponse> = {
+  success: tukoniCommentsResponse,
+  empty: { data: [], meta: { totalComments: 0, returnedCount: 0, sort: 'newest' } },
+  errors: {
+    '401': 'Authentication required',
+    '404': 'Game not found: invalid-slug',
+    '429': RATE_LIMIT_MESSAGE,
+  },
+};
+
 function createAbortError(): DOMException {
   return new DOMException('Aborted', 'AbortError');
 }
@@ -178,6 +190,9 @@ export function createFakeGamesApi(scenario: FakeGamesScenario): GamesApi {
     },
     fetchGameDetails(_slug, options = {}) {
       return respond(scenario, GAME_DETAILS_FAKE, options.signal);
+    },
+    fetchGameComments(_slug, options = {}) {
+      return respond(scenario, COMMENTS_FAKE, options.signal);
     },
   };
 }

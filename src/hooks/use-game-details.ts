@@ -1,11 +1,15 @@
 import { ApiError, gamesApi, type GameDetails } from '../services/games-api-provider';
-import {
-  closeGameDetailsDialog,
-  getGameDetailsDialogState,
-  subscribeGameDetailsDialog,
-} from '../store/game-details-dialog-store';
+import { closeGameDetailsDialog } from '../store/game-details-dialog-store';
 import { showSnackbar } from '../store/snackbar-store';
-import { useLoadState, type LoadState, type LoadStateController } from './use-load-state';
+import {
+  GAME_SLUG_LOAD_STATUS,
+  useGameSlugLoad,
+  type GameSlugLoadState,
+} from './use-game-slug-load';
+import { LOAD_STATUS } from './use-load-state';
+
+const { idle, active } = GAME_SLUG_LOAD_STATUS;
+const { loading, success, empty, error: errorStatus } = LOAD_STATUS;
 
 const FALLBACK_ERROR_MESSAGE = 'Game details are unavailable right now. Please try again.';
 const RETRY_SUCCESS_MESSAGE = 'Game details loaded';
@@ -13,10 +17,10 @@ const NOT_FOUND_MESSAGE = 'This game could not be found.';
 const NOT_FOUND_STATUS = 404;
 
 export type GameDetailsState =
-  | { status: 'idle' }
-  | { status: 'loading'; slug: string }
-  | { status: 'success'; slug: string; game: GameDetails }
-  | { status: 'error'; slug: string; message: string; retry: () => void };
+  | { status: typeof idle }
+  | { status: typeof loading; slug: string }
+  | { status: typeof success; slug: string; game: GameDetails }
+  | { status: typeof errorStatus; slug: string; message: string; retry: () => void };
 
 export type GameDetailsController = {
   getState: () => GameDetailsState;
@@ -24,23 +28,27 @@ export type GameDetailsController = {
   destroy: () => void;
 };
 
-function toGameDetailsState(
-  slug: string,
-  state: LoadState<GameDetails>,
-  reload: () => void,
-): GameDetailsState {
-  switch (state.status) {
-    case 'loading': {
-      return { status: 'loading', slug };
+function toGameDetailsState(state: GameSlugLoadState<GameDetails>): GameDetailsState {
+  if (state.status === idle) {
+    return state;
+  }
+
+  const { slug, load, reload } = state;
+
+  switch (load.status) {
+    case loading: {
+      return { status: loading, slug };
     }
-    case 'success': {
-      return { status: 'success', slug, game: state.data[0] };
+    case success: {
+      const [game] = load.data;
+      return { status: success, slug, game };
     }
-    case 'empty': {
-      return { status: 'error', slug, message: FALLBACK_ERROR_MESSAGE, retry: reload };
+    case empty: {
+      return { status: errorStatus, slug, message: FALLBACK_ERROR_MESSAGE, retry: reload };
     }
-    case 'error': {
-      return { status: 'error', slug, message: state.message, retry: state.retry };
+    case errorStatus: {
+      const { message, retry } = load;
+      return { status: errorStatus, slug, message, retry };
     }
   }
 }
@@ -50,67 +58,47 @@ function toGameDetailsState(
  * closes the dialog with an error snackbar instead of showing a banner for a game that doesn't exist.
  */
 export function useGameDetails(): GameDetailsController {
-  let state: GameDetailsState = { status: 'idle' };
-  let loader: LoadStateController<GameDetails> | undefined;
-  let unsubscribeLoader: (() => void) | undefined;
+  let missingSlug: string | undefined;
   const listeners = new Set<(state: GameDetailsState) => void>();
 
-  function setState(next: GameDetailsState): void {
-    state = next;
+  const slugLoad = useGameSlugLoad<GameDetails>({
+    async load(slug, signal) {
+      missingSlug = undefined;
+
+      try {
+        const { data } = await gamesApi.fetchGameDetails(slug, { signal });
+        return { items: [data] };
+      } catch (error) {
+        if (error instanceof ApiError && error.status === NOT_FOUND_STATUS) {
+          missingSlug = slug;
+          showSnackbar({ variant: 'error', message: NOT_FOUND_MESSAGE });
+          closeGameDetailsDialog();
+        }
+        throw error;
+      }
+    },
+    fallbackErrorMessage: FALLBACK_ERROR_MESSAGE,
+    retrySuccessMessage: RETRY_SUCCESS_MESSAGE,
+  });
+
+  let state = toGameDetailsState(slugLoad.getState());
+
+  const unsubscribe = slugLoad.subscribe((slugState) => {
+    const isMissingGameError =
+      slugState.status === active &&
+      slugState.slug === missingSlug &&
+      slugState.load.status === errorStatus;
+
+    if (isMissingGameError) {
+      return;
+    }
+
+    state = toGameDetailsState(slugState);
 
     for (const listener of listeners) {
       listener(state);
     }
-  }
-
-  function stopLoader(): void {
-    unsubscribeLoader?.();
-    loader?.destroy();
-    unsubscribeLoader = undefined;
-    loader = undefined;
-  }
-
-  function start(slug: string | undefined): void {
-    stopLoader();
-
-    if (slug === undefined) {
-      setState({ status: 'idle' });
-      return;
-    }
-
-    let isMissing = false;
-
-    const current = useLoadState<GameDetails>({
-      async load(signal) {
-        try {
-          const { data } = await gamesApi.fetchGameDetails(slug, { signal });
-          return { items: [data] };
-        } catch (error) {
-          if (error instanceof ApiError && error.status === NOT_FOUND_STATUS) {
-            isMissing = true;
-            showSnackbar({ variant: 'error', message: NOT_FOUND_MESSAGE });
-            closeGameDetailsDialog();
-          }
-          throw error;
-        }
-      },
-      fallbackErrorMessage: FALLBACK_ERROR_MESSAGE,
-      retrySuccessMessage: RETRY_SUCCESS_MESSAGE,
-    });
-
-    loader = current;
-    unsubscribeLoader = current.subscribe((loadState) => {
-      if (!isMissing) {
-        setState(toGameDetailsState(slug, loadState, current.reload));
-      }
-    });
-    setState(toGameDetailsState(slug, current.getState(), current.reload));
-  }
-
-  const unsubscribeDialog = subscribeGameDetailsDialog(({ slug }) => {
-    start(slug);
   });
-  start(getGameDetailsDialogState().slug);
 
   return {
     getState() {
@@ -123,8 +111,8 @@ export function useGameDetails(): GameDetailsController {
       };
     },
     destroy() {
-      unsubscribeDialog();
-      stopLoader();
+      unsubscribe();
+      slugLoad.destroy();
       listeners.clear();
     },
   };
