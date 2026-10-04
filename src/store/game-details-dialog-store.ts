@@ -7,11 +7,7 @@ export interface GameDetailsDialogState {
 
 type GameDetailsDialogListener = (state: GameDetailsDialogState) => void;
 
-type GameDialogHistoryState = { gameDialog: true };
-
 let state: GameDetailsDialogState = {};
-/** Set while our `history.back()` is in flight, so a second close request can't go back twice. */
-let isGoingBack = false;
 const listeners = new Set<GameDetailsDialogListener>();
 
 function setState(next: GameDetailsDialogState): void {
@@ -26,15 +22,6 @@ function setState(next: GameDetailsDialogState): void {
   }
 }
 
-function isInAppEntry(historyState: unknown): historyState is GameDialogHistoryState {
-  return (
-    typeof historyState === 'object' &&
-    historyState !== null &&
-    'gameDialog' in historyState &&
-    historyState.gameDialog === true
-  );
-}
-
 export function getGameDetailsDialogState(): GameDetailsDialogState {
   return state;
 }
@@ -44,24 +31,22 @@ export function openGameDetailsDialog(slug: string): void {
     return;
   }
 
-  isGoingBack = false;
-  const historyState: GameDialogHistoryState = { gameDialog: true };
-  globalThis.history.pushState(historyState, '', hrefWithGame(slug));
+  globalThis.history.pushState(undefined, '', hrefWithGame(slug));
   setState({ slug });
 }
 
-/**
- * Opened in-app (we pushed the entry) → go back to the underlying URL; opened from a deep link →
- * drop `game` in place so no history entry is left behind.
- */
 export function closeGameDetailsDialog(): void {
-  if (state.slug === undefined || isGoingBack) {
+  if (state.slug === undefined) {
     return;
   }
 
-  if (isInAppEntry(globalThis.history.state)) {
-    isGoingBack = true;
-    globalThis.history.back();
+  globalThis.history.pushState(undefined, '', hrefWithGame());
+  setState({});
+}
+
+/** Unknown slug: replace the bad URL so it never becomes a Back / Forward step. */
+export function dismissMissingGameDialog(): void {
+  if (state.slug === undefined) {
     return;
   }
 
@@ -70,7 +55,6 @@ export function closeGameDetailsDialog(): void {
 }
 
 export function syncGameDetailsFromLocation(): void {
-  isGoingBack = false;
   const { slug, isCanonical } = parseGameQuery(globalThis.location.search);
 
   if (!isCanonical) {

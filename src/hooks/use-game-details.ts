@@ -1,5 +1,5 @@
 import { ApiError, gamesApi, type GameDetails } from '../services/games-api-provider';
-import { closeGameDetailsDialog } from '../store/game-details-dialog-store';
+import { dismissMissingGameDialog } from '../store/game-details-dialog-store';
 import { showSnackbar } from '../store/snackbar-store';
 import {
   GAME_SLUG_LOAD_STATUS,
@@ -72,7 +72,7 @@ export function useGameDetails(): GameDetailsController {
         if (error instanceof ApiError && error.status === NOT_FOUND_STATUS) {
           missingSlug = slug;
           showSnackbar({ variant: 'error', message: NOT_FOUND_MESSAGE });
-          closeGameDetailsDialog();
+          dismissMissingGameDialog();
         }
         throw error;
       }
