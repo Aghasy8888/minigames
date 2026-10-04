@@ -102,12 +102,14 @@ $slider-info-min-width: 18rem; // no exact $size-* match
     min-width: 0;
 
     @include media-up('phablet') {
-      width: 28rem; // no exact $size-* match
+      // leftover after one secondary min-width + track gap; equals 28rem from ~655px
+      width: min(28rem, calc(100% - 6.5625rem - 6px)); // no exact $size-* match
       flex: 0 0 auto;
     }
 
     @include media-up('desktop') {
-      width: 51rem; // no exact $size-* match
+      // leftover after peek + secondary; equals 51rem from 1480px
+      width: min(51rem, calc(100% - #{$size-15} - 18rem)); // no exact $size-* match
       flex: 0 0 auto;
     }
 
