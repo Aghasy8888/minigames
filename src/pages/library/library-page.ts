@@ -17,7 +17,7 @@ export function renderLibraryPage(container: HTMLElement): void {
 
   container.replaceChildren(
     createPageTitle(),
-    createFilterSortBar({ categories }),
+    createFilterSortBar({ categories, games: libraryGames }),
     cards,
     createPagination({
       controller: libraryGames,

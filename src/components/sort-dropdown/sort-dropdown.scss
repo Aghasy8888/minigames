@@ -41,8 +41,13 @@
       padding: $btn-padding-medium;
     }
 
-    &:hover {
+    &:hover:not(:disabled) {
       background-color: $color-surface;
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
     }
   }
 

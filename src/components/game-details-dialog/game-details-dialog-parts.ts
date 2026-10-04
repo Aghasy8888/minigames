@@ -4,8 +4,10 @@ import {
   closeDefaultIcon,
   favoriteIcon,
 } from '../../assets/icons';
+import { useImageReady } from '../../hooks/use-image-ready';
 import { resolveGameImage } from '../../utils/resolve-game-image';
 import { createButton } from '../button';
+import { createSkeleton, fadeOutSkeleton } from '../skeleton';
 import {
   ADD_TO_FAVORITES_LABEL,
   CLOSE_DIALOG_ARIA_LABEL,
@@ -53,12 +55,28 @@ export function createHeroMedia(heroImage: string): HTMLElement {
     return createHeroPlaceholder();
   }
 
+  const media = document.createElement('div');
+  media.className = 'game-details-dialog__hero-media';
+
   const image = document.createElement('img');
   image.className = 'game-details-dialog__hero-image';
   image.src = source;
   image.alt = '';
   image.decoding = 'async';
-  return image;
+
+  const skeleton = createSkeleton({ className: 'game-details-dialog__hero-skeleton' });
+  media.append(image, skeleton);
+
+  useImageReady(image, {
+    onReady() {
+      fadeOutSkeleton(skeleton);
+    },
+    onError() {
+      media.replaceChildren(createHeroPlaceholder());
+    },
+  });
+
+  return media;
 }
 
 export function createStat(iconSource: string, value: string): HTMLElement {

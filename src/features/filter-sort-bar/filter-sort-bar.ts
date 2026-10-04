@@ -8,6 +8,11 @@ import {
 import { createSortDropdown } from '../../components/sort-dropdown';
 import type { CategoriesController, CategoriesState } from '../../hooks/use-categories';
 import { useDisconnectCleanup } from '../../hooks/use-disconnect-cleanup';
+import {
+  canSortLibraryGames,
+  type LibraryGamesController,
+  type LibraryGamesState,
+} from '../../hooks/use-library-games';
 import { LOAD_STATUS } from '../../hooks/use-load-state';
 import {
   getLibraryQuery,
@@ -31,6 +36,7 @@ const { loading, success, empty, error } = LOAD_STATUS;
 
 export type CreateFilterSortBarOptions = {
   categories: CategoriesController;
+  games: LibraryGamesController;
 };
 
 function selectCategory(slug: string): void {
@@ -39,7 +45,10 @@ function selectCategory(slug: string): void {
   }
 }
 
-export function createFilterSortBar({ categories }: CreateFilterSortBarOptions): HTMLElement {
+export function createFilterSortBar({
+  categories,
+  games,
+}: CreateFilterSortBarOptions): HTMLElement {
   const section = document.createElement('section');
   section.className = 'filter-sort-bar';
   section.setAttribute('aria-label', FILTER_SORT_BAR_ARIA_LABEL);
@@ -92,17 +101,27 @@ export function createFilterSortBar({ categories }: CreateFilterSortBarOptions):
     onSelect: navigateLibrarySort,
   });
 
+  function syncSortAvailability(state: LibraryGamesState): void {
+    const sortable = canSortLibraryGames(state);
+    if (sortable !== undefined) {
+      sortDropdown.setDisabled(!sortable);
+    }
+  }
+
   const unsubscribeCategories = categories.subscribe(renderCategories);
+  const unsubscribeGames = games.subscribe(syncSortAvailability);
   const unsubscribeQuery = subscribeLibraryQuery((query) => {
     chips?.setActiveSlug(getResolvedCategory());
     sortDropdown.setSelectedId(query.sort);
   });
 
   renderCategories(categories.getState());
+  syncSortAvailability(games.getState());
   section.append(categoriesArea, sortDropdown.element);
 
   useDisconnectCleanup(section, () => {
     unsubscribeCategories();
+    unsubscribeGames();
     unsubscribeQuery();
     sortDropdown.destroy();
   });

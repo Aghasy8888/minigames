@@ -1,1 +1,1 @@
-export { createSkeleton, type CreateSkeletonOptions } from './skeleton';
+export { createSkeleton, fadeOutSkeleton, type CreateSkeletonOptions } from './skeleton';
