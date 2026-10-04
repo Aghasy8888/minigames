@@ -90,6 +90,7 @@ $game-card-stats-min-width: 8.375rem; // no exact $size-* match (134px)
 
   &__close {
     position: absolute;
+    z-index: 1;
     top: $size-2;
     right: $size-2;
     display: inline-flex;

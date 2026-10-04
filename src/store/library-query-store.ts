@@ -61,13 +61,14 @@ function writeUrl(query: LibraryQuery, mode: 'push' | 'replace'): void {
   }
 }
 
-function pushQuery(next: LibraryQuery): void {
+function pushQuery(next: LibraryQuery): boolean {
   if (isSameQuery(next, currentQuery) && isOnLibrary()) {
-    return;
+    return false;
   }
 
   writeUrl(next, 'push');
   setQuery(next);
+  return true;
 }
 
 export function getLibraryQuery(): LibraryQuery {
@@ -92,7 +93,9 @@ export function subscribeLibraryQuery(listener: LibraryQueryListener): () => voi
 }
 
 export function navigateLibraryPage(page: number): void {
-  pushQuery({ ...currentQuery, page: Math.max(1, Math.floor(page)) });
+  if (pushQuery({ ...currentQuery, page: Math.max(1, Math.floor(page)) })) {
+    globalThis.scrollTo({ top: 0 });
+  }
 }
 
 export function navigateLibraryCategory(category: GameCategory): void {

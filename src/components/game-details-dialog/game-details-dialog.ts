@@ -89,13 +89,13 @@ export function createGameDetailsDialog(): HTMLDialogElement {
 
   let heroMedia: HTMLElement = createHeroPlaceholder();
   const closeButton = createCloseButton();
-  hero.append(heroMedia, closeButton);
+  hero.append(heroMedia);
 
   const body = document.createElement('div');
   body.className = 'game-details-dialog__body';
 
   content.append(hero, body);
-  dialog.append(content);
+  dialog.append(closeButton, content);
 
   function setAccessibleName(hasTitle: boolean): void {
     if (hasTitle) {
