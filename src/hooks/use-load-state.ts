@@ -6,11 +6,20 @@ export type LoadResult<T, TMeta = undefined> = {
   meta?: TMeta;
 };
 
+export const LOAD_STATUS = {
+  loading: 'loading',
+  success: 'success',
+  empty: 'empty',
+  error: 'error',
+} as const;
+
+const { loading, success, empty, error: errorStatus } = LOAD_STATUS;
+
 export type LoadState<T, TMeta = undefined> =
-  | { status: 'loading' }
-  | { status: 'success'; data: T[]; meta?: TMeta }
-  | { status: 'empty'; meta?: TMeta }
-  | { status: 'error'; message: string; retry: () => void };
+  | { status: typeof loading }
+  | { status: typeof success; data: T[]; meta?: TMeta }
+  | { status: typeof empty; meta?: TMeta }
+  | { status: typeof errorStatus; message: string; retry: () => void };
 
 export type LoadStateController<T, TMeta = undefined> = {
   getState: () => LoadState<T, TMeta>;
@@ -31,7 +40,7 @@ export function useLoadState<T, TMeta = undefined>({
   fallbackErrorMessage,
   retrySuccessMessage,
 }: UseLoadStateOptions<T, TMeta>): LoadStateController<T, TMeta> {
-  let state: LoadState<T, TMeta> = { status: 'loading' };
+  let state: LoadState<T, TMeta> = { status: loading };
   let requestId = 0;
   let controller: AbortController | undefined;
   let isDestroyed = false;
@@ -63,7 +72,7 @@ export function useLoadState<T, TMeta = undefined>({
     const currentId = ++requestId;
     const { signal } = controller;
 
-    setState({ status: 'loading' });
+    setState({ status: loading });
 
     try {
       const { items, meta } = await load(signal);
@@ -73,11 +82,11 @@ export function useLoadState<T, TMeta = undefined>({
       }
 
       if (items.length === 0) {
-        setState({ status: 'empty', meta });
+        setState({ status: empty, meta });
         return;
       }
 
-      setState({ status: 'success', data: [...items], meta });
+      setState({ status: success, data: [...items], meta });
 
       if (fromRetry) {
         showSnackbar({ variant: 'success', message: retrySuccessMessage });
@@ -88,7 +97,7 @@ export function useLoadState<T, TMeta = undefined>({
       }
 
       const message = toUserFacingMessage(error, fallbackErrorMessage);
-      setState({ status: 'error', message, retry });
+      setState({ status: errorStatus, message, retry });
 
       if (fromRetry) {
         showSnackbar({ variant: 'error', message });

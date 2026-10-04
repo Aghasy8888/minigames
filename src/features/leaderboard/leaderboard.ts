@@ -6,6 +6,7 @@ import {
 } from '../../components/leaderboard-table';
 import { useDisconnectCleanup } from '../../hooks/use-disconnect-cleanup';
 import { useLeaderboard, type LeaderboardState } from '../../hooks/use-leaderboard';
+import { LOAD_STATUS } from '../../hooks/use-load-state';
 import {
   LEADERBOARD_EMPTY_MESSAGE,
   LEADERBOARD_EMPTY_TITLE,
@@ -17,6 +18,8 @@ import {
   LEADERBOARD_TITLE_SHORT,
 } from './leaderboard-data';
 import './leaderboard.scss';
+
+const { loading, success, empty, error } = LOAD_STATUS;
 
 function createTitleText(className: string, text: string): HTMLSpanElement {
   const span = document.createElement('span');
@@ -46,24 +49,25 @@ function createHeader(): HTMLElement {
 
 function createStatusView(state: LeaderboardState): HTMLElement {
   switch (state.status) {
-    case 'loading': {
+    case loading: {
       return createLeaderboardTableSkeleton(LEADERBOARD_SKELETON_ROWS);
     }
-    case 'success': {
+    case success: {
       return createLeaderboardTable(state.data);
     }
-    case 'empty': {
+    case empty: {
       return createEmptyState({
         title: LEADERBOARD_EMPTY_TITLE,
         message: LEADERBOARD_EMPTY_MESSAGE,
       });
     }
-    case 'error': {
+    case error: {
+      const { message, retry } = state;
       return createErrorBanner({
         title: LEADERBOARD_ERROR_TITLE,
-        message: state.message === '' ? LEADERBOARD_ERROR_FALLBACK_MESSAGE : state.message,
+        message: message === '' ? LEADERBOARD_ERROR_FALLBACK_MESSAGE : message,
         retryLabel: LEADERBOARD_RETRY_LABEL,
-        onRetry: state.retry,
+        onRetry: retry,
       });
     }
   }
@@ -78,7 +82,7 @@ export function createLeaderboard(): HTMLElement {
   content.className = 'leaderboard__content';
 
   function render(state: LeaderboardState): void {
-    content.setAttribute('aria-busy', String(state.status === 'loading'));
+    content.setAttribute('aria-busy', String(state.status === loading));
     content.replaceChildren(createStatusView(state));
   }
 

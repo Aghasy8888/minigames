@@ -8,6 +8,7 @@ import {
 import { createSortDropdown } from '../../components/sort-dropdown';
 import type { CategoriesController, CategoriesState } from '../../hooks/use-categories';
 import { useDisconnectCleanup } from '../../hooks/use-disconnect-cleanup';
+import { LOAD_STATUS } from '../../hooks/use-load-state';
 import {
   getLibraryQuery,
   getResolvedCategory,
@@ -25,6 +26,8 @@ import {
   FILTER_SORT_BAR_ARIA_LABEL,
 } from './filter-sort-bar-data';
 import './filter-sort-bar.scss';
+
+const { loading, success, empty, error } = LOAD_STATUS;
 
 export type CreateFilterSortBarOptions = {
   categories: CategoriesController;
@@ -50,10 +53,10 @@ export function createFilterSortBar({ categories }: CreateFilterSortBarOptions):
     chips = undefined;
 
     switch (state.status) {
-      case 'loading': {
+      case loading: {
         return createFilterChipsSkeleton(CATEGORY_SKELETON_COUNT);
       }
-      case 'success': {
+      case success: {
         chips = createFilterChips({
           categories: state.data,
           activeSlug: getResolvedCategory(),
@@ -61,25 +64,26 @@ export function createFilterSortBar({ categories }: CreateFilterSortBarOptions):
         });
         return chips.element;
       }
-      case 'empty': {
+      case empty: {
         return createEmptyState({
           title: CATEGORIES_EMPTY_TITLE,
           message: CATEGORIES_EMPTY_MESSAGE,
         });
       }
-      case 'error': {
+      case error: {
+        const { message, retry } = state;
         return createErrorBanner({
           title: CATEGORIES_ERROR_TITLE,
-          message: state.message,
+          message,
           retryLabel: CATEGORIES_RETRY_LABEL,
-          onRetry: state.retry,
+          onRetry: retry,
         });
       }
     }
   }
 
   function renderCategories(state: CategoriesState): void {
-    categoriesArea.setAttribute('aria-busy', String(state.status === 'loading'));
+    categoriesArea.setAttribute('aria-busy', String(state.status === loading));
     categoriesArea.replaceChildren(createCategoriesView(state));
   }
 

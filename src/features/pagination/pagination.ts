@@ -1,6 +1,7 @@
 import { disabledPaginationArrowIcon, enabledPaginationArrowIcon } from '../../assets/icons';
 import { useDisconnectCleanup } from '../../hooks/use-disconnect-cleanup';
 import type { LibraryGamesController, LibraryGamesState } from '../../hooks/use-library-games';
+import { LOAD_STATUS } from '../../hooks/use-load-state';
 import { getLibraryQuery } from '../../store/library-query-store';
 import { getVisiblePageNumbers } from '../../utils/get-visible-page-numbers';
 import {
@@ -13,6 +14,8 @@ import {
   PAGINATION_TABLET_SM_MEDIA_QUERY,
 } from './pagination-data';
 import './pagination.scss';
+
+const { success, empty } = LOAD_STATUS;
 
 export type CreatePaginationOptions = {
   controller: LibraryGamesController;
@@ -128,9 +131,10 @@ export function createPagination({
   function resolveView(state: LibraryGamesState): PaginationView {
     const requestedPage = getLibraryQuery().page;
 
-    if (state.status === 'success' || state.status === 'empty') {
-      const totalPages = state.meta?.totalPages ?? 0;
-      const currentPage = totalPages === 0 ? 1 : (state.meta?.page ?? requestedPage);
+    if (state.status === success || state.status === empty) {
+      const { meta } = state;
+      const totalPages = meta?.totalPages ?? 0;
+      const currentPage = totalPages === 0 ? 1 : (meta?.page ?? requestedPage);
       lastKnownTotalPages = totalPages;
       return { currentPage, totalPages };
     }

@@ -118,7 +118,7 @@ export function createGameCard(game: GameListItem): HTMLElement {
     size: 'medium',
     className: 'game-card__details',
     onClick: () => {
-      openGameDetailsDialog();
+      openGameDetailsDialog(game.slug);
     },
   });
 

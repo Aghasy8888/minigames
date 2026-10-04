@@ -3,6 +3,7 @@ import { createErrorBanner } from '../../components/error-banner';
 import { createGameCard, createGameCardSkeleton } from '../../components/game-card';
 import { useDisconnectCleanup } from '../../hooks/use-disconnect-cleanup';
 import type { LibraryGamesController, LibraryGamesState } from '../../hooks/use-library-games';
+import { LOAD_STATUS } from '../../hooks/use-load-state';
 import type { GameListItem } from '../../services/games-api-provider';
 import { getLibraryQuery, resetLibraryFilters } from '../../store/library-query-store';
 import {
@@ -17,6 +18,8 @@ import {
   LIBRARY_PAGE_SIZE,
 } from './game-cards-data';
 import './game-cards.scss';
+
+const { loading, success, empty, error } = LOAD_STATUS;
 
 function hasActiveFilters(): boolean {
   return getLibraryQuery().category !== undefined;
@@ -46,13 +49,13 @@ function createGamesList(games: readonly GameListItem[]): HTMLUListElement {
 
 function createStatusView(state: LibraryGamesState): HTMLElement {
   switch (state.status) {
-    case 'loading': {
+    case loading: {
       return createSkeletonList();
     }
-    case 'success': {
+    case success: {
       return createGamesList(state.data);
     }
-    case 'empty': {
+    case empty: {
       return hasActiveFilters()
         ? createEmptyState({
             title: GAME_CARDS_EMPTY_TITLE,
@@ -61,12 +64,13 @@ function createStatusView(state: LibraryGamesState): HTMLElement {
           })
         : createEmptyState({ title: GAME_CARDS_EMPTY_TITLE, message: GAME_CARDS_EMPTY_MESSAGE });
     }
-    case 'error': {
+    case error: {
+      const { message, retry } = state;
       return createErrorBanner({
         title: GAME_CARDS_ERROR_TITLE,
-        message: state.message === '' ? GAME_CARDS_ERROR_FALLBACK_MESSAGE : state.message,
+        message: message === '' ? GAME_CARDS_ERROR_FALLBACK_MESSAGE : message,
         retryLabel: GAME_CARDS_RETRY_LABEL,
-        onRetry: state.retry,
+        onRetry: retry,
       });
     }
   }
@@ -81,7 +85,7 @@ export function createGameCards(libraryGames: LibraryGamesController): HTMLEleme
   content.className = 'game-cards__content';
 
   function render(state: LibraryGamesState): void {
-    content.setAttribute('aria-busy', String(state.status === 'loading'));
+    content.setAttribute('aria-busy', String(state.status === loading));
     content.replaceChildren(createStatusView(state));
   }
 

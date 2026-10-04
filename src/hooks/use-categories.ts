@@ -1,6 +1,13 @@
 import { gamesApi, type CategoriesMeta, type CategoryItem } from '../services/games-api-provider';
 import { setDefaultCategory } from '../store/library-query-store';
-import { useLoadState, type LoadState, type LoadStateController } from './use-load-state';
+import {
+  LOAD_STATUS,
+  useLoadState,
+  type LoadState,
+  type LoadStateController,
+} from './use-load-state';
+
+const { success } = LOAD_STATUS;
 
 export type CategoriesState = LoadState<CategoryItem, CategoriesMeta>;
 
@@ -21,13 +28,14 @@ export function useCategories(): CategoriesController {
   });
 
   const unsubscribe = controller.subscribe((state) => {
-    if (state.status !== 'success') {
+    if (state.status !== success) {
       return;
     }
 
+    const { data } = state;
     setDefaultCategory(
-      findDefaultCategory(state.data)?.slug,
-      state.data.map((category) => category.slug),
+      findDefaultCategory(data)?.slug,
+      data.map(({ slug }) => slug),
     );
   });
 

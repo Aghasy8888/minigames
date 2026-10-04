@@ -1,33 +1,66 @@
 const MINUTE_SECONDS = 60;
-const HOUR_SECONDS = 60 * MINUTE_SECONDS;
-const DAY_SECONDS = 24 * HOUR_SECONDS;
-const WEEK_SECONDS = 7 * DAY_SECONDS;
-const MONTH_SECONDS = 30 * DAY_SECONDS;
-const YEAR_SECONDS = 365 * DAY_SECONDS;
+const HOUR_MINUTES = 60;
+const DAY_HOURS = 24;
+const WEEK_DAYS = 7;
+const MAX_WEEKS = 3;
+const YEAR_MONTHS = 12;
 
-const RELATIVE_UNITS: ReadonlyArray<{
-  unit: Intl.RelativeTimeFormatUnit;
-  seconds: number;
-  limit: number;
-}> = [
-  { unit: 'minute', seconds: MINUTE_SECONDS, limit: HOUR_SECONDS },
-  { unit: 'hour', seconds: HOUR_SECONDS, limit: DAY_SECONDS },
-  { unit: 'day', seconds: DAY_SECONDS, limit: WEEK_SECONDS },
-  { unit: 'week', seconds: WEEK_SECONDS, limit: MONTH_SECONDS },
-  { unit: 'month', seconds: MONTH_SECONDS, limit: YEAR_SECONDS },
-];
+function plural(count: number, unit: string): string {
+  return `${count} ${unit}${count === 1 ? '' : 's'} ago`;
+}
 
-const relativeTimeFormatter = new Intl.RelativeTimeFormat('en', { numeric: 'always' });
+/** Whole calendar months from `from` to `to` (UTC), e.g. Jan 31 → Feb 28 = 0, Jan 15 → Feb 15 = 1. */
+function calendarMonthsBetween(from: Date, to: Date): number {
+  const months =
+    (to.getUTCFullYear() - from.getUTCFullYear()) * YEAR_MONTHS +
+    (to.getUTCMonth() - from.getUTCMonth());
 
-/** Formats a past ISO date relative to `now` (e.g. "2 days ago", "1 week ago"). */
+  const fromOffset = from.getTime() - Date.UTC(from.getUTCFullYear(), from.getUTCMonth());
+  const toOffset = to.getTime() - Date.UTC(to.getUTCFullYear(), to.getUTCMonth());
+
+  return toOffset < fromOffset ? months - 1 : months;
+}
+
+/**
+ * Formats a past ISO date relative to `now`: "just now", "5 min ago", "1 hour ago", "6 days ago",
+ * "3 weeks ago", "11 months ago", "2 years ago". Future dates read "just now"; invalid ones "".
+ */
 export function formatRelativeTime(isoDate: string, now: Date = new Date()): string {
-  const elapsed = Math.max(0, (now.getTime() - new Date(isoDate).getTime()) / 1000);
+  const then = new Date(isoDate);
 
-  for (const { unit, seconds, limit } of RELATIVE_UNITS) {
-    if (elapsed < limit) {
-      return relativeTimeFormatter.format(-Math.floor(elapsed / seconds), unit);
-    }
+  if (Number.isNaN(then.getTime())) {
+    return '';
   }
 
-  return relativeTimeFormatter.format(-Math.floor(elapsed / YEAR_SECONDS), 'year');
+  const seconds = Math.max(0, Math.floor((now.getTime() - then.getTime()) / 1000));
+  if (seconds < MINUTE_SECONDS) {
+    return 'just now';
+  }
+
+  const minutes = Math.floor(seconds / MINUTE_SECONDS);
+  if (minutes < HOUR_MINUTES) {
+    return `${minutes} min ago`;
+  }
+
+  const hours = Math.floor(minutes / HOUR_MINUTES);
+  if (hours < DAY_HOURS) {
+    return plural(hours, 'hour');
+  }
+
+  const days = Math.floor(hours / DAY_HOURS);
+  if (days < WEEK_DAYS) {
+    return plural(days, 'day');
+  }
+
+  const weeks = Math.floor(days / WEEK_DAYS);
+  if (weeks <= MAX_WEEKS) {
+    return plural(weeks, 'week');
+  }
+
+  const months = Math.max(1, calendarMonthsBetween(then, now));
+  if (months < YEAR_MONTHS) {
+    return plural(months, 'month');
+  }
+
+  return plural(Math.floor(months / YEAR_MONTHS), 'year');
 }

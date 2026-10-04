@@ -13,7 +13,7 @@ import { SLIDER_CARD_ROLES } from './slider-card-data';
 import './slider-card.scss';
 
 export type CreateSliderCardOptions = {
-  onActivate: () => void;
+  onActivate: (slug: string) => void;
 };
 
 function createDecorativeIcon(className: string, source: string): HTMLImageElement {
@@ -62,6 +62,7 @@ export function createSliderCard(
   const card = document.createElement('article');
   card.className = 'slider-card';
   card.tabIndex = 0;
+  card.dataset.slug = game.slug;
 
   const name = document.createElement('h3');
   name.className = 'slider-card__name';
@@ -99,7 +100,7 @@ export function createSliderCard(
     }
 
     event.preventDefault();
-    onActivate();
+    onActivate(game.slug);
   });
 
   return card;
