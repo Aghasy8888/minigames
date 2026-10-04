@@ -23,6 +23,7 @@ export interface CreateSortDropdownOptions {
 export interface SortDropdown {
   element: HTMLElement;
   setSelectedId: (id: GameSort) => void;
+  setDisabled: (disabled: boolean) => void;
   /** Removes the document listeners; call when the dropdown leaves the page. */
   destroy: () => void;
 }
@@ -167,6 +168,13 @@ export function createSortDropdown({
     render();
   }
 
+  function setDisabled(disabled: boolean): void {
+    trigger.disabled = disabled;
+    if (disabled) {
+      setOpen(false);
+    }
+  }
+
   render();
-  return { element: root, setSelectedId, destroy };
+  return { element: root, setSelectedId, setDisabled, destroy };
 }
