@@ -1,7 +1,7 @@
 @use '../../styles/tokens' as *;
 @use '../../styles/mixins' as *;
 
-$slider-info-min-width: 18rem; // no exact $size-* match
+$slider-info-min-width: 17.75rem; // no exact $size-* match
 
 .slider-card {
   position: relative;
