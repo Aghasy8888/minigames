@@ -1,9 +1,4 @@
-import {
-  DEFAULT_GAME_SORT,
-  GAME_CATEGORY_ALL,
-  type GameCategory,
-  type GameSort,
-} from '../services/games-types';
+import { GAME_CATEGORY_ALL, type GameCategory, type GameSort } from '../services/games-types';
 import { APP_PAGE } from '../utils/app-page';
 import {
   DEFAULT_LIBRARY_QUERY,
@@ -119,7 +114,7 @@ export function navigateLibrarySort(sort: GameSort): void {
 }
 
 export function resetLibraryFilters(): void {
-  pushQuery({ page: DEFAULT_LIBRARY_QUERY.page, sort: DEFAULT_GAME_SORT });
+  pushQuery({ page: DEFAULT_LIBRARY_QUERY.page, sort: currentQuery.sort });
 }
 
 /**
