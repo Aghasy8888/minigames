@@ -1,5 +1,4 @@
-export const GAME_PARAM = 'game';
-const AUTH_PARAM = 'auth';
+import { GAME_PARAM, hrefWithDialogParameter } from './dialog-query';
 
 const GAME_SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
@@ -13,18 +12,6 @@ export function parseGameQuery(search: string): { slug?: string; isCanonical: bo
   return GAME_SLUG_PATTERN.test(raw) ? { slug: raw, isCanonical: true } : { isCanonical: false };
 }
 
-/** Current path + query with `game` set or removed; `auth` is dropped so only one dialog param exists. */
 export function hrefWithGame(slug?: string): string {
-  const { pathname, search, hash } = globalThis.location;
-  const searchParameters = new URLSearchParams(search);
-
-  if (slug === undefined) {
-    searchParameters.delete(GAME_PARAM);
-  } else {
-    searchParameters.set(GAME_PARAM, slug);
-    searchParameters.delete(AUTH_PARAM);
-  }
-
-  const serialized = searchParameters.toString();
-  return `${pathname}${serialized === '' ? '' : `?${serialized}`}${hash}`;
+  return hrefWithDialogParameter(GAME_PARAM, slug);
 }
