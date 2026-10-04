@@ -1,68 +1,12 @@
-import { getLibraryGameBySlug, type GameSeed } from '../../mocks/games';
+export const LIBRARY_PAGE_SIZE = 6;
 
 export const GAME_CARDS_ARIA_LABEL = 'Games';
 
-/** Keep in sync with $breakpoints 'desktop-wide' in tokens.scss (1830px). */
-export const GAME_CARDS_WIDE_MEDIA_QUERY = '(min-width: 1830px)' as const;
+export const GAME_CARDS_ERROR_TITLE = 'Could not load games';
+export const GAME_CARDS_ERROR_FALLBACK_MESSAGE = 'Check your connection and try again.';
+export const GAME_CARDS_RETRY_LABEL = 'Retry';
 
-/**
- * List item contract for the Library cards section.
- * Mock mapper fills orderNarrow / orderWide; an API can supply the same fields.
- */
-export type LibraryGameListItem = GameSeed & {
-  orderNarrow: number;
-  orderWide: number;
-};
-
-/** Story 2 mock — wide (2-col) Figma sequence; used only by the mock mapper. */
-const MOCK_WIDE_ORDER_SLUGS = [
-  'vacation-cafe-simulator',
-  'winter-burrow',
-  'shelve-the-potions',
-  'heartopia',
-  'palia',
-  'cat-mail-co',
-] as const;
-
-/** Story 2 mock — narrow (1-col) Figma sequence; used only by the mock mapper. */
-const MOCK_NARROW_ORDER_SLUGS = [
-  'vacation-cafe-simulator',
-  'shelve-the-potions',
-  'winter-burrow',
-  'heartopia',
-  'cat-mail-co',
-  'palia',
-] as const;
-
-function toOrderIndex(slugs: readonly string[], slug: string, fallback: number): number {
-  const index = slugs.indexOf(slug);
-  return index === -1 ? fallback : index;
-}
-
-/**
- * Builds Library list items with layout order indices.
- * Replace this mapper with an API → LibraryGameListItem map later.
- */
-export function getLibraryGameListItems(): LibraryGameListItem[] {
-  return MOCK_WIDE_ORDER_SLUGS.map((slug, orderWide) => {
-    const game = getLibraryGameBySlug(slug);
-
-    return {
-      ...game,
-      orderWide,
-      orderNarrow: toOrderIndex(MOCK_NARROW_ORDER_SLUGS, slug, orderWide),
-    };
-  });
-}
-
-/** Defaults missing order fields to the array index (stable for a flat API list). */
-export function normalizeLibraryGameListItem(
-  game: GameSeed & Partial<Pick<LibraryGameListItem, 'orderNarrow' | 'orderWide'>>,
-  index: number,
-): LibraryGameListItem {
-  return {
-    ...game,
-    orderNarrow: game.orderNarrow ?? index,
-    orderWide: game.orderWide ?? index,
-  };
-}
+export const GAME_CARDS_EMPTY_TITLE = 'No games available';
+export const GAME_CARDS_EMPTY_MESSAGE = 'No games to show right now.';
+export const GAME_CARDS_EMPTY_FILTERED_MESSAGE = 'No games match the selected category.';
+export const GAME_CARDS_RESET_FILTERS_LABEL = 'Reset filters';

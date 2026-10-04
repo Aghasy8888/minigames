@@ -1,35 +1,18 @@
 import { logoImage } from '../../assets/images';
-import { navigate, subscribeNavigation, type AppPage } from '../../store/navigation-store';
-import type { AuthDialogMode } from '../../store/auth-dialog-store';
-import { HOME_HREF } from '../../utils/home-href';
-import { hrefForNavLabel, pageForNavLabel } from '../../utils/nav-target';
+import { useNavLink } from '../../hooks/use-nav-link';
+import { subscribeNavigation } from '../../store/navigation-store';
+import { AUTH_DIALOG_MODE, type AuthDialogMode } from '../../store/auth-dialog-store';
+import { HOME_LINK, MAIN_NAV_ITEMS, syncActiveNavLinks } from '../../utils/nav-items';
 import { createButton } from '../button';
 import './mobile-nav.scss';
 
-const NAV_ITEMS: readonly string[] = ['Home', 'Library', 'Tournaments', 'Community'];
+const { login, register } = AUTH_DIALOG_MODE;
+
 const ACTIVE_LINK_CLASS = 'mobile-nav__link--active';
 
 export interface CreateMobileNavOptions {
   onNavigate?: () => void;
   onAuthRequest?: (mode: AuthDialogMode) => void;
-}
-
-function syncActiveNavLinks(root: ParentNode, page: AppPage): void {
-  const links = root.querySelectorAll<HTMLAnchorElement>('.mobile-nav__link');
-
-  for (const link of links) {
-    const label = link.textContent ?? '';
-    const representsCurrent =
-      (label === 'Home' && page === 'home') || (label === 'Library' && page === 'library');
-
-    link.classList.toggle(ACTIVE_LINK_CLASS, representsCurrent);
-
-    if (representsCurrent) {
-      link.setAttribute('aria-current', 'page');
-    } else {
-      link.removeAttribute('aria-current');
-    }
-  }
 }
 
 export function createMobileNav(options: CreateMobileNavOptions = {}): HTMLElement {
@@ -48,12 +31,7 @@ export function createMobileNav(options: CreateMobileNavOptions = {}): HTMLEleme
 
   const logoLink = document.createElement('a');
   logoLink.className = 'mobile-nav__logo';
-  logoLink.href = HOME_HREF;
-  logoLink.addEventListener('click', (event) => {
-    event.preventDefault();
-    navigate('home');
-    onNavigate?.();
-  });
+  useNavLink(logoLink, HOME_LINK, onNavigate);
 
   const logoMark = document.createElement('img');
   logoMark.className = 'mobile-nav__logo-mark';
@@ -76,19 +54,14 @@ export function createMobileNav(options: CreateMobileNavOptions = {}): HTMLEleme
   const list = document.createElement('ul');
   list.className = 'mobile-nav__list';
 
-  for (const item of NAV_ITEMS) {
+  for (const item of MAIN_NAV_ITEMS) {
     const listItem = document.createElement('li');
     listItem.className = 'mobile-nav__item';
 
     const link = document.createElement('a');
     link.className = 'mobile-nav__link';
-    link.href = hrefForNavLabel(item);
-    link.textContent = item;
-    link.addEventListener('click', (event) => {
-      event.preventDefault();
-      navigate(pageForNavLabel(item));
-      onNavigate?.();
-    });
+    link.textContent = item.label;
+    useNavLink(link, item, onNavigate);
 
     listItem.append(link);
     list.append(listItem);
@@ -105,7 +78,7 @@ export function createMobileNav(options: CreateMobileNavOptions = {}): HTMLEleme
     size: 'medium',
     className: 'button--ghost-on-dark button--menu-auth',
     onClick: () => {
-      onAuthRequest?.('login');
+      onAuthRequest?.(login);
     },
   });
 
@@ -115,15 +88,16 @@ export function createMobileNav(options: CreateMobileNavOptions = {}): HTMLEleme
     size: 'medium',
     className: 'button--menu-auth',
     onClick: () => {
-      onAuthRequest?.('register');
+      onAuthRequest?.(register);
     },
   });
 
   actions.append(logInButton, signUpButton);
   panel.append(top, navigation, actions);
 
+  const navLinks = navigation.querySelectorAll<HTMLAnchorElement>('.mobile-nav__link');
   subscribeNavigation((page) => {
-    syncActiveNavLinks(navigation, page);
+    syncActiveNavLinks(navLinks, page, ACTIVE_LINK_CLASS);
   });
 
   return panel;

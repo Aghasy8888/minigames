@@ -1,6 +1,10 @@
 import { googleIcon, lockIcon, mailIcon, personIcon } from '../../assets/icons';
+import { useBackdropDismiss } from '../../hooks/use-backdrop-dismiss';
 import {
+  AUTH_DIALOG_MODE,
   closeAuthDialog,
+  getAuthDialogState,
+  openAuthDialog,
   subscribeAuthDialog,
   type AuthDialogMode,
 } from '../../store/auth-dialog-store';
@@ -8,6 +12,8 @@ import { lockScroll, unlockScroll } from '../../utils/scroll-lock';
 import { createButton } from '../button';
 import { createTextField } from '../text-field';
 import './auth-dialog.scss';
+
+const { login, register } = AUTH_DIALOG_MODE;
 
 const TRANSITION_MS = 250;
 const PANEL_TRANSITION_MS = 200;
@@ -265,23 +271,23 @@ export function createAuthDialog(): HTMLDialogElement {
   const panels = document.createElement('div');
   panels.className = 'auth-dialog__panels';
 
-  let currentMode: AuthDialogMode = 'login';
+  let currentMode: AuthDialogMode = login;
   let closeTimerId: ReturnType<typeof globalThis.setTimeout> | undefined;
   let panelTimerId: ReturnType<typeof globalThis.setTimeout> | undefined;
   let isLocked = false;
 
-  const loginTab = createTab('login', 'Login');
-  const registerTab = createTab('register', 'Register');
+  const loginTab = createTab(login, 'Login');
+  const registerTab = createTab(register, 'Register');
   const loginPanel = createLoginPanel(() => {
-    setMode('register');
+    openAuthDialog(register);
   });
   const registerPanel = createRegisterPanel(() => {
-    setMode('login');
+    openAuthDialog(login);
   });
 
   const sections: Record<AuthDialogMode, AuthDialogSection> = {
-    login: { panel: loginPanel, tab: loginTab },
-    register: { panel: registerPanel, tab: registerTab },
+    [login]: { panel: loginPanel, tab: loginTab },
+    [register]: { panel: registerPanel, tab: registerTab },
   };
 
   function applyMode(mode: AuthDialogMode): void {
@@ -334,8 +340,6 @@ export function createAuthDialog(): HTMLDialogElement {
       dialog.classList.remove('auth-dialog--closing');
       dialog.close();
     }, TRANSITION_MS);
-
-    closeAuthDialog();
   }
 
   function open(mode: AuthDialogMode): void {
@@ -358,22 +362,18 @@ export function createAuthDialog(): HTMLDialogElement {
   }
 
   loginTab.addEventListener('click', () => {
-    setMode('login');
+    openAuthDialog(login);
   });
   registerTab.addEventListener('click', () => {
-    setMode('register');
+    openAuthDialog(register);
   });
 
   dialog.addEventListener('cancel', (event) => {
     event.preventDefault();
-    requestClose();
+    closeAuthDialog();
   });
 
-  dialog.addEventListener('click', (event) => {
-    if (event.target === dialog) {
-      requestClose();
-    }
-  });
+  useBackdropDismiss(dialog, closeAuthDialog);
 
   dialog.addEventListener('close', () => {
     dialog.classList.remove('auth-dialog--open', 'auth-dialog--closing');
@@ -383,14 +383,16 @@ export function createAuthDialog(): HTMLDialogElement {
       isLocked = false;
     }
 
-    closeAuthDialog();
+    if (getAuthDialogState().mode !== undefined) {
+      closeAuthDialog();
+    }
   });
 
-  subscribeAuthDialog((state) => {
-    if (state.isOpen) {
-      open(state.mode);
-    } else {
+  subscribeAuthDialog(({ mode }) => {
+    if (mode === undefined) {
       requestClose();
+    } else {
+      open(mode);
     }
   });
 

@@ -11,9 +11,11 @@ export { default as favoriteIconMarkup } from './comment-favorite-default.svg?ra
 export { default as disabledPaginationArrowIcon } from './disabled-pagination-arrow.svg';
 export { default as dropdownArrowIcon } from './dropdown-arrow.svg';
 export { default as enabledPaginationArrowIcon } from './enabled-pagination-arrow.svg';
+export { default as errorIcon } from './error.svg';
 export { default as favoriteIcon } from './favorite.svg';
 export { default as googleIcon } from './google-icon.svg';
 export { default as hamburgerButtonIcon } from './hamburger-button.svg';
+export { default as infoIcon } from './info.svg';
 export { default as lockIcon } from './lock.svg';
 export { default as mailIcon } from './mail.svg';
 export { default as personIcon } from './person.svg';
@@ -25,3 +27,4 @@ export { default as shareIcon } from './share.svg';
 export { default as starIcon } from './star.svg';
 export { default as submitIcon } from './submit-icon.svg';
 export { default as visibilityIcon } from './visibility.svg';
+export { default as warningIcon } from './warning.svg';

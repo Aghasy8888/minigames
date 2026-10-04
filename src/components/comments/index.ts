@@ -1,5 +1,5 @@
 export { createComments } from './comments';
-export type { CommentsOptions, CommentsSection } from './comments';
+export type { CommentsOptions } from './comments';
 export {
   COMMENT_AVATAR_MODIFIERS,
   COMMENT_PLACEHOLDER,

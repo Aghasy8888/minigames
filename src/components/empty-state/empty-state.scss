@@ -1,0 +1,43 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/mixins' as *;
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: $size-1;
+  box-sizing: border-box;
+  width: 100%;
+  padding: $size-3 $size-2;
+  border: $border-width solid $color-outline-variant;
+  border-radius: $corner-large;
+  background-color: $color-surface-low;
+  box-shadow: $shadow-level-1;
+
+  @include media-up('phablet') {
+    padding: $size-3;
+  }
+
+  &__title {
+    margin: 0;
+    font-family: $font-family-text;
+    font-size: $font-size-headline-small;
+    font-weight: $font-weight-bold;
+    line-height: normal;
+    color: $color-on-primary;
+  }
+
+  &__message {
+    margin: 0;
+    font-family: $font-family-text;
+    font-size: $font-size-body-small;
+    font-weight: $font-weight-medium;
+    line-height: 1.4;
+    color: $color-on-bg;
+  }
+
+  &__action {
+    margin-top: $size-1;
+  }
+}

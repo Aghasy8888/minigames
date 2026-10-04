@@ -1,5 +1,6 @@
 import { heroBgImage } from '../../assets/images';
 import { navigate } from '../../store/navigation-store';
+import { APP_PAGE } from '../../utils/app-page';
 import { createButton } from '../button';
 import {
   HERO_CTA_LABEL,
@@ -62,7 +63,7 @@ export function createHero(): HTMLElement {
     variant: 'primary',
     size: 'medium',
     onClick: () => {
-      navigate('library');
+      navigate(APP_PAGE.library);
     },
   });
 

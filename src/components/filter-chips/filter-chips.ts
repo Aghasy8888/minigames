@@ -1,50 +1,65 @@
-import { categories, DEFAULT_CATEGORY, type CategoryItem } from './filter-chips-data';
+import type { CategoryItem } from '../../services/games-api-provider';
+import { createSkeleton } from '../skeleton';
+import { FILTER_CHIPS_ARIA_LABEL } from './filter-chips-data';
 import './filter-chips.scss';
 
-export interface CreateFilterChipsOptions {
-  categories?: readonly CategoryItem[];
-  defaultSlug?: string;
-}
+export type CreateFilterChipsOptions = {
+  categories: readonly CategoryItem[];
+  activeSlug: string;
+  onSelect: (slug: string) => void;
+};
 
-export function createFilterChips(options: CreateFilterChipsOptions = {}): HTMLElement {
-  const items = options.categories ?? categories;
-  let activeSlug = options.defaultSlug ?? DEFAULT_CATEGORY.slug;
+export type FilterChips = {
+  element: HTMLElement;
+  setActiveSlug: (slug: string) => void;
+};
 
+function createRoot(): HTMLElement {
   const root = document.createElement('div');
   root.className = 'filter-chips hide-scrollbar';
-  root.setAttribute('role', 'group');
-  root.setAttribute('aria-label', 'Game categories');
+  return root;
+}
 
-  const buttons = items.map((category) => {
+export function createFilterChips({
+  categories,
+  activeSlug,
+  onSelect,
+}: CreateFilterChipsOptions): FilterChips {
+  const root = createRoot();
+  root.setAttribute('role', 'group');
+  root.setAttribute('aria-label', FILTER_CHIPS_ARIA_LABEL);
+
+  const buttons = categories.map((category) => {
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'filter-chips__chip';
     button.textContent = category.label;
     button.dataset.slug = category.slug;
+    button.addEventListener('click', () => {
+      onSelect(category.slug);
+    });
     return button;
   });
 
   root.append(...buttons);
 
-  function syncActiveState(): void {
+  function setActiveSlug(slug: string): void {
     for (const button of buttons) {
-      const isActive = button.dataset.slug === activeSlug;
+      const isActive = button.dataset.slug === slug;
       button.classList.toggle('filter-chips__chip--active', isActive);
       button.setAttribute('aria-pressed', String(isActive));
     }
   }
 
-  for (const button of buttons) {
-    button.addEventListener('click', () => {
-      const slug = button.dataset.slug;
-      if (!slug || slug === activeSlug) {
-        return;
-      }
-      activeSlug = slug;
-      syncActiveState();
-    });
-  }
+  setActiveSlug(activeSlug);
+  return { element: root, setActiveSlug };
+}
 
-  syncActiveState();
+export function createFilterChipsSkeleton(count: number): HTMLElement {
+  const root = createRoot();
+  root.setAttribute('aria-hidden', 'true');
+  root.append(
+    ...Array.from({ length: count }, () => createSkeleton({ className: 'filter-chips__skeleton' })),
+  );
   return root;
 }

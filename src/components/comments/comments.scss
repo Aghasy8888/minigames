@@ -123,4 +123,51 @@ $comments-avatar-size: 1.75rem;
     display: flex;
     align-items: center;
   }
+
+  &__content {
+    width: 100%;
+  }
+
+  &__skeleton-lines {
+    display: flex;
+    flex-direction: column;
+    gap: $size-05;
+    width: 100%;
+  }
+
+  &__skeleton {
+    border-radius: $corner-small;
+
+    &--avatar {
+      flex-shrink: 0;
+      width: $comments-avatar-size;
+      height: $comments-avatar-size;
+      border-radius: $corner-full;
+    }
+
+    &--name {
+      width: $size-12;
+      height: $size-2;
+    }
+
+    &--time {
+      width: $size-8;
+      height: $size-125;
+    }
+
+    &--line {
+      width: 100%;
+      height: $size-2;
+
+      &:last-child {
+        width: 60%;
+      }
+    }
+
+    &--like {
+      width: $size-6;
+      height: $size-3;
+      border-radius: $corner-full;
+    }
+  }
 }

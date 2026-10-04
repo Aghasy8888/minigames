@@ -1,0 +1,246 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/mixins' as *;
+
+$slider-info-min-width: 17.75rem; // no exact $size-* match
+
+.slider-card {
+  position: relative;
+  container-type: inline-size;
+  container-name: slider-card;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  height: 12.5rem; // no exact $size-* match
+  overflow: hidden;
+  border: $border-width-md solid $color-on-primary;
+  border-radius: $corner-large;
+  background-color: $color-white;
+  box-shadow: $shadow-level-1;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition-property: width, min-width, flex-grow, flex-basis;
+  transition-duration: 0.4s;
+  transition-timing-function: ease;
+
+  &--hidden {
+    display: none;
+  }
+
+  &--no-transition {
+    transition: none;
+  }
+
+  &--skeleton {
+    cursor: default;
+    pointer-events: none;
+    border-color: $color-outline-variant;
+    box-shadow: none;
+  }
+
+  &__skeleton {
+    flex: 1 1 auto;
+    width: 100%;
+    height: 100%;
+  }
+
+  &__placeholder {
+    position: absolute;
+    inset: 0;
+    background-color: $color-outline-variant;
+    pointer-events: none;
+  }
+
+  &__name {
+    position: absolute;
+    width: 1px; // no exact $size-* match
+    height: 1px; // no exact $size-* match
+    padding: 0;
+    margin: -1px; // no exact $size-* match
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  @include media-up('phablet') {
+    height: 17.5rem; // no exact $size-* match
+  }
+
+  @include media-up('desktop') {
+    height: 24rem; // no exact $size-* match
+    border-radius: $corner-extra-large;
+  }
+
+  &--peek {
+    display: none;
+
+    @include media-up('desktop') {
+      display: flex;
+      width: $size-15;
+    }
+  }
+
+  &--secondary {
+    flex: 1 1 0;
+    width: auto;
+    min-width: $size-7;
+
+    @include media-up('phablet') {
+      min-width: 6.5625rem; // no exact $size-* match
+    }
+
+    @include media-up('desktop') {
+      flex: 0 0 auto;
+      width: 18rem; // no exact $size-* match
+      min-width: 0;
+    }
+  }
+
+  &--featured {
+    width: 13.625rem; // no exact $size-* match
+    flex: 0 0 auto;
+    min-width: 0;
+
+    @include media-up('phablet') {
+      // leftover after one secondary min-width + track gap; equals 28rem from ~655px
+      width: min(28rem, calc(100% - 6.5625rem - 6px)); // no exact $size-* match
+      flex: 0 0 auto;
+    }
+
+    @include media-up('desktop') {
+      // leftover after peek + secondary; equals 51rem from 1480px
+      width: min(51rem, calc(100% - #{$size-15} - 18rem)); // no exact $size-* match
+      flex: 0 0 auto;
+    }
+
+    .slider-card__info {
+      display: flex;
+    }
+
+    .slider-card__gradient {
+      display: none;
+    }
+  }
+
+  &__media {
+    position: relative;
+    flex: 1 0 auto;
+    width: 100%;
+    min-height: 0;
+  }
+
+  &__image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    object-fit: cover;
+    pointer-events: none;
+  }
+
+  &__image-skeleton {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  &__gradient {
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    height: $size-7;
+    background: linear-gradient(
+      to bottom,
+      rgba($color-black, 0) 0%,
+      rgba($color-black, 0.4) 17.308%,
+      rgba($color-black, 0.85) 46.154%,
+      rgba($color-black, 0.85) 100%
+    );
+    pointer-events: none;
+  }
+
+  &__info {
+    display: none;
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: $size-1;
+    box-sizing: border-box;
+    padding: $size-2;
+    background: linear-gradient(
+      to bottom,
+      rgba($color-black, 0) 0%,
+      rgba($color-black, 0.4) 17.308%,
+      rgba($color-black, 0.85) 46.154%,
+      rgba($color-black, 0.85) 100%
+    );
+  }
+
+  &__title {
+    margin: 0;
+    width: 100%;
+    overflow: hidden;
+    font-family: $font-family-text;
+    font-size: $font-size-body-large;
+    font-weight: $font-weight-bold;
+    line-height: normal;
+    color: $color-white;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  &__stat {
+    display: inline-flex;
+    align-items: center;
+    gap: $size-05;
+  }
+
+  &__stat-icon {
+    display: block;
+    width: 1.3rem; // no exact $size-* match
+    height: 1.3rem; // no exact $size-* match
+    flex-shrink: 0;
+
+    @include media-up('desktop') {
+      width: $size-2;
+      height: $size-2;
+    }
+  }
+
+  &__stat-value {
+    font-family: $font-family-text;
+    font-size: $font-size-label-medium;
+    font-weight: $font-weight-bold;
+    line-height: normal;
+    color: $color-white;
+    white-space: nowrap;
+
+    @include media-up('phablet') {
+      font-size: $font-size-body-small;
+    }
+
+    @include media-up('desktop') {
+      font-size: $font-size-body-medium;
+    }
+  }
+}
+
+@container slider-card (min-width: #{$slider-info-min-width}) {
+  .slider-card__info {
+    display: flex;
+  }
+
+  .slider-card__gradient {
+    display: none;
+  }
+}

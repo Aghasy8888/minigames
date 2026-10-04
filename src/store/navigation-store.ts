@@ -1,11 +1,23 @@
-export type AppPage = 'home' | 'library';
+import type { AppPage, RoutablePage } from '../utils/app-page';
+import { hrefForPage, resolvePageFromPath } from '../utils/route-path';
+import { syncAuthDialogFromLocation } from './auth-dialog-store';
+import { syncGameDetailsFromLocation } from './game-details-dialog-store';
+import { syncLibraryQueryFromLocation } from './library-query-store';
+
+export type { AppPage } from '../utils/app-page';
 
 type NavigationListener = (page: AppPage) => void;
 
-let currentPage: AppPage = 'home';
+let currentPage: AppPage = resolvePageFromPath(globalThis.location.pathname);
 const listeners = new Set<NavigationListener>();
 
-function notifyListeners(): void {
+function setCurrentPage(page: AppPage): void {
+  if (page === currentPage) {
+    return;
+  }
+
+  currentPage = page;
+
   for (const listener of listeners) {
     listener(currentPage);
   }
@@ -24,11 +36,22 @@ export function subscribeNavigation(listener: NavigationListener): () => void {
   };
 }
 
-export function navigate(page: AppPage): void {
+export function navigate(page: RoutablePage): void {
   if (page === currentPage) {
     return;
   }
 
-  currentPage = page;
-  notifyListeners();
+  globalThis.history.pushState(undefined, '', hrefForPage(page));
+  syncLibraryQueryFromLocation();
+  syncGameDetailsFromLocation();
+  syncAuthDialogFromLocation();
+  setCurrentPage(page);
+  globalThis.scrollTo({ top: 0 });
+}
+
+export function syncPageFromLocation(): void {
+  syncLibraryQueryFromLocation();
+  setCurrentPage(resolvePageFromPath(globalThis.location.pathname));
+  syncGameDetailsFromLocation();
+  syncAuthDialogFromLocation();
 }
