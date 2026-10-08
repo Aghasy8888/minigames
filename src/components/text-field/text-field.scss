@@ -96,4 +96,24 @@
     height: $size-2;
     object-fit: contain;
   }
+
+  &__error {
+    font-family: $font-family-text;
+    font-size: $font-size-label-medium;
+    font-weight: $font-weight-medium;
+    line-height: 1.3;
+    color: $color-error;
+
+    &[hidden] {
+      display: none;
+    }
+  }
+
+  &--invalid &__control {
+    border-color: $color-error;
+
+    &:focus-within {
+      box-shadow: inset 0 0 0 $border-width-xs $color-error;
+    }
+  }
 }
