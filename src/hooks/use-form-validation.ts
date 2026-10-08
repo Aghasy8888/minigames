@@ -1,3 +1,5 @@
+import { setTextFieldDisabled } from '../components/text-field';
+
 export type FieldValues = Readonly<Record<string, string>>;
 
 export type FieldValidator = (value: string, values: FieldValues) => string | undefined;
@@ -14,10 +16,12 @@ export interface FormValidationOptions {
   fields: Readonly<Record<string, ValidatedField>>;
   submit: HTMLButtonElement;
   onFieldError: (input: HTMLInputElement, message?: string) => void;
+  onValid?: (values: FieldValues) => void;
 }
 
 export interface FormValidation {
   reset: () => void;
+  setBusy: (busy: boolean) => void;
 }
 
 const FIELD_EVENTS = ['input', 'change', 'blur'] as const;
@@ -27,9 +31,10 @@ const FIELD_EVENTS = ['input', 'change', 'blur'] as const;
  * stays disabled until every field is valid, touched or not.
  */
 export function useFormValidation(options: FormValidationOptions): FormValidation {
-  const { form, fields, submit, onFieldError } = options;
+  const { form, fields, submit, onFieldError, onValid } = options;
   const entries = Object.entries(fields);
   const touched = new Set<string>();
+  let busy = false;
 
   function readValues(): FieldValues {
     return Object.fromEntries(entries.map(([name, { input }]) => [name, input.value]));
@@ -49,10 +54,19 @@ export function useFormValidation(options: FormValidationOptions): FormValidatio
   }
 
   function updateSubmit(values: FieldValues): void {
+    if (busy) {
+      submit.disabled = true;
+      return;
+    }
+
     submit.disabled = entries.some(([name]) => errorFor(name, values) !== undefined);
   }
 
   function handleFieldEvent(name: string, revalidates: readonly string[]): void {
+    if (busy) {
+      return;
+    }
+
     touched.add(name);
     const values = readValues();
 
@@ -73,6 +87,22 @@ export function useFormValidation(options: FormValidationOptions): FormValidatio
     }
   }
 
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    if (busy) {
+      return;
+    }
+
+    const values = readValues();
+
+    if (entries.some(([name]) => errorFor(name, values) !== undefined)) {
+      return;
+    }
+
+    onValid?.(values);
+  });
+
   function reset(): void {
     form.reset();
     touched.clear();
@@ -81,10 +111,21 @@ export function useFormValidation(options: FormValidationOptions): FormValidatio
       onFieldError(input);
     }
 
-    submit.disabled = true;
+    updateSubmit(readValues());
+  }
+
+  function setBusy(next: boolean): void {
+    busy = next;
+    form.setAttribute('aria-busy', String(next));
+
+    for (const [, { input }] of entries) {
+      setTextFieldDisabled(input, next);
+    }
+
+    updateSubmit(readValues());
   }
 
   submit.disabled = true;
 
-  return { reset };
+  return { reset, setBusy };
 }

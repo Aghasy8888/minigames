@@ -19,6 +19,8 @@ export const LOGIN_TAB_LABEL = 'Login';
 export const REGISTER_TAB_LABEL = 'Register';
 export const DIVIDER_LABEL = 'OR';
 export const FORGOT_PASSWORD_LABEL = 'Forgot Password?';
+export const LOGIN_SUCCESS_MESSAGE = "You're signed in.";
+export const REGISTER_SUCCESS_MESSAGE = 'Account created.';
 
 export const LOGIN_COPY: AuthPanelCopy = {
   title: 'Welcome Back!',

@@ -78,10 +78,15 @@
   }
 
   &__log-in,
-  &__sign-up {
+  &__sign-up,
+  &__log-out {
     display: none;
     color: $color-on-primary;
     border-color: $color-on-primary;
+  }
+
+  &__profile {
+    display: none;
   }
 
   &__menu {
@@ -164,6 +169,13 @@
     }
   }
 
+  &--authenticated {
+    .header__log-in,
+    .header__sign-up {
+      display: none;
+    }
+  }
+
   @include media-up('phablet') {
     &__inner {
       min-height: $size-9;
@@ -171,6 +183,14 @@
     }
 
     &__sign-up {
+      display: inline-flex;
+    }
+
+    &--authenticated &__sign-up {
+      display: none;
+    }
+
+    &--authenticated &__log-out {
       display: inline-flex;
     }
   }
@@ -182,6 +202,14 @@
 
     &__log-in {
       display: inline-flex;
+    }
+
+    &--authenticated &__log-in {
+      display: none;
+    }
+
+    &--authenticated &__profile {
+      display: flex;
     }
 
     &__menu {

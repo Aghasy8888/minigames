@@ -1,4 +1,5 @@
 import { useBackdropDismiss } from '../../hooks/use-backdrop-dismiss';
+import { setAuthBusy } from '../../store/auth-busy';
 import {
   AUTH_DIALOG_MODE,
   closeAuthDialog,
@@ -68,12 +69,29 @@ export function createAuthDialog(): HTMLDialogElement {
 
   const loginTab = createTab(login, LOGIN_TAB_LABEL);
   const registerTab = createTab(register, REGISTER_TAB_LABEL);
-  const loginPanel = createLoginPanel(() => {
+
+  const authPanels: { login?: AuthPanel; register?: AuthPanel } = {};
+
+  function setPending(busy: boolean): void {
+    setAuthBusy(busy);
+    authPanels.login?.setBusy(busy);
+    authPanels.register?.setBusy(busy);
+    loginTab.disabled = busy;
+    registerTab.disabled = busy;
+  }
+
+  authPanels.login = createLoginPanel(() => {
     openAuthDialog(register);
-  });
-  const registerPanel = createRegisterPanel(() => {
+  }, setPending);
+  authPanels.register = createRegisterPanel(() => {
     openAuthDialog(login);
-  });
+  }, setPending);
+
+  const { login: loginPanel, register: registerPanel } = authPanels;
+
+  if (!loginPanel || !registerPanel) {
+    throw new Error('Auth panels failed to initialize');
+  }
 
   const sections: Record<AuthDialogMode, AuthDialogSection> = {
     [login]: { ...loginPanel, tab: loginTab },

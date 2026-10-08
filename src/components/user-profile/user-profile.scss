@@ -1,0 +1,57 @@
+@use '../../styles/tokens' as *;
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: $size-1;
+
+  &__name {
+    font-family: $font-family-text;
+    font-size: $font-size-body-medium;
+    font-weight: $font-weight-bold;
+    line-height: 1;
+    color: $color-on-primary;
+    white-space: nowrap;
+  }
+
+  &__avatar {
+    position: relative;
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    width: $size-4;
+    height: $size-4;
+    border-radius: $corner-full;
+    background-color: $color-on-primary;
+  }
+
+  &__initials {
+    font-family: $font-family-text;
+    font-size: $font-size-label-large;
+    font-weight: $font-weight-bold;
+    line-height: 1;
+    color: $color-white;
+  }
+
+  &__image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &--on-dark &__name {
+    color: $color-white;
+  }
+
+  &--on-dark &__avatar {
+    background-color: $color-primary;
+  }
+
+  &--on-dark &__initials {
+    color: $color-on-primary;
+  }
+}

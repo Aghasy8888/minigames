@@ -1,5 +1,13 @@
-import { initializeApp, type FirebaseOptions } from 'firebase/app';
-import { getAuth, type Auth } from 'firebase/auth';
+import { FirebaseError, initializeApp, type FirebaseOptions } from 'firebase/app';
+import {
+  createUserWithEmailAndPassword,
+  getAuth,
+  signInWithEmailAndPassword,
+  signOut,
+  updateProfile,
+  type Auth,
+  type User,
+} from 'firebase/auth';
 
 const FIREBASE_ENVIRONMENT_KEYS = {
   apiKey: 'VITE_FIREBASE_API_KEY',
@@ -38,6 +46,58 @@ function readFirebaseConfig(): FirebaseOptions {
   };
 }
 
+export type AuthProfile = {
+  email: string;
+  displayName?: string;
+  avatarUrl?: string;
+};
+
+export type RegisterWithEmailOptions = {
+  email: string;
+  password: string;
+  displayName: string;
+};
+
+const FIREBASE_AUTH_MESSAGES: Readonly<Record<string, string>> = {
+  'auth/email-already-in-use': 'An account with this email already exists.',
+  'auth/invalid-credential': 'Incorrect email or password.',
+  'auth/invalid-email': 'Enter a valid email address.',
+  'auth/network-request-failed': 'Network error. Check your connection and try again.',
+  'auth/too-many-requests': 'Too many attempts. Please wait a moment and try again.',
+  'auth/user-disabled': 'This account has been disabled.',
+  'auth/user-not-found': 'Incorrect email or password.',
+  'auth/weak-password': 'Password is too weak. Use at least 6 characters.',
+  'auth/wrong-password': 'Incorrect email or password.',
+};
+
+const FALLBACK_AUTH_MESSAGE = 'Could not sign you in. Please try again.';
+const MISSING_EMAIL_MESSAGE = 'Sign-in did not return an email address.';
+
+function toAuthError(error: unknown): Error {
+  if (error instanceof FirebaseError) {
+    return new Error(FIREBASE_AUTH_MESSAGES[error.code] ?? FALLBACK_AUTH_MESSAGE);
+  }
+
+  return new Error(FALLBACK_AUTH_MESSAGE);
+}
+
+function toAuthProfile(user: User, fallbackDisplayName?: string): AuthProfile {
+  const { email, displayName: profileName, photoURL } = user;
+
+  if (!email) {
+    throw new Error(MISSING_EMAIL_MESSAGE);
+  }
+
+  const displayName = profileName ?? fallbackDisplayName;
+  const avatarUrl = photoURL ?? undefined;
+
+  return {
+    email,
+    ...(displayName ? { displayName } : {}),
+    ...(avatarUrl ? { avatarUrl } : {}),
+  };
+}
+
 /** Throws when the Firebase config is missing from the environment. */
 export function getFirebaseAuth(): Auth {
   auth ??= getAuth(initializeApp(readFirebaseConfig()));
@@ -47,4 +107,41 @@ export function getFirebaseAuth(): Auth {
 /** Throws when the Firebase config is missing from the environment. */
 export function initFirebaseAuth(): void {
   getFirebaseAuth();
+}
+
+export async function signInWithEmail(email: string, password: string): Promise<AuthProfile> {
+  try {
+    const { user } = await signInWithEmailAndPassword(getFirebaseAuth(), email, password);
+    return toAuthProfile(user);
+  } catch (error) {
+    throw toAuthError(error);
+  }
+}
+
+export async function registerWithEmail({
+  email,
+  password,
+  displayName,
+}: RegisterWithEmailOptions): Promise<AuthProfile> {
+  try {
+    const { user } = await createUserWithEmailAndPassword(getFirebaseAuth(), email, password);
+
+    try {
+      await updateProfile(user, { displayName });
+    } catch {
+      return toAuthProfile(user, displayName);
+    }
+
+    return toAuthProfile(user, displayName);
+  } catch (error) {
+    throw toAuthError(error);
+  }
+}
+
+export async function signOutFirebase(): Promise<void> {
+  try {
+    await signOut(getFirebaseAuth());
+  } catch (error) {
+    throw toAuthError(error);
+  }
 }

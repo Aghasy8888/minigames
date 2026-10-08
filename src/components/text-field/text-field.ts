@@ -138,3 +138,14 @@ export function setTextFieldError(input: HTMLInputElement, message?: string): vo
     input.removeAttribute('aria-describedby');
   }
 }
+
+export function setTextFieldDisabled(input: HTMLInputElement, disabled: boolean): void {
+  input.disabled = disabled;
+  const toggle = input
+    .closest('.text-field')
+    ?.querySelector<HTMLButtonElement>('.text-field__toggle');
+
+  if (toggle) {
+    toggle.disabled = disabled;
+  }
+}

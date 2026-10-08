@@ -1,6 +1,17 @@
 import { googleIcon } from '../../assets/icons';
-import { useFormValidation, type ValidatedField } from '../../hooks/use-form-validation';
-import { AUTH_DIALOG_MODE, type AuthDialogMode } from '../../store/auth-dialog-store';
+import {
+  useFormValidation,
+  type FieldValues,
+  type ValidatedField,
+} from '../../hooks/use-form-validation';
+import { registerWithEmail, signInWithEmail } from '../../services/firebase-auth';
+import {
+  AUTH_DIALOG_MODE,
+  closeAuthDialog,
+  type AuthDialogMode,
+} from '../../store/auth-dialog-store';
+import { startSession } from '../../store/session-store';
+import { showSnackbar } from '../../store/snackbar-store';
 import {
   validateConfirmPassword,
   validateEmail,
@@ -20,8 +31,10 @@ import {
   FORGOT_PASSWORD_LABEL,
   LOGIN_COPY,
   LOGIN_FIELDS,
+  LOGIN_SUCCESS_MESSAGE,
   REGISTER_COPY,
   REGISTER_FIELDS,
+  REGISTER_SUCCESS_MESSAGE,
   type AuthPanelCopy,
   type LoginFieldName,
   type RegisterFieldName,
@@ -35,6 +48,7 @@ export interface AuthPanel {
   panel: HTMLElement;
   /** Clears values, errors, and touched state; disables submit again. */
   reset: () => void;
+  setBusy: (busy: boolean) => void;
 }
 
 interface AuthPanelOptions<Name extends string> {
@@ -42,8 +56,11 @@ interface AuthPanelOptions<Name extends string> {
   copy: AuthPanelCopy;
   fields: Record<Name, CreateTextFieldOptions>;
   rules: Record<Name, FieldRule>;
-  extra?: HTMLElement;
+  extra?: HTMLButtonElement;
   onSwitch: () => void;
+  onPending: (busy: boolean) => void;
+  authenticate: (values: FieldValues) => Promise<void>;
+  successMessage: string;
 }
 
 const LOGIN_RULES: Record<LoginFieldName, FieldRule> = {
@@ -59,6 +76,8 @@ const REGISTER_RULES: Record<RegisterFieldName, FieldRule> = {
     validate: (value, values) => validateConfirmPassword(value, values.password ?? ''),
   },
 };
+
+const FALLBACK_AUTH_MESSAGE = 'Could not sign you in. Please try again.';
 
 function createIconImage(source: string): HTMLImageElement {
   const icon = document.createElement('img');
@@ -99,7 +118,7 @@ function createSwitchLine(
   question: string,
   actionLabel: string,
   onSwitch: () => void,
-): HTMLParagraphElement {
+): { line: HTMLParagraphElement; action: HTMLButtonElement } {
   const line = document.createElement('p');
   line.className = 'auth-dialog__switch';
   line.append(`${question} `);
@@ -111,7 +130,7 @@ function createSwitchLine(
   action.addEventListener('click', onSwitch);
 
   line.append(action);
-  return line;
+  return { line, action };
 }
 
 function createForgotPassword(): HTMLButtonElement {
@@ -122,8 +141,13 @@ function createForgotPassword(): HTMLButtonElement {
   return forgotPassword;
 }
 
+function messageFromError(error: unknown): string {
+  return error instanceof Error ? error.message : FALLBACK_AUTH_MESSAGE;
+}
+
 function createAuthPanel<Name extends string>(options: AuthPanelOptions<Name>): AuthPanel {
-  const { mode, copy, fields, rules, extra, onSwitch } = options;
+  const { mode, copy, fields, rules, extra, onSwitch, onPending, authenticate, successMessage } =
+    options;
 
   const panel = document.createElement('section');
   panel.className = 'auth-dialog__panel';
@@ -134,9 +158,6 @@ function createAuthPanel<Name extends string>(options: AuthPanelOptions<Name>): 
   const form = document.createElement('form');
   form.className = 'auth-dialog__form';
   form.noValidate = true;
-  form.addEventListener('submit', (event) => {
-    event.preventDefault();
-  });
 
   const fieldList = document.createElement('div');
   fieldList.className = 'auth-dialog__fields';
@@ -162,38 +183,69 @@ function createAuthPanel<Name extends string>(options: AuthPanelOptions<Name>): 
     className: 'button--block button--raised',
   });
 
+  const googleButton = createButton({
+    label: copy.googleLabel,
+    variant: 'secondary',
+    size: 'large',
+    icon: createIconImage(googleIcon),
+    className: 'button--block button--icon-md',
+  });
+
   const actions = document.createElement('div');
   actions.className = 'auth-dialog__actions';
-  actions.append(
-    submit,
-    createDivider(),
-    createButton({
-      label: copy.googleLabel,
-      variant: 'secondary',
-      size: 'large',
-      icon: createIconImage(googleIcon),
-      className: 'button--block button--icon-md',
-    }),
+  actions.append(submit, createDivider(), googleButton);
+
+  const { line: switchLine, action: switchAction } = createSwitchLine(
+    copy.switchQuestion,
+    copy.switchAction,
+    onSwitch,
   );
 
-  form.append(
-    fieldList,
-    actions,
-    createSwitchLine(copy.switchQuestion, copy.switchAction, onSwitch),
-  );
+  form.append(fieldList, actions, switchLine);
   panel.append(createHeading(copy.title, copy.subtitle), form);
 
-  const { reset } = useFormValidation({
+  const extraControls = [googleButton, switchAction, extra].filter(
+    (control): control is HTMLButtonElement => control !== undefined,
+  );
+
+  const { reset, setBusy: setFormBusy } = useFormValidation({
     form,
     fields: validatedFields,
     submit,
     onFieldError: setTextFieldError,
+    onValid(values) {
+      void submitAuthentication(values);
+    },
   });
 
-  return { panel, reset };
+  function setBusy(busy: boolean): void {
+    setFormBusy(busy);
+    for (const control of extraControls) {
+      control.disabled = busy;
+    }
+  }
+
+  async function submitAuthentication(values: FieldValues): Promise<void> {
+    onPending(true);
+
+    try {
+      await authenticate(values);
+      showSnackbar({ variant: 'success', message: successMessage });
+      onPending(false);
+      closeAuthDialog();
+    } catch (error) {
+      onPending(false);
+      showSnackbar({ variant: 'error', message: messageFromError(error) });
+    }
+  }
+
+  return { panel, reset, setBusy };
 }
 
-export function createLoginPanel(onSwitch: () => void): AuthPanel {
+export function createLoginPanel(
+  onSwitch: () => void,
+  onPending: (busy: boolean) => void,
+): AuthPanel {
   return createAuthPanel({
     mode: login,
     copy: LOGIN_COPY,
@@ -201,15 +253,34 @@ export function createLoginPanel(onSwitch: () => void): AuthPanel {
     rules: LOGIN_RULES,
     extra: createForgotPassword(),
     onSwitch,
+    onPending,
+    successMessage: LOGIN_SUCCESS_MESSAGE,
+    async authenticate(values) {
+      const profile = await signInWithEmail(values.email ?? '', values.password ?? '');
+      startSession(profile);
+    },
   });
 }
 
-export function createRegisterPanel(onSwitch: () => void): AuthPanel {
+export function createRegisterPanel(
+  onSwitch: () => void,
+  onPending: (busy: boolean) => void,
+): AuthPanel {
   return createAuthPanel({
     mode: register,
     copy: REGISTER_COPY,
     fields: REGISTER_FIELDS,
     rules: REGISTER_RULES,
     onSwitch,
+    onPending,
+    successMessage: REGISTER_SUCCESS_MESSAGE,
+    async authenticate(values) {
+      const profile = await registerWithEmail({
+        email: values.email ?? '',
+        password: values.password ?? '',
+        displayName: values.username ?? '',
+      });
+      startSession(profile);
+    },
   });
 }

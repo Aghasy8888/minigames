@@ -1,4 +1,5 @@
 import { hrefWithGame, parseGameQuery } from '../utils/game-dialog-query';
+import { checkSessionExpiry } from './session-store';
 
 export interface GameDetailsDialogState {
   /** Slug from `?game=`; undefined means the dialog is closed. */
@@ -27,6 +28,8 @@ export function getGameDetailsDialogState(): GameDetailsDialogState {
 }
 
 export function openGameDetailsDialog(slug: string): void {
+  checkSessionExpiry();
+
   if (slug === state.slug) {
     return;
   }
@@ -36,6 +39,8 @@ export function openGameDetailsDialog(slug: string): void {
 }
 
 export function closeGameDetailsDialog(): void {
+  checkSessionExpiry();
+
   if (state.slug === undefined) {
     return;
   }

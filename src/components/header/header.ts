@@ -1,19 +1,29 @@
 import { closeIcon, hamburgerButtonIcon } from '../../assets/icons';
 import { logoImage } from '../../assets/images';
 import { useNavLink } from '../../hooks/use-nav-link';
-import { subscribeNavigation } from '../../store/navigation-store';
 import {
   AUTH_DIALOG_MODE,
   openAuthDialog,
   type AuthDialogMode,
 } from '../../store/auth-dialog-store';
+import { subscribeNavigation } from '../../store/navigation-store';
+import {
+  SESSION_END_REASON,
+  SESSION_STATUS,
+  endSession,
+  subscribeSession,
+  type SessionState,
+} from '../../store/session-store';
 import { HOME_LINK, MAIN_NAV_ITEMS, syncActiveNavLinks } from '../../utils/nav-items';
 import { lockScroll, unlockScroll } from '../../utils/scroll-lock';
 import { createButton } from '../button';
 import { createMobileNav } from '../mobile-nav';
+import { createUserProfile } from '../user-profile';
 import './header.scss';
 
 const { login, register } = AUTH_DIALOG_MODE;
+const { authenticated } = SESSION_STATUS;
+const { logout } = SESSION_END_REASON;
 
 const MENU_TRANSITION_MS = 250;
 const ACTIVE_LINK_CLASS = 'header__nav-link--active';
@@ -124,6 +134,19 @@ export function createHeader(): HTMLElement {
   });
   signUpButton.classList.add('header__sign-up');
 
+  const profileSlot = document.createElement('div');
+  profileSlot.className = 'header__profile';
+
+  const logOutButton = createButton({
+    label: 'Log Out',
+    variant: 'secondary',
+    size: 'medium',
+    onClick: () => {
+      void endSession({ reason: logout });
+    },
+  });
+  logOutButton.classList.add('header__log-out');
+
   const menuButton = createMenuButton();
   let isMenuOpen = false;
   let closeTimerId: ReturnType<typeof globalThis.setTimeout> | undefined;
@@ -208,7 +231,7 @@ export function createHeader(): HTMLElement {
   tabletMediaQuery.addEventListener('change', handleTabletChange);
 
   const nav = createNav();
-  actions.append(nav, logInButton, signUpButton, menuButton);
+  actions.append(nav, logInButton, signUpButton, profileSlot, logOutButton, menuButton);
   inner.append(createLogo(), actions);
   header.append(inner, mobileNav);
 
@@ -216,6 +239,21 @@ export function createHeader(): HTMLElement {
   subscribeNavigation((page) => {
     syncActiveNavLinks(navLinks, page, ACTIVE_LINK_CLASS);
   });
+
+  function applySession(session: SessionState): void {
+    const isAuthenticated = session.status === authenticated;
+    header.classList.toggle('header--authenticated', isAuthenticated);
+
+    if (isAuthenticated) {
+      const { email, displayName, avatarUrl } = session;
+      profileSlot.replaceChildren(createUserProfile({ email, displayName, avatarUrl }));
+      return;
+    }
+
+    profileSlot.replaceChildren();
+  }
+
+  subscribeSession(applySession);
 
   return header;
 }
