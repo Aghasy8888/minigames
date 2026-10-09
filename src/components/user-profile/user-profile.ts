@@ -1,3 +1,4 @@
+import { personIcon } from '../../assets/icons';
 import { getProfileDisplayName } from '../../utils/get-profile-display-name';
 import { getProfileInitials } from '../../utils/get-profile-initials';
 import './user-profile.scss';
@@ -14,6 +15,20 @@ export type CreateUserProfileOptions = UserProfileData & {
   avatarPosition?: UserProfileAvatarPosition;
   className?: string;
 };
+
+function createAvatarFallback(initials: string | undefined): HTMLElement {
+  const fallback = document.createElement('span');
+
+  if (initials) {
+    fallback.className = 'user-profile__initials';
+    fallback.textContent = initials;
+    return fallback;
+  }
+
+  fallback.className = 'user-profile__fallback';
+  fallback.style.maskImage = `url("${personIcon}")`;
+  return fallback;
+}
 
 export function createUserProfile({
   email,
@@ -35,14 +50,13 @@ export function createUserProfile({
   avatar.className = 'user-profile__avatar';
   avatar.setAttribute('aria-hidden', 'true');
 
-  const initials = document.createElement('span');
-  initials.className = 'user-profile__initials';
-  initials.textContent = getProfileInitials(name);
-  avatar.append(initials);
+  avatar.append(createAvatarFallback(getProfileInitials(name)));
 
   if (avatarUrl) {
     const image = document.createElement('img');
     image.className = 'user-profile__image';
+    // Google profile photos can reject requests that send a referrer
+    image.referrerPolicy = 'no-referrer';
     image.src = avatarUrl;
     image.alt = '';
     image.addEventListener('error', () => {

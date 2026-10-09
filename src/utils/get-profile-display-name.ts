@@ -1,4 +1,4 @@
-const FALLBACK_PROFILE_NAME = 'Player';
+export const FALLBACK_PROFILE_NAME = 'Player';
 
 export type ProfileNameSource = {
   displayName?: string;

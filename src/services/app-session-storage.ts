@@ -1,62 +1,67 @@
+import { getProfileDisplayName } from '../utils/get-profile-display-name';
+
 export const APP_SESSION_TTL_MS = 5 * 60 * 1000;
 export const APP_SESSION_STORAGE_KEY = 'minigames:minigames-aghasy:app-session';
 
 export type AppSessionRecord = {
   email: string;
-  displayName?: string;
-  avatarUrl?: string;
+  displayName: string;
+  /** `Date.now()` at successful authentication; the only input to expiry. */
   authenticatedAt: number;
-  startedAt: number;
-  expiresAt: number;
+  avatarUrl?: string;
 };
 
 function isNonEmptyString(value: unknown): value is string {
   return typeof value === 'string' && value !== '';
 }
 
-function isEpochMilliseconds(value: unknown): value is number {
-  return typeof value === 'number' && Number.isFinite(value);
-}
-
-function readOptionalString(value: unknown): string | undefined {
-  return isNonEmptyString(value) ? value : undefined;
+function isPastTimestamp(value: unknown, now: number): value is number {
+  return typeof value === 'number' && Number.isInteger(value) && value > 0 && value <= now;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === 'object';
 }
 
-export function parseAppSessionRecord(value: unknown): AppSessionRecord | undefined {
+/**
+ * A missing or wrongly typed field, or an `authenticatedAt` in the future (which would never
+ * expire), makes the whole record invalid.
+ */
+export function parseAppSessionRecord(
+  value: unknown,
+  now = Date.now(),
+): AppSessionRecord | undefined {
   if (!isRecord(value)) {
     return undefined;
   }
 
-  const { email, authenticatedAt, startedAt, expiresAt } = value;
+  const { email, displayName, authenticatedAt, avatarUrl } = value;
 
-  if (!isNonEmptyString(email) || !isEpochMilliseconds(authenticatedAt)) {
+  if (
+    !isNonEmptyString(email) ||
+    !isNonEmptyString(displayName) ||
+    !isPastTimestamp(authenticatedAt, now)
+  ) {
     return undefined;
   }
 
-  const resolvedStartedAt = isEpochMilliseconds(startedAt) ? startedAt : authenticatedAt;
-  const resolvedExpiresAt = isEpochMilliseconds(expiresAt)
-    ? expiresAt
-    : authenticatedAt + APP_SESSION_TTL_MS;
-
-  const displayName = readOptionalString(value.displayName);
-  const avatarUrl = readOptionalString(value.avatarUrl);
+  if (avatarUrl !== undefined && !isNonEmptyString(avatarUrl)) {
+    return undefined;
+  }
 
   return {
     email,
+    displayName,
     authenticatedAt,
-    startedAt: resolvedStartedAt,
-    expiresAt: resolvedExpiresAt,
-    ...(displayName ? { displayName } : {}),
-    ...(avatarUrl ? { avatarUrl } : {}),
+    ...(avatarUrl === undefined ? {} : { avatarUrl }),
   };
 }
 
-export function isAppSessionExpired(record: AppSessionRecord, now = Date.now()): boolean {
-  return now >= record.authenticatedAt + APP_SESSION_TTL_MS;
+export function isAppSessionExpired(
+  { authenticatedAt }: Pick<AppSessionRecord, 'authenticatedAt'>,
+  now = Date.now(),
+): boolean {
+  return now >= authenticatedAt + APP_SESSION_TTL_MS;
 }
 
 export function readAppSession(): AppSessionRecord | undefined {
@@ -90,14 +95,10 @@ export function createAppSessionRecord({
   displayName?: string;
   avatarUrl?: string;
 }): AppSessionRecord {
-  const authenticatedAt = Date.now();
-
   return {
     email,
-    authenticatedAt,
-    startedAt: authenticatedAt,
-    expiresAt: authenticatedAt + APP_SESSION_TTL_MS,
-    ...(displayName ? { displayName } : {}),
+    displayName: getProfileDisplayName({ email, displayName }),
+    authenticatedAt: Date.now(),
     ...(avatarUrl ? { avatarUrl } : {}),
   };
 }

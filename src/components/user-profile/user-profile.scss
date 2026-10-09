@@ -37,6 +37,15 @@ $user-profile-name-breakpoint: 900px; // no exact $breakpoints-* match
     color: $color-white;
   }
 
+  &__fallback {
+    width: $size-2;
+    height: $size-2;
+    background-color: $color-white;
+    mask-position: center;
+    mask-repeat: no-repeat;
+    mask-size: contain;
+  }
+
   &__image {
     position: absolute;
     inset: 0;
@@ -73,5 +82,9 @@ $user-profile-name-breakpoint: 900px; // no exact $breakpoints-* match
 
   &--on-dark &__initials {
     color: $color-on-primary;
+  }
+
+  &--on-dark &__fallback {
+    background-color: $color-on-primary;
   }
 }

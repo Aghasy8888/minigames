@@ -37,10 +37,9 @@ export type SessionState =
   | {
       status: typeof authenticated;
       email: string;
-      displayName?: string;
+      displayName: string;
       avatarUrl?: string;
       authenticatedAt: number;
-      expiresAt: number;
     };
 
 type SessionListener = (state: SessionState) => void;
@@ -52,14 +51,13 @@ const SIGNOUT_ERROR_MESSAGE = 'Signed out of MiniGames, but ending the saved log
 type AuthenticatedSession = Exclude<SessionState, { status: typeof guest }>;
 
 function toAuthenticatedState(record: AppSessionRecord): AuthenticatedSession {
-  const { email, displayName, avatarUrl, authenticatedAt, expiresAt } = record;
+  const { email, displayName, avatarUrl, authenticatedAt } = record;
 
   return {
     status: authenticated,
     email,
+    displayName,
     authenticatedAt,
-    expiresAt,
-    ...(displayName ? { displayName } : {}),
     ...(avatarUrl ? { avatarUrl } : {}),
   };
 }
@@ -138,7 +136,7 @@ export function checkSessionExpiry(): void {
     return;
   }
 
-  if (Date.now() >= state.authenticatedAt + APP_SESSION_TTL_MS) {
+  if (isAppSessionExpired(state)) {
     void endSession({ reason: expiry });
   }
 }
