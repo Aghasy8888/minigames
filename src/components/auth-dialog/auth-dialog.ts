@@ -1,5 +1,5 @@
 import { useBackdropDismiss } from '../../hooks/use-backdrop-dismiss';
-import { setAuthBusy } from '../../store/auth-busy';
+import { isAuthBusy, setAuthBusy } from '../../store/auth-busy';
 import {
   AUTH_DIALOG_MODE,
   closeAuthDialog,
@@ -184,6 +184,14 @@ export function createAuthDialog(): HTMLDialogElement {
     openAuthDialog(register);
   });
 
+  // Chrome closes a dialog on a repeated Escape even when `cancel` is prevented. Listen on the
+  // document: disabling the focused control while busy moves focus to <body>, outside the dialog.
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && dialog.open && isAuthBusy()) {
+      event.preventDefault();
+    }
+  });
+
   dialog.addEventListener('cancel', (event) => {
     event.preventDefault();
     closeAuthDialog();
@@ -192,6 +200,11 @@ export function createAuthDialog(): HTMLDialogElement {
   useBackdropDismiss(dialog, closeAuthDialog);
 
   dialog.addEventListener('close', () => {
+    if (isAuthBusy()) {
+      dialog.showModal();
+      return;
+    }
+
     dialog.classList.remove('auth-dialog--open', 'auth-dialog--closing');
     resetForms();
 

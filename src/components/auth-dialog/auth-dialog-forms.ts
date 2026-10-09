@@ -4,7 +4,12 @@ import {
   type FieldValues,
   type ValidatedField,
 } from '../../hooks/use-form-validation';
-import { registerWithEmail, signInWithEmail } from '../../services/firebase-auth';
+import {
+  AuthCancelledError,
+  registerWithEmail,
+  signInWithEmail,
+  signInWithGoogle,
+} from '../../services/firebase-auth';
 import {
   AUTH_DIALOG_MODE,
   closeAuthDialog,
@@ -19,7 +24,7 @@ import {
   validateRegisterPassword,
   validateUsername,
 } from '../../utils/auth-validation';
-import { createButton } from '../button';
+import { clearButtonLoading, createButton, setButtonLoading } from '../button';
 import {
   createTextField,
   getTextFieldInput,
@@ -29,6 +34,10 @@ import {
 import {
   DIVIDER_LABEL,
   FORGOT_PASSWORD_LABEL,
+  GOOGLE_CANCELLED_MESSAGE,
+  GOOGLE_CHECKING_LABEL,
+  GOOGLE_SUCCESS_MESSAGE,
+  GOOGLE_WAITING_LABEL,
   LOGIN_COPY,
   LOGIN_FIELDS,
   LOGIN_SUCCESS_MESSAGE,
@@ -61,6 +70,13 @@ interface AuthPanelOptions<Name extends string> {
   onPending: (busy: boolean) => void;
   authenticate: (values: FieldValues) => Promise<void>;
   successMessage: string;
+}
+
+interface RunAuthenticationOptions {
+  run: () => Promise<void>;
+  message: string;
+  trigger: HTMLButtonElement;
+  pendingLabel: string;
 }
 
 const LOGIN_RULES: Record<LoginFieldName, FieldRule> = {
@@ -145,6 +161,11 @@ function messageFromError(error: unknown): string {
   return error instanceof Error ? error.message : FALLBACK_AUTH_MESSAGE;
 }
 
+async function authenticateWithGoogle(): Promise<void> {
+  const profile = await signInWithGoogle();
+  startSession(profile);
+}
+
 function createAuthPanel<Name extends string>(options: AuthPanelOptions<Name>): AuthPanel {
   const { mode, copy, fields, rules, extra, onSwitch, onPending, authenticate, successMessage } =
     options;
@@ -189,6 +210,7 @@ function createAuthPanel<Name extends string>(options: AuthPanelOptions<Name>): 
     size: 'large',
     icon: createIconImage(googleIcon),
     className: 'button--block button--icon-md',
+    onClick: startGoogleSignIn,
   });
 
   const actions = document.createElement('div');
@@ -214,7 +236,12 @@ function createAuthPanel<Name extends string>(options: AuthPanelOptions<Name>): 
     submit,
     onFieldError: setTextFieldError,
     onValid(values) {
-      void submitAuthentication(values);
+      void runAuthentication({
+        run: () => authenticate(values),
+        message: successMessage,
+        trigger: submit,
+        pendingLabel: copy.pendingLabel,
+      });
     },
   });
 
@@ -225,18 +252,53 @@ function createAuthPanel<Name extends string>(options: AuthPanelOptions<Name>): 
     }
   }
 
-  async function submitAuthentication(values: FieldValues): Promise<void> {
+  // Firebase reports a closed popup only a few seconds later; focus returning means it's closed
+  function startGoogleSignIn(): void {
+    const showChecking = (): void => {
+      setButtonLoading(googleButton, GOOGLE_CHECKING_LABEL);
+    };
+
+    globalThis.addEventListener('focus', showChecking, { once: true });
+
+    void runAuthentication({
+      run: authenticateWithGoogle,
+      message: GOOGLE_SUCCESS_MESSAGE,
+      trigger: googleButton,
+      pendingLabel: GOOGLE_WAITING_LABEL,
+    }).finally(() => {
+      globalThis.removeEventListener('focus', showChecking);
+    });
+  }
+
+  /** `run` must start its provider call synchronously so a Google popup isn't blocked. */
+  async function runAuthentication({
+    run,
+    message,
+    trigger,
+    pendingLabel,
+  }: RunAuthenticationOptions): Promise<void> {
     onPending(true);
+    setButtonLoading(trigger, pendingLabel);
 
     try {
-      await authenticate(values);
-      showSnackbar({ variant: 'success', message: successMessage });
-      onPending(false);
-      closeAuthDialog();
+      await run();
     } catch (error) {
+      clearButtonLoading(trigger);
       onPending(false);
+
+      if (error instanceof AuthCancelledError) {
+        showSnackbar({ variant: 'info', message: GOOGLE_CANCELLED_MESSAGE });
+        return;
+      }
+
       showSnackbar({ variant: 'error', message: messageFromError(error) });
+      return;
     }
+
+    clearButtonLoading(trigger);
+    showSnackbar({ variant: 'success', message });
+    onPending(false);
+    closeAuthDialog();
   }
 
   return { panel, reset, setBusy };

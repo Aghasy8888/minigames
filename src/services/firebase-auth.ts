@@ -2,7 +2,9 @@ import { FirebaseError, initializeApp, type FirebaseOptions } from 'firebase/app
 import {
   createUserWithEmailAndPassword,
   getAuth,
+  GoogleAuthProvider,
   signInWithEmailAndPassword,
+  signInWithPopup,
   signOut,
   updateProfile,
   type Auth,
@@ -58,23 +60,48 @@ export type RegisterWithEmailOptions = {
   displayName: string;
 };
 
+/** Thrown when the user closes or cancels the provider sign-in flow; not a failure. */
+export class AuthCancelledError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'AuthCancelledError';
+  }
+}
+
 const FIREBASE_AUTH_MESSAGES: Readonly<Record<string, string>> = {
+  'auth/account-exists-with-different-credential':
+    'This email is already linked to another sign-in method. Try logging in with email and password.',
   'auth/email-already-in-use': 'An account with this email already exists.',
   'auth/invalid-credential': 'Incorrect email or password.',
   'auth/invalid-email': 'Enter a valid email address.',
   'auth/network-request-failed': 'Network error. Check your connection and try again.',
+  'auth/operation-not-allowed': 'This sign-in method is not available right now.',
+  'auth/popup-blocked':
+    'Your browser blocked the Google sign-in window. Allow pop-ups for this site and try again.',
   'auth/too-many-requests': 'Too many attempts. Please wait a moment and try again.',
+  'auth/unauthorized-domain': 'Google sign-in is not available on this site right now.',
   'auth/user-disabled': 'This account has been disabled.',
   'auth/user-not-found': 'Incorrect email or password.',
   'auth/weak-password': 'Password is too weak. Use at least 6 characters.',
   'auth/wrong-password': 'Incorrect email or password.',
 };
 
+const CANCELLED_AUTH_CODES: ReadonlySet<string> = new Set([
+  'auth/cancelled-popup-request',
+  'auth/popup-closed-by-user',
+  'auth/user-cancelled',
+]);
+
 const FALLBACK_AUTH_MESSAGE = 'Could not sign you in. Please try again.';
+const CANCELLED_AUTH_MESSAGE = 'Sign-in was canceled.';
 const MISSING_EMAIL_MESSAGE = 'Sign-in did not return an email address.';
 
 function toAuthError(error: unknown): Error {
   if (error instanceof FirebaseError) {
+    if (CANCELLED_AUTH_CODES.has(error.code)) {
+      return new AuthCancelledError(CANCELLED_AUTH_MESSAGE);
+    }
+
     return new Error(FIREBASE_AUTH_MESSAGES[error.code] ?? FALLBACK_AUTH_MESSAGE);
   }
 
@@ -133,6 +160,19 @@ export async function registerWithEmail({
     }
 
     return toAuthProfile(user, displayName);
+  } catch (error) {
+    throw toAuthError(error);
+  }
+}
+
+/** Must be called straight from a click handler, before any other await, or the popup is blocked. */
+export async function signInWithGoogle(): Promise<AuthProfile> {
+  const provider = new GoogleAuthProvider();
+  provider.setCustomParameters({ prompt: 'select_account' });
+
+  try {
+    const { user } = await signInWithPopup(getFirebaseAuth(), provider);
+    return toAuthProfile(user);
   } catch (error) {
     throw toAuthError(error);
   }

@@ -8,6 +8,7 @@ export interface AuthPanelCopy {
   title: string;
   subtitle: string;
   submitLabel: string;
+  pendingLabel: string;
   googleLabel: string;
   switchQuestion: string;
   switchAction: string;
@@ -21,11 +22,16 @@ export const DIVIDER_LABEL = 'OR';
 export const FORGOT_PASSWORD_LABEL = 'Forgot Password?';
 export const LOGIN_SUCCESS_MESSAGE = "You're signed in.";
 export const REGISTER_SUCCESS_MESSAGE = 'Account created.';
+export const GOOGLE_SUCCESS_MESSAGE = "You're signed in with Google.";
+export const GOOGLE_CANCELLED_MESSAGE = 'Google sign-in was canceled.';
+export const GOOGLE_WAITING_LABEL = 'Waiting for Google…';
+export const GOOGLE_CHECKING_LABEL = 'Checking sign-in…';
 
 export const LOGIN_COPY: AuthPanelCopy = {
   title: 'Welcome Back!',
   subtitle: 'Sign in to resume your games and progress.',
   submitLabel: 'Login',
+  pendingLabel: 'Logging in…',
   googleLabel: 'Continue with Google',
   switchQuestion: "Don't have an account?",
   switchAction: 'Register',
@@ -35,6 +41,7 @@ export const REGISTER_COPY: AuthPanelCopy = {
   title: 'Create Account',
   subtitle: 'Join MiniGames to track your score & streak.',
   submitLabel: 'Create Account',
+  pendingLabel: 'Creating account…',
   googleLabel: 'Sign up with Google',
   switchQuestion: 'Already have an account?',
   switchAction: 'Login',
