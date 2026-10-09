@@ -8,7 +8,10 @@ export type UserProfileData = {
   avatarUrl?: string;
 };
 
+export type UserProfileAvatarPosition = 'start' | 'end';
+
 export type CreateUserProfileOptions = UserProfileData & {
+  avatarPosition?: UserProfileAvatarPosition;
   className?: string;
 };
 
@@ -16,6 +19,7 @@ export function createUserProfile({
   email,
   displayName,
   avatarUrl,
+  avatarPosition = 'end',
   className,
 }: CreateUserProfileOptions): HTMLElement {
   const root = document.createElement('div');
@@ -47,6 +51,11 @@ export function createUserProfile({
     avatar.append(image);
   }
 
-  root.append(nameElement, avatar);
+  if (avatarPosition === 'start') {
+    root.append(avatar, nameElement);
+  } else {
+    root.append(nameElement, avatar);
+  }
+
   return root;
 }

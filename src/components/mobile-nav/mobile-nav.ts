@@ -127,7 +127,13 @@ export function createMobileNav(options: CreateMobileNavOptions = {}): HTMLEleme
     if (session.status === authenticated) {
       const { email, displayName, avatarUrl } = session;
       actions.replaceChildren(
-        createUserProfile({ email, displayName, avatarUrl, className: 'user-profile--on-dark' }),
+        createUserProfile({
+          email,
+          displayName,
+          avatarUrl,
+          avatarPosition: 'start',
+          className: 'user-profile--on-dark',
+        }),
         logOutButton,
       );
       return;

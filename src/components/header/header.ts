@@ -246,7 +246,9 @@ export function createHeader(): HTMLElement {
 
     if (isAuthenticated) {
       const { email, displayName, avatarUrl } = session;
-      profileSlot.replaceChildren(createUserProfile({ email, displayName, avatarUrl }));
+      profileSlot.replaceChildren(
+        createUserProfile({ email, displayName, avatarUrl, className: 'user-profile--compact' }),
+      );
       return;
     }
 
