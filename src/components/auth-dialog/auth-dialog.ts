@@ -1,4 +1,5 @@
 import { useBackdropDismiss } from '../../hooks/use-backdrop-dismiss';
+import { raiseTopLayer, releaseTopLayer } from '../../hooks/use-top-layer';
 import { isAuthBusy, setAuthBusy } from '../../store/auth-busy';
 import {
   AUTH_DIALOG_MODE,
@@ -155,6 +156,7 @@ export function createAuthDialog(): HTMLDialogElement {
     closeTimerId = globalThis.setTimeout(() => {
       dialog.classList.remove('auth-dialog--closing');
       dialog.close();
+      releaseTopLayer(dialog);
     }, TRANSITION_MS);
   }
 
@@ -168,6 +170,7 @@ export function createAuthDialog(): HTMLDialogElement {
       currentMode = mode;
       applyMode(mode);
       dialog.showModal();
+      raiseTopLayer(dialog);
       lockScroll();
       isLocked = true;
     }
@@ -202,6 +205,7 @@ export function createAuthDialog(): HTMLDialogElement {
   dialog.addEventListener('close', () => {
     if (isAuthBusy()) {
       dialog.showModal();
+      raiseTopLayer(dialog);
       return;
     }
 

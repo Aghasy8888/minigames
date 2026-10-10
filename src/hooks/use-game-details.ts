@@ -54,7 +54,8 @@ function toGameDetailsState(state: GameSlugLoadState<GameDetails>): GameDetailsS
 }
 
 /**
- * Loads `GET /api/games/{slug}` whenever the dialog's `?game=` slug changes. An unknown slug (404)
+ * Loads `GET /api/games/{slug}` (with `userEmail` while a session is active) whenever the dialog's
+ * `?game=` slug or the session changes. An unknown slug (404)
  * closes the dialog with an error snackbar instead of showing a banner for a game that doesn't exist.
  */
 export function useGameDetails(): GameDetailsController {
@@ -62,11 +63,11 @@ export function useGameDetails(): GameDetailsController {
   const listeners = new Set<(state: GameDetailsState) => void>();
 
   const slugLoad = useGameSlugLoad<GameDetails>({
-    async load(slug, signal) {
+    async load(slug, { signal, userEmail }) {
       missingSlug = undefined;
 
       try {
-        const { data } = await gamesApi.fetchGameDetails(slug, { signal });
+        const { data } = await gamesApi.fetchGameDetails(slug, { userEmail, signal });
         return { items: [data] };
       } catch (error) {
         if (error instanceof ApiError && error.status === NOT_FOUND_STATUS) {

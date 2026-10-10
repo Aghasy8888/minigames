@@ -1,18 +1,8 @@
-import {
-  addToFavoriteIcon,
-  closeDarkIcon,
-  closeDefaultIcon,
-  favoriteIcon,
-} from '../../assets/icons';
+import { closeDarkIcon, closeDefaultIcon } from '../../assets/icons';
 import { useImageReady } from '../../hooks/use-image-ready';
 import { resolveGameImage } from '../../utils/resolve-game-image';
-import { createButton } from '../button';
 import { createSkeleton, fadeOutSkeleton } from '../skeleton';
-import {
-  ADD_TO_FAVORITES_LABEL,
-  CLOSE_DIALOG_ARIA_LABEL,
-  REMOVE_FROM_FAVORITES_LABEL,
-} from './game-details-dialog-data';
+import { CLOSE_DIALOG_ARIA_LABEL } from './game-details-dialog-data';
 
 export function createIconImage(source: string, className: string): HTMLImageElement {
   const icon = document.createElement('img');
@@ -105,39 +95,4 @@ export function createSpecWidget(label: string, value: string): HTMLElement {
 
   widget.append(labelElement, valueElement);
   return widget;
-}
-
-/** Local toggle seeded from the API; the favorite endpoint is wired in a later step. */
-export function createFavoriteToggle(initiallyFavorited: boolean): HTMLButtonElement {
-  let isFavorited = initiallyFavorited;
-  const icon = createIconImage(addToFavoriteIcon, 'game-details-dialog__favorite-icon');
-
-  const button = createButton({
-    label: ADD_TO_FAVORITES_LABEL,
-    variant: 'secondary',
-    size: 'large',
-    icon,
-    className: 'button--dialog-cta button--dialog-cta-icon game-details-dialog__favorite',
-    ariaLabel: ADD_TO_FAVORITES_LABEL,
-  });
-  const labelElement = button.querySelector('.button__label');
-
-  function sync(): void {
-    const label = isFavorited ? REMOVE_FROM_FAVORITES_LABEL : ADD_TO_FAVORITES_LABEL;
-    icon.src = isFavorited ? favoriteIcon : addToFavoriteIcon;
-    if (labelElement) {
-      labelElement.textContent = label;
-    }
-    button.setAttribute('aria-label', label);
-    button.setAttribute('aria-pressed', String(isFavorited));
-    button.classList.toggle('game-details-dialog__favorite--active', isFavorited);
-  }
-
-  button.addEventListener('click', () => {
-    isFavorited = !isFavorited;
-    sync();
-  });
-
-  sync();
-  return button;
 }
