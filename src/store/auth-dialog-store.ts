@@ -1,6 +1,5 @@
 import { hrefWithAuth, parseAuthQuery, type AuthDialogMode } from '../utils/auth-dialog-query';
 import { isAuthBusy } from './auth-busy';
-import { syncGameDetailsFromLocation } from './game-details-dialog-store';
 import { SESSION_STATUS, checkSessionExpiry, getSession } from './session-store';
 import { showSnackbar } from './snackbar-store';
 
@@ -63,7 +62,6 @@ export function openAuthDialog(mode: AuthDialogMode): void {
   }
 
   globalThis.history.pushState(undefined, '', hrefWithAuth(mode));
-  syncGameDetailsFromLocation();
   setState({ mode });
 }
 

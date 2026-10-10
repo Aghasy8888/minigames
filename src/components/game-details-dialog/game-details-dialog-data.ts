@@ -1,6 +1,8 @@
 export const PLAY_NOW_LABEL = 'Play Now';
 export const ADD_TO_FAVORITES_LABEL = 'Add to Favorites';
 export const REMOVE_FROM_FAVORITES_LABEL = 'Remove from Favorites';
+export const ADDING_TO_FAVORITES_LABEL = 'Adding to Favorites…';
+export const REMOVING_FROM_FAVORITES_LABEL = 'Removing from Favorites…';
 export const CLOSE_DIALOG_ARIA_LABEL = 'Close game details';
 export const GAME_DETAILS_ARIA_LABEL = 'Game details';
 export const GAME_DETAILS_TITLE_ID = 'game-details-dialog-title';

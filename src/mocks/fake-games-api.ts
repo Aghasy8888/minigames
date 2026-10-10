@@ -2,6 +2,7 @@ import { ApiError } from '../services/api-client';
 import type { CategoriesResponse } from '../services/categories-api';
 import type { CategoriesMeta } from '../services/categories-types';
 import type { GameCommentsResponse } from '../services/comments-api';
+import type { FavoriteToggleResponse } from '../services/favorite-api';
 import type { GameDetailsResponse } from '../services/game-details-api';
 import type { GamesApi, GamesListResponse } from '../services/games-api';
 import type { GamesListMeta, GamesListParameters } from '../services/games-types';
@@ -130,6 +131,35 @@ const COMMENTS_FAKE: EndpointFake<GameCommentsResponse> = {
   },
 };
 
+const FAVORITE_BASE_LIKES = tukoniForestKeepersResponse.data.likesCount;
+
+/** The toggle has no list to be empty; both 2xx scenarios return a flipped state (see `toggleFavorite`). */
+const FAVORITE_FAKE: EndpointFake<FavoriteToggleResponse> = {
+  success: {
+    data: {
+      gameSlug: tukoniForestKeepersResponse.data.slug,
+      isFavorited: true,
+      likesCount: FAVORITE_BASE_LIKES + 1,
+    },
+  },
+  empty: {
+    data: {
+      gameSlug: tukoniForestKeepersResponse.data.slug,
+      isFavorited: true,
+      likesCount: FAVORITE_BASE_LIKES + 1,
+    },
+  },
+  errors: {
+    '401': 'Authentication required: userEmail is missing',
+    '404': 'Game not found: favorites could not be updated',
+    '429': RATE_LIMIT_MESSAGE,
+  },
+};
+
+function favoriteKey(slug: string, userEmail: string): string {
+  return `${userEmail}\n${slug}`;
+}
+
 function createAbortError(): DOMException {
   return new DOMException('Aborted', 'AbortError');
 }
@@ -169,6 +199,8 @@ async function respond<TResponse>(
 }
 
 export function createFakeGamesApi(scenario: FakeGamesScenario): GamesApi {
+  const favorites = new Set<string>();
+
   return {
     async fetchGames(parameters: GamesListParameters, options = {}) {
       const response = await respond(scenario, LIBRARY_GAMES_FAKE, options.signal);
@@ -188,11 +220,40 @@ export function createFakeGamesApi(scenario: FakeGamesScenario): GamesApi {
     fetchCategories(options = {}) {
       return respond(scenario, CATEGORIES_FAKE, options.signal);
     },
-    fetchGameDetails(_slug, options = {}) {
-      return respond(scenario, GAME_DETAILS_FAKE, options.signal);
+    async fetchGameDetails(slug, options = {}) {
+      const response = await respond(scenario, GAME_DETAILS_FAKE, options.signal);
+      const { userEmail } = options;
+
+      if (userEmail === undefined || !favorites.has(favoriteKey(slug, userEmail))) {
+        return response;
+      }
+
+      return {
+        data: { ...response.data, isLikedByCurrentUser: true, likesCount: FAVORITE_BASE_LIKES + 1 },
+      };
     },
     fetchGameComments(_slug, options = {}) {
       return respond(scenario, COMMENTS_FAKE, options.signal);
+    },
+    async toggleFavorite(slug, { userEmail, signal }) {
+      const { data } = await respond(scenario, FAVORITE_FAKE, signal);
+      const key = favoriteKey(slug, userEmail);
+      const isFavorited = !favorites.has(key);
+
+      if (isFavorited) {
+        favorites.add(key);
+      } else {
+        favorites.delete(key);
+      }
+
+      return {
+        data: {
+          ...data,
+          gameSlug: slug,
+          isFavorited,
+          likesCount: FAVORITE_BASE_LIKES + (isFavorited ? 1 : 0),
+        },
+      };
     },
   };
 }

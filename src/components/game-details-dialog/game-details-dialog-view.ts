@@ -1,7 +1,8 @@
-import { favoriteIcon, starIcon } from '../../assets/icons';
+import { starIcon } from '../../assets/icons';
+import { useDisconnectCleanup } from '../../hooks/use-disconnect-cleanup';
+import { useFavoriteToggle, type FavoriteToggleController } from '../../hooks/use-favorite-toggle';
 import type { GameCommentsController } from '../../hooks/use-game-comments';
 import type { GameDetails } from '../../services/games-api-provider';
-import { formatCompactCount } from '../../utils/format-compact-count';
 import { createButton } from '../button';
 import { createComments } from '../comments';
 import { createTopRecords } from '../top-records';
@@ -11,9 +12,10 @@ import {
   SPEC_KEYS,
   SPEC_LABELS,
 } from './game-details-dialog-data';
-import { createFavoriteToggle, createSpecWidget, createStat } from './game-details-dialog-parts';
+import { createFavoriteToggle, createLikesStat } from './game-details-dialog-favorite';
+import { createSpecWidget, createStat } from './game-details-dialog-parts';
 
-function createHeader(game: GameDetails): HTMLElement {
+function createHeader(game: GameDetails, favorite: FavoriteToggleController): HTMLElement {
   const header = document.createElement('div');
   header.className = 'game-details-dialog__header';
 
@@ -24,16 +26,13 @@ function createHeader(game: GameDetails): HTMLElement {
 
   const stats = document.createElement('div');
   stats.className = 'game-details-dialog__stats';
-  stats.append(
-    createStat(starIcon, game.rating.toFixed(1)),
-    createStat(favoriteIcon, formatCompactCount(game.likesCount)),
-  );
+  stats.append(createStat(starIcon, game.rating.toFixed(1)), createLikesStat(favorite));
 
   header.append(title, stats);
   return header;
 }
 
-function createActions(game: GameDetails): HTMLElement {
+function createActions(favorite: FavoriteToggleController): HTMLElement {
   const actions = document.createElement('div');
   actions.className = 'game-details-dialog__actions';
 
@@ -44,7 +43,7 @@ function createActions(game: GameDetails): HTMLElement {
     className: 'button--dialog-cta game-details-dialog__play',
   });
 
-  actions.append(playButton, createFavoriteToggle(game.isLikedByCurrentUser));
+  actions.append(playButton, createFavoriteToggle(favorite));
   return actions;
 }
 
@@ -53,6 +52,12 @@ export function createGameDetailsBody(
   game: GameDetails,
   comments: GameCommentsController,
 ): HTMLElement[] {
+  const favorite = useFavoriteToggle({
+    slug: game.slug,
+    isFavorited: game.isLikedByCurrentUser,
+    likesCount: game.likesCount,
+  });
+
   const description = document.createElement('p');
   description.className = 'game-details-dialog__description';
   description.textContent = game.fullDescription;
@@ -61,11 +66,14 @@ export function createGameDetailsBody(
   widgets.className = 'game-details-dialog__widgets';
   widgets.append(...SPEC_KEYS.map((key) => createSpecWidget(SPEC_LABELS[key], game.specs[key])));
 
+  const actions = createActions(favorite);
+  useDisconnectCleanup(actions, favorite.destroy);
+
   return [
-    createHeader(game),
+    createHeader(game, favorite),
     description,
     widgets,
-    createActions(game),
+    actions,
     createTopRecords(game.topRecords),
     createComments({ controller: comments }),
   ];

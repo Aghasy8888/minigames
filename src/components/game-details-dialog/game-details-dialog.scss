@@ -54,6 +54,15 @@ $game-card-stats-min-width: 8.375rem; // no exact $size-* match (134px)
     }
   }
 
+  // Auth is shown on top; this dialog stays open (data, scroll, focus target kept) but invisible
+  &--covered {
+    visibility: hidden;
+
+    &::backdrop {
+      visibility: hidden;
+    }
+  }
+
   &__content {
     display: flex;
     flex: 1;

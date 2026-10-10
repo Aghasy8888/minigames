@@ -1,16 +1,19 @@
 import { createFakeGamesApi, type FakeGamesScenario } from '../mocks/fake-games-api';
 import { fetchCategories } from './categories-api';
 import { fetchGameComments } from './comments-api';
+import { toggleFavorite } from './favorite-api';
 import { fetchGameDetails } from './game-details-api';
 import { fetchFeaturedGames, fetchGames, type GamesApi } from './games-api';
 import { fetchLeaderboard } from './leaderboard-api';
 
-export { ApiError, isAbortError } from './api-client';
+export { ApiError, NETWORK_ERROR_STATUS, isAbortError } from './api-client';
 export { toUserFacingMessage } from './api-error-message';
 export type { CategoriesRequestOptions, CategoriesResponse } from './categories-api';
 export type { CategoriesMeta, CategoryItem } from './categories-types';
 export type { GameCommentsRequestOptions, GameCommentsResponse } from './comments-api';
 export type { GameComment, GameCommentsMeta, GameCommentsSort } from './comments-types';
+export type { FavoriteToggleOptions, FavoriteToggleResponse } from './favorite-api';
+export type { FavoriteToggleResult } from './favorite-types';
 export type { GameDetailsRequestOptions, GameDetailsResponse } from './game-details-api';
 export type { GameDetails, GameDetailsSpecs, GameDetailsTopRecord } from './game-details-types';
 export type { GamesApi, GamesListResponse, GamesRequestOptions } from './games-api';
@@ -45,4 +48,5 @@ export const gamesApi: GamesApi = isMockScenario(mockScenario)
       fetchCategories,
       fetchGameDetails,
       fetchGameComments,
+      toggleFavorite,
     };
