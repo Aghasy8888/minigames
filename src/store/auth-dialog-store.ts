@@ -1,9 +1,23 @@
 import { hrefWithAuth, parseAuthQuery, type AuthDialogMode } from '../utils/auth-dialog-query';
 import { isAuthBusy } from './auth-busy';
 import { syncGameDetailsFromLocation } from './game-details-dialog-store';
-import { checkSessionExpiry } from './session-store';
+import { SESSION_STATUS, checkSessionExpiry, getSession } from './session-store';
+import { showSnackbar } from './snackbar-store';
 
 export { AUTH_DIALOG_MODE, type AuthDialogMode } from '../utils/auth-dialog-query';
+
+const { authenticated } = SESSION_STATUS;
+
+const ALREADY_AUTHENTICATED_MESSAGE = "You're already signed in.";
+
+/** Runs after `checkSessionExpiry()`, so an expired or invalid session already counts as a guest. */
+function hasActiveSession(): boolean {
+  return getSession().status === authenticated;
+}
+
+function showAlreadyAuthenticated(): void {
+  showSnackbar({ variant: 'info', message: ALREADY_AUTHENTICATED_MESSAGE });
+}
 
 export interface AuthDialogState {
   /** Mode from `?auth=`; undefined means the dialog is closed. */
@@ -36,6 +50,11 @@ export function openAuthDialog(mode: AuthDialogMode): void {
   checkSessionExpiry();
 
   if (isAuthBusy()) {
+    return;
+  }
+
+  if (hasActiveSession()) {
+    showAlreadyAuthenticated();
     return;
   }
 
@@ -77,6 +96,14 @@ export function syncAuthDialogFromLocation(): void {
 
   if (!isCanonical) {
     globalThis.history.replaceState(undefined, '', hrefWithAuth());
+  }
+
+  // Deep link or Back / Forward to an Auth URL while signed in: drop only `auth` in place
+  if (mode !== undefined && hasActiveSession()) {
+    globalThis.history.replaceState(undefined, '', hrefWithAuth());
+    setState({});
+    showAlreadyAuthenticated();
+    return;
   }
 
   setState({ mode });

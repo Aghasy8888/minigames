@@ -118,6 +118,7 @@ export async function endSession({
     await signOutFirebase();
   } catch {
     showSnackbar({ variant: 'error', message: SIGNOUT_ERROR_MESSAGE });
+    return;
   } finally {
     endingSession = false;
   }
