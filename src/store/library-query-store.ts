@@ -8,6 +8,7 @@ import {
   type LibraryQuery,
 } from '../utils/library-query';
 import { resolvePageFromPath } from '../utils/route-path';
+import { checkSessionExpiry } from './session-store';
 
 type LibraryQueryListener = (query: LibraryQuery) => void;
 
@@ -57,6 +58,8 @@ function writeUrl(query: LibraryQuery, mode: 'push' | 'replace'): void {
 }
 
 function pushQuery(next: LibraryQuery): boolean {
+  checkSessionExpiry();
+
   if (isSameQuery(next, currentQuery) && isOnLibrary()) {
     return false;
   }

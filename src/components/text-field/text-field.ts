@@ -96,6 +96,56 @@ export function createTextField(options: CreateTextFieldOptions): HTMLElement {
     control.append(createVisibilityToggle(input));
   }
 
-  field.append(labelElement, control);
+  const error = document.createElement('p');
+  error.className = 'text-field__error';
+  error.id = `${id}-error`;
+  error.hidden = true;
+
+  field.append(labelElement, control, error);
   return field;
+}
+
+export function getTextFieldInput(field: HTMLElement): HTMLInputElement {
+  const input = field.querySelector<HTMLInputElement>('.text-field__input');
+
+  if (!input) {
+    throw new Error('getTextFieldInput: element is not a text field');
+  }
+
+  return input;
+}
+
+/** Shows `message` under the field, or clears the error when it's omitted. */
+export function setTextFieldError(input: HTMLInputElement, message?: string): void {
+  const field = input.closest('.text-field');
+  const error = field?.querySelector<HTMLElement>('.text-field__error');
+
+  if (!field || !error) {
+    return;
+  }
+
+  const isInvalid = message !== undefined;
+
+  field.classList.toggle('text-field--invalid', isInvalid);
+  error.textContent = message ?? '';
+  error.hidden = !isInvalid;
+
+  if (isInvalid) {
+    input.setAttribute('aria-invalid', 'true');
+    input.setAttribute('aria-describedby', error.id);
+  } else {
+    input.removeAttribute('aria-invalid');
+    input.removeAttribute('aria-describedby');
+  }
+}
+
+export function setTextFieldDisabled(input: HTMLInputElement, disabled: boolean): void {
+  input.disabled = disabled;
+  const toggle = input
+    .closest('.text-field')
+    ?.querySelector<HTMLButtonElement>('.text-field__toggle');
+
+  if (toggle) {
+    toggle.disabled = disabled;
+  }
 }

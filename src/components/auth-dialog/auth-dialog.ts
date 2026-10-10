@@ -1,5 +1,5 @@
-import { googleIcon, lockIcon, mailIcon, personIcon } from '../../assets/icons';
 import { useBackdropDismiss } from '../../hooks/use-backdrop-dismiss';
+import { isAuthBusy, setAuthBusy } from '../../store/auth-busy';
 import {
   AUTH_DIALOG_MODE,
   closeAuthDialog,
@@ -9,8 +9,13 @@ import {
   type AuthDialogMode,
 } from '../../store/auth-dialog-store';
 import { lockScroll, unlockScroll } from '../../utils/scroll-lock';
-import { createButton } from '../button';
-import { createTextField } from '../text-field';
+import {
+  AUTH_DIALOG_LABEL,
+  AUTH_TABS_LABEL,
+  LOGIN_TAB_LABEL,
+  REGISTER_TAB_LABEL,
+} from './auth-dialog-data';
+import { createLoginPanel, createRegisterPanel, type AuthPanel } from './auth-dialog-forms';
 import './auth-dialog.scss';
 
 const { login, register } = AUTH_DIALOG_MODE;
@@ -18,8 +23,7 @@ const { login, register } = AUTH_DIALOG_MODE;
 const TRANSITION_MS = 250;
 const PANEL_TRANSITION_MS = 200;
 
-interface AuthDialogSection {
-  panel: HTMLElement;
+interface AuthDialogSection extends AuthPanel {
   tab: HTMLButtonElement;
 }
 
@@ -28,219 +32,6 @@ function nextFrame(callback: () => void): void {
   globalThis.requestAnimationFrame(() => {
     globalThis.requestAnimationFrame(callback);
   });
-}
-
-function createIconImage(source: string): HTMLImageElement {
-  const icon = document.createElement('img');
-  icon.src = source;
-  icon.alt = '';
-  return icon;
-}
-
-function createHeading(title: string, subtitle: string): HTMLElement {
-  const group = document.createElement('div');
-  group.className = 'auth-dialog__heading';
-
-  const titleElement = document.createElement('h2');
-  titleElement.className = 'auth-dialog__title';
-  titleElement.textContent = title;
-
-  const subtitleElement = document.createElement('p');
-  subtitleElement.className = 'auth-dialog__subtitle';
-  subtitleElement.textContent = subtitle;
-
-  group.append(titleElement, subtitleElement);
-  return group;
-}
-
-function createDivider(): HTMLElement {
-  const divider = document.createElement('div');
-  divider.className = 'auth-dialog__divider';
-
-  const label = document.createElement('span');
-  label.className = 'auth-dialog__divider-label';
-  label.textContent = 'OR';
-
-  divider.append(label);
-  return divider;
-}
-
-function createSwitchLine(
-  question: string,
-  actionLabel: string,
-  onSwitch: () => void,
-): HTMLParagraphElement {
-  const line = document.createElement('p');
-  line.className = 'auth-dialog__switch';
-  line.append(`${question} `);
-
-  const action = document.createElement('button');
-  action.type = 'button';
-  action.className = 'auth-dialog__switch-action';
-  action.textContent = actionLabel;
-  action.addEventListener('click', onSwitch);
-
-  line.append(action);
-  return line;
-}
-
-function createLoginPanel(onSwitch: () => void): HTMLElement {
-  const panel = document.createElement('section');
-  panel.className = 'auth-dialog__panel';
-  panel.id = 'auth-dialog-panel-login';
-  panel.setAttribute('role', 'tabpanel');
-  panel.setAttribute('aria-labelledby', 'auth-dialog-tab-login');
-
-  const form = document.createElement('form');
-  form.className = 'auth-dialog__form';
-  form.noValidate = true;
-  form.addEventListener('submit', (event) => {
-    event.preventDefault();
-  });
-
-  const forgotPassword = document.createElement('button');
-  forgotPassword.type = 'button';
-  forgotPassword.className = 'auth-dialog__forgot';
-  forgotPassword.textContent = 'Forgot Password?';
-
-  const fields = document.createElement('div');
-  fields.className = 'auth-dialog__fields';
-  fields.append(
-    createTextField({
-      id: 'login-email',
-      name: 'email',
-      label: 'Email Address',
-      type: 'email',
-      placeholder: 'e.g. alex@minigames.com',
-      autocomplete: 'email',
-      required: true,
-      icon: mailIcon,
-    }),
-    createTextField({
-      id: 'login-password',
-      name: 'password',
-      label: 'Password',
-      type: 'password',
-      placeholder: 'Your password',
-      autocomplete: 'current-password',
-      required: true,
-      icon: lockIcon,
-      passwordToggle: true,
-    }),
-    forgotPassword,
-  );
-
-  const actions = document.createElement('div');
-  actions.className = 'auth-dialog__actions';
-  actions.append(
-    createButton({
-      label: 'Login',
-      variant: 'primary',
-      size: 'large',
-      type: 'submit',
-      className: 'button--block button--raised',
-    }),
-    createDivider(),
-    createButton({
-      label: 'Continue with Google',
-      variant: 'secondary',
-      size: 'large',
-      icon: createIconImage(googleIcon),
-      className: 'button--block button--icon-md',
-    }),
-  );
-
-  form.append(fields, actions, createSwitchLine("Don't have an account?", 'Register', onSwitch));
-
-  panel.append(createHeading('Welcome Back!', 'Sign in to resume your games and progress.'), form);
-  return panel;
-}
-
-function createRegisterPanel(onSwitch: () => void): HTMLElement {
-  const panel = document.createElement('section');
-  panel.className = 'auth-dialog__panel';
-  panel.id = 'auth-dialog-panel-register';
-  panel.setAttribute('role', 'tabpanel');
-  panel.setAttribute('aria-labelledby', 'auth-dialog-tab-register');
-
-  const form = document.createElement('form');
-  form.className = 'auth-dialog__form';
-  form.noValidate = true;
-  form.addEventListener('submit', (event) => {
-    event.preventDefault();
-  });
-
-  const fields = document.createElement('div');
-  fields.className = 'auth-dialog__fields';
-  fields.append(
-    createTextField({
-      id: 'register-username',
-      name: 'username',
-      label: 'Username',
-      placeholder: 'e.g. CozyGamer_99',
-      autocomplete: 'username',
-      required: true,
-      icon: personIcon,
-    }),
-    createTextField({
-      id: 'register-email',
-      name: 'email',
-      label: 'Email Address',
-      type: 'email',
-      placeholder: 'your.email@domain.com',
-      autocomplete: 'email',
-      required: true,
-      icon: mailIcon,
-    }),
-    createTextField({
-      id: 'register-password',
-      name: 'password',
-      label: 'Password',
-      type: 'password',
-      placeholder: 'Min. 8 characters',
-      autocomplete: 'new-password',
-      required: true,
-      icon: lockIcon,
-    }),
-    createTextField({
-      id: 'register-confirm-password',
-      name: 'confirmPassword',
-      label: 'Confirm Password',
-      type: 'password',
-      placeholder: 'Repeat your password',
-      autocomplete: 'new-password',
-      required: true,
-      icon: lockIcon,
-    }),
-  );
-
-  const actions = document.createElement('div');
-  actions.className = 'auth-dialog__actions';
-  actions.append(
-    createButton({
-      label: 'Create Account',
-      variant: 'primary',
-      size: 'large',
-      type: 'submit',
-      className: 'button--block button--raised',
-    }),
-    createDivider(),
-    createButton({
-      label: 'Sign up with Google',
-      variant: 'secondary',
-      size: 'large',
-      icon: createIconImage(googleIcon),
-      className: 'button--block button--icon-md',
-    }),
-  );
-
-  form.append(fields, actions, createSwitchLine('Already have an account?', 'Login', onSwitch));
-
-  panel.append(
-    createHeading('Create Account', 'Join MiniGames to track your score & streak.'),
-    form,
-  );
-  return panel;
 }
 
 function createTab(mode: AuthDialogMode, label: string): HTMLButtonElement {
@@ -258,7 +49,7 @@ function createTab(mode: AuthDialogMode, label: string): HTMLButtonElement {
 export function createAuthDialog(): HTMLDialogElement {
   const dialog = document.createElement('dialog');
   dialog.className = 'auth-dialog';
-  dialog.setAttribute('aria-label', 'Authentication');
+  dialog.setAttribute('aria-label', AUTH_DIALOG_LABEL);
 
   const content = document.createElement('div');
   content.className = 'auth-dialog__content hide-scrollbar';
@@ -266,7 +57,7 @@ export function createAuthDialog(): HTMLDialogElement {
   const tabs = document.createElement('div');
   tabs.className = 'auth-dialog__tabs';
   tabs.setAttribute('role', 'tablist');
-  tabs.setAttribute('aria-label', 'Authentication mode');
+  tabs.setAttribute('aria-label', AUTH_TABS_LABEL);
 
   const panels = document.createElement('div');
   panels.className = 'auth-dialog__panels';
@@ -276,19 +67,43 @@ export function createAuthDialog(): HTMLDialogElement {
   let panelTimerId: ReturnType<typeof globalThis.setTimeout> | undefined;
   let isLocked = false;
 
-  const loginTab = createTab(login, 'Login');
-  const registerTab = createTab(register, 'Register');
-  const loginPanel = createLoginPanel(() => {
+  const loginTab = createTab(login, LOGIN_TAB_LABEL);
+  const registerTab = createTab(register, REGISTER_TAB_LABEL);
+
+  const authPanels: { login?: AuthPanel; register?: AuthPanel } = {};
+
+  function setPending(busy: boolean): void {
+    setAuthBusy(busy);
+    authPanels.login?.setBusy(busy);
+    authPanels.register?.setBusy(busy);
+    loginTab.disabled = busy;
+    registerTab.disabled = busy;
+  }
+
+  authPanels.login = createLoginPanel(() => {
     openAuthDialog(register);
-  });
-  const registerPanel = createRegisterPanel(() => {
+  }, setPending);
+  authPanels.register = createRegisterPanel(() => {
     openAuthDialog(login);
-  });
+  }, setPending);
+
+  const { login: loginPanel, register: registerPanel } = authPanels;
+
+  if (!loginPanel || !registerPanel) {
+    throw new Error('Auth panels failed to initialize');
+  }
 
   const sections: Record<AuthDialogMode, AuthDialogSection> = {
-    [login]: { panel: loginPanel, tab: loginTab },
-    [register]: { panel: registerPanel, tab: registerTab },
+    [login]: { ...loginPanel, tab: loginTab },
+    [register]: { ...registerPanel, tab: registerTab },
   };
+  const sectionList = Object.values(sections);
+
+  function resetForms(): void {
+    for (const { reset } of sectionList) {
+      reset();
+    }
+  }
 
   function applyMode(mode: AuthDialogMode): void {
     for (const key of Object.keys(sections) as AuthDialogMode[]) {
@@ -311,6 +126,7 @@ export function createAuthDialog(): HTMLDialogElement {
     const incoming = sections[mode].panel;
     currentMode = mode;
 
+    resetForms();
     globalThis.clearTimeout(panelTimerId);
     applyMode(mode);
 
@@ -368,6 +184,14 @@ export function createAuthDialog(): HTMLDialogElement {
     openAuthDialog(register);
   });
 
+  // Chrome closes a dialog on a repeated Escape even when `cancel` is prevented. Listen on the
+  // document: disabling the focused control while busy moves focus to <body>, outside the dialog.
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && dialog.open && isAuthBusy()) {
+      event.preventDefault();
+    }
+  });
+
   dialog.addEventListener('cancel', (event) => {
     event.preventDefault();
     closeAuthDialog();
@@ -376,7 +200,13 @@ export function createAuthDialog(): HTMLDialogElement {
   useBackdropDismiss(dialog, closeAuthDialog);
 
   dialog.addEventListener('close', () => {
+    if (isAuthBusy()) {
+      dialog.showModal();
+      return;
+    }
+
     dialog.classList.remove('auth-dialog--open', 'auth-dialog--closing');
+    resetForms();
 
     if (isLocked) {
       unlockScroll();
@@ -398,7 +228,7 @@ export function createAuthDialog(): HTMLDialogElement {
 
   applyMode(currentMode);
   tabs.append(loginTab, registerTab);
-  panels.append(loginPanel, registerPanel);
+  panels.append(loginPanel.panel, registerPanel.panel);
   content.append(tabs, panels);
   dialog.append(content);
 
