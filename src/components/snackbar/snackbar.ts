@@ -1,5 +1,6 @@
 import { checkIcon, closeDarkIcon, errorIcon, infoIcon, warningIcon } from '../../assets/icons';
 import { usePausableTimer } from '../../hooks/use-pausable-timer';
+import { useTopLayer } from '../../hooks/use-top-layer';
 import {
   dismissSnackbar,
   subscribeSnackbars,
@@ -104,6 +105,7 @@ function createSnackbarItem(item: SnackbarItem): MountedSnackbar {
 export function createSnackbarHost(): HTMLElement {
   const host = document.createElement('div');
   host.className = 'snackbar-host';
+  host.setAttribute('popover', 'manual');
   host.setAttribute('aria-live', 'polite');
   host.setAttribute('aria-relevant', 'additions text');
 
@@ -134,6 +136,7 @@ export function createSnackbarHost(): HTMLElement {
   }
 
   subscribeSnackbars(sync);
+  useTopLayer(host);
 
   return host;
 }

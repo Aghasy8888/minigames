@@ -147,7 +147,7 @@ export function getUserEmail(): string | undefined {
 }
 
 export type ProtectedActionAccess =
-  { allowed: true; userEmail: string } | { allowed: false; expired: boolean };
+  { allowed: true; userEmail: string; displayName: string } | { allowed: false; expired: boolean };
 
 export function requireActiveSession(): ProtectedActionAccess {
   const wasAuthenticated = state.status === authenticated;
@@ -156,7 +156,7 @@ export function requireActiveSession(): ProtectedActionAccess {
   const current: SessionState = state;
 
   return current.status === authenticated
-    ? { allowed: true, userEmail: current.email }
+    ? { allowed: true, userEmail: current.email, displayName: current.displayName }
     : { allowed: false, expired: wasAuthenticated };
 }
 

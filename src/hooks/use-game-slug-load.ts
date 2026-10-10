@@ -29,6 +29,8 @@ export type GameSlugLoadState<T, TMeta = undefined> =
 export type GameSlugLoadController<T, TMeta = undefined> = {
   getState: () => GameSlugLoadState<T, TMeta>;
   subscribe: (listener: (state: GameSlugLoadState<T, TMeta>) => void) => () => void;
+  /** Refetches the open slug (loading → result); no-op while idle. */
+  reload: () => void;
   destroy: () => void;
 };
 
@@ -135,6 +137,9 @@ export function useGameSlugLoad<T, TMeta = undefined>({
       return () => {
         listeners.delete(listener);
       };
+    },
+    reload() {
+      loader?.reload();
     },
     destroy() {
       unsubscribeDialog();

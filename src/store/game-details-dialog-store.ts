@@ -1,4 +1,5 @@
 import { hrefWithGame, parseGameQuery } from '../utils/game-dialog-query';
+import { clearCommentDraft } from './comment-draft-store';
 import { checkSessionExpiry } from './session-store';
 
 export interface GameDetailsDialogState {
@@ -17,6 +18,7 @@ function setState(next: GameDetailsDialogState): void {
   }
 
   state = next;
+  clearCommentDraft();
 
   for (const listener of listeners) {
     listener(state);

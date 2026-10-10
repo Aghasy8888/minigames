@@ -3,6 +3,7 @@ import { useGameComments, type GameCommentsController } from '../../hooks/use-ga
 import { useGameDetails, type GameDetailsState } from '../../hooks/use-game-details';
 import { GAME_SLUG_LOAD_STATUS } from '../../hooks/use-game-slug-load';
 import { LOAD_STATUS } from '../../hooks/use-load-state';
+import { raiseTopLayer, releaseTopLayer } from '../../hooks/use-top-layer';
 import { getAuthDialogState, subscribeAuthDialog } from '../../store/auth-dialog-store';
 import {
   closeGameDetailsDialog,
@@ -126,6 +127,7 @@ export function createGameDetailsDialog(): HTMLDialogElement {
       dialog.classList.remove('game-details-dialog--closing');
       resetScroll();
       dialog.close();
+      releaseTopLayer(dialog);
     }, TRANSITION_MS);
   }
 
@@ -135,6 +137,7 @@ export function createGameDetailsDialog(): HTMLDialogElement {
 
     if (!dialog.open) {
       dialog.showModal();
+      raiseTopLayer(dialog);
       resetScroll();
       lockScroll();
       isLocked = true;

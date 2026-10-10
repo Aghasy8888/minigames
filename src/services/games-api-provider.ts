@@ -1,6 +1,7 @@
 import { createFakeGamesApi, type FakeGamesScenario } from '../mocks/fake-games-api';
 import { fetchCategories } from './categories-api';
-import { fetchGameComments } from './comments-api';
+import { toggleCommentLike } from './comment-like-api';
+import { fetchGameComments, postGameComment } from './comments-api';
 import { toggleFavorite } from './favorite-api';
 import { fetchGameDetails } from './game-details-api';
 import { fetchFeaturedGames, fetchGames, type GamesApi } from './games-api';
@@ -10,8 +11,19 @@ export { ApiError, NETWORK_ERROR_STATUS, isAbortError } from './api-client';
 export { toUserFacingMessage } from './api-error-message';
 export type { CategoriesRequestOptions, CategoriesResponse } from './categories-api';
 export type { CategoriesMeta, CategoryItem } from './categories-types';
-export type { GameCommentsRequestOptions, GameCommentsResponse } from './comments-api';
-export type { GameComment, GameCommentsMeta, GameCommentsSort } from './comments-types';
+export type { CommentLikeToggleOptions, CommentLikeToggleResponse } from './comment-like-api';
+export type {
+  GameCommentsRequestOptions,
+  GameCommentsResponse,
+  PostGameCommentOptions,
+  PostGameCommentResponse,
+} from './comments-api';
+export type {
+  CommentLikeResult,
+  GameComment,
+  GameCommentsMeta,
+  GameCommentsSort,
+} from './comments-types';
 export type { FavoriteToggleOptions, FavoriteToggleResponse } from './favorite-api';
 export type { FavoriteToggleResult } from './favorite-types';
 export type { GameDetailsRequestOptions, GameDetailsResponse } from './game-details-api';
@@ -48,5 +60,7 @@ export const gamesApi: GamesApi = isMockScenario(mockScenario)
       fetchCategories,
       fetchGameDetails,
       fetchGameComments,
+      postGameComment,
       toggleFavorite,
+      toggleCommentLike,
     };

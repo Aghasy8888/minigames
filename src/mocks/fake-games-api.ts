@@ -1,7 +1,8 @@
 import { ApiError } from '../services/api-client';
 import type { CategoriesResponse } from '../services/categories-api';
 import type { CategoriesMeta } from '../services/categories-types';
-import type { GameCommentsResponse } from '../services/comments-api';
+import type { CommentLikeToggleResponse } from '../services/comment-like-api';
+import type { GameCommentsResponse, PostGameCommentResponse } from '../services/comments-api';
 import type { FavoriteToggleResponse } from '../services/favorite-api';
 import type { GameDetailsResponse } from '../services/game-details-api';
 import type { GamesApi, GamesListResponse } from '../services/games-api';
@@ -131,6 +132,28 @@ const COMMENTS_FAKE: EndpointFake<GameCommentsResponse> = {
   },
 };
 
+const FAKE_CREATED_COMMENT: PostGameCommentResponse = {
+  data: {
+    commentId: 'c5d9f2a1-7c3b-4e8f-9a0d-00000000f001',
+    authorName: 'ForestDweller',
+    text: 'Such a calming little game!',
+    likesCount: 0,
+    isLikedByCurrentUser: false,
+    createdAt: '2026-08-30T07:00:00Z',
+  },
+};
+
+/** Stateless: the comments list fake doesn't change after a post. 201 has no list to be empty. */
+const COMMENT_POST_FAKE: EndpointFake<PostGameCommentResponse> = {
+  success: FAKE_CREATED_COMMENT,
+  empty: FAKE_CREATED_COMMENT,
+  errors: {
+    '401': 'Authentication required: userEmail is missing',
+    '404': 'Game not found: comment could not be posted',
+    '429': RATE_LIMIT_MESSAGE,
+  },
+};
+
 const FAVORITE_BASE_LIKES = tukoniForestKeepersResponse.data.likesCount;
 
 /** The toggle has no list to be empty; both 2xx scenarios return a flipped state (see `toggleFavorite`). */
@@ -156,8 +179,27 @@ const FAVORITE_FAKE: EndpointFake<FavoriteToggleResponse> = {
   },
 };
 
+/** The toggle has no list to be empty; both 2xx scenarios return a flipped state (see `toggleCommentLike`). */
+const COMMENT_LIKE_FAKE: EndpointFake<CommentLikeToggleResponse> = {
+  success: { data: { isLikedByCurrentUser: true, likesCount: 1 } },
+  empty: { data: { isLikedByCurrentUser: true, likesCount: 1 } },
+  errors: {
+    '401': 'Authentication required: userEmail is missing',
+    '404': 'Comment not found: like could not be updated',
+    '429': RATE_LIMIT_MESSAGE,
+  },
+};
+
+const COMMENT_BASE_LIKES = new Map(
+  tukoniCommentsResponse.data.map(({ commentId, likesCount }) => [commentId, likesCount]),
+);
+
 function favoriteKey(slug: string, userEmail: string): string {
   return `${userEmail}\n${slug}`;
+}
+
+function commentLikeKey(commentId: string, userEmail: string): string {
+  return `${userEmail}\n${commentId}`;
 }
 
 function createAbortError(): DOMException {
@@ -200,6 +242,7 @@ async function respond<TResponse>(
 
 export function createFakeGamesApi(scenario: FakeGamesScenario): GamesApi {
   const favorites = new Set<string>();
+  const commentLikes = new Set<string>();
 
   return {
     async fetchGames(parameters: GamesListParameters, options = {}) {
@@ -232,8 +275,26 @@ export function createFakeGamesApi(scenario: FakeGamesScenario): GamesApi {
         data: { ...response.data, isLikedByCurrentUser: true, likesCount: FAVORITE_BASE_LIKES + 1 },
       };
     },
-    fetchGameComments(_slug, options = {}) {
-      return respond(scenario, COMMENTS_FAKE, options.signal);
+    async fetchGameComments(_slug, options = {}) {
+      const response = await respond(scenario, COMMENTS_FAKE, options.signal);
+      const { userEmail } = options;
+
+      if (userEmail === undefined) {
+        return response;
+      }
+
+      return {
+        ...response,
+        data: response.data.map((comment) =>
+          commentLikes.has(commentLikeKey(comment.commentId, userEmail))
+            ? { ...comment, isLikedByCurrentUser: true, likesCount: comment.likesCount + 1 }
+            : comment,
+        ),
+      };
+    },
+    async postGameComment(_slug, { authorName, text, signal }) {
+      const { data } = await respond(scenario, COMMENT_POST_FAKE, signal);
+      return { data: { ...data, authorName, text, createdAt: new Date().toISOString() } };
     },
     async toggleFavorite(slug, { userEmail, signal }) {
       const { data } = await respond(scenario, FAVORITE_FAKE, signal);
@@ -253,6 +314,22 @@ export function createFakeGamesApi(scenario: FakeGamesScenario): GamesApi {
           isFavorited,
           likesCount: FAVORITE_BASE_LIKES + (isFavorited ? 1 : 0),
         },
+      };
+    },
+    async toggleCommentLike(commentId, { userEmail, signal }) {
+      await respond(scenario, COMMENT_LIKE_FAKE, signal);
+      const key = commentLikeKey(commentId, userEmail);
+      const isLikedByCurrentUser = !commentLikes.has(key);
+
+      if (isLikedByCurrentUser) {
+        commentLikes.add(key);
+      } else {
+        commentLikes.delete(key);
+      }
+
+      const baseLikes = COMMENT_BASE_LIKES.get(commentId) ?? 0;
+      return {
+        data: { isLikedByCurrentUser, likesCount: baseLikes + (isLikedByCurrentUser ? 1 : 0) },
       };
     },
   };

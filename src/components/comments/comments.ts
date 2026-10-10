@@ -1,11 +1,21 @@
+import { useAvatarColors } from '../../hooks/use-avatar-colors';
+import { useCommentSubmit } from '../../hooks/use-comment-submit';
 import { useDisconnectCleanup } from '../../hooks/use-disconnect-cleanup';
 import type { GameCommentsController, GameCommentsState } from '../../hooks/use-game-comments';
 import { GAME_SLUG_LOAD_STATUS } from '../../hooks/use-game-slug-load';
 import { LOAD_STATUS } from '../../hooks/use-load-state';
+import { AUTH_DIALOG_MODE, openAuthDialog } from '../../store/auth-dialog-store';
+import { getCommentDraft, setCommentDraft } from '../../store/comment-draft-store';
+import { SESSION_STATUS, subscribeSession } from '../../store/session-store';
+import { getNameInitial } from '../../utils/get-player-initials';
 import { createCommentComposer } from '../comment-composer';
 import { createEmptyState } from '../empty-state';
 import { createErrorBanner } from '../error-banner';
 import {
+  COMMENT_AVATAR_COLORS,
+  COMMENT_GUEST_PLACEHOLDER,
+  COMMENT_LOGIN_LABEL,
+  COMMENT_LOGIN_PROMPT,
   COMMENT_PLACEHOLDER,
   COMMENT_TEXTAREA_ARIA_LABEL,
   COMMENTS_EMPTY_MESSAGE,
@@ -14,17 +24,23 @@ import {
   COMMENTS_RETRY_LABEL,
   COMMENTS_SKELETON_COUNT,
   COMMENTS_TITLE,
-  CURRENT_USER_INITIAL,
   SEND_COMMENT_ARIA_LABEL,
+  formatCommentTooLong,
   formatCommentsTitle,
 } from './comments-data';
-import { createCommentList, createCommentsSkeleton } from './comments-parts';
+import {
+  createCommentList,
+  createCommentsSkeleton,
+  type CommentCardOptions,
+} from './comments-parts';
 import './comments.scss';
 
 const TITLE_ID = 'comments-title';
 
 const { idle } = GAME_SLUG_LOAD_STATUS;
 const { loading, success, empty, error } = LOAD_STATUS;
+const { authenticated } = SESSION_STATUS;
+const { login } = AUTH_DIALOG_MODE;
 
 type CommentsLoad = Exclude<GameCommentsState, { status: typeof idle }>['load'];
 
@@ -47,13 +63,13 @@ function titleFor(load: CommentsLoad): string {
   }
 }
 
-function createStatusView(load: CommentsLoad): HTMLElement {
+function createStatusView(load: CommentsLoad, cardOptions: CommentCardOptions): HTMLElement {
   switch (load.status) {
     case loading: {
       return createCommentsSkeleton(COMMENTS_SKELETON_COUNT);
     }
     case success: {
-      return createCommentList(load.data);
+      return createCommentList(load.data, cardOptions);
     }
     case empty: {
       return createEmptyState({ title: COMMENTS_EMPTY_TITLE, message: COMMENTS_EMPTY_MESSAGE });
@@ -84,11 +100,47 @@ export function createComments({ controller }: CommentsOptions): HTMLElement {
   title.className = 'comments__title';
   title.textContent = COMMENTS_TITLE;
 
+  const { submit } = useCommentSubmit(controller);
+  const avatarColorFor = useAvatarColors(COMMENT_AVATAR_COLORS);
+  let viewCleanups: (() => void)[] = [];
+
+  const cardOptions: CommentCardOptions = {
+    avatarColorFor,
+    onCleanup(cleanup) {
+      viewCleanups.push(cleanup);
+    },
+  };
+
+  function clearView(): void {
+    const cleanups = viewCleanups;
+    viewCleanups = [];
+    for (const cleanup of cleanups) {
+      cleanup();
+    }
+  }
+
   const composer = createCommentComposer({
-    userInitial: CURRENT_USER_INITIAL,
     placeholder: COMMENT_PLACEHOLDER,
+    guestPlaceholder: COMMENT_GUEST_PLACEHOLDER,
     textareaAriaLabel: COMMENT_TEXTAREA_ARIA_LABEL,
     sendAriaLabel: SEND_COMMENT_ARIA_LABEL,
+    loginPrompt: COMMENT_LOGIN_PROMPT,
+    loginLabel: COMMENT_LOGIN_LABEL,
+    formatTooLong: formatCommentTooLong,
+    initialText: getCommentDraft(),
+    onInput: setCommentDraft,
+    async onSubmit(text) {
+      composer.setBusy(true);
+      const isPosted = await submit(text);
+      composer.setBusy(false);
+
+      if (isPosted) {
+        composer.reset();
+      }
+    },
+    onLogin() {
+      openAuthDialog(login);
+    },
   });
 
   const content = document.createElement('div');
@@ -104,13 +156,25 @@ export function createComments({ controller }: CommentsOptions): HTMLElement {
     const { load } = state;
     title.textContent = titleFor(load);
     content.setAttribute('aria-busy', String(load.status === loading));
-    content.replaceChildren(createStatusView(load));
+    clearView();
+    content.replaceChildren(createStatusView(load, cardOptions));
   }
 
   const { subscribe, getState } = controller;
   const unsubscribe = subscribe(render);
   render(getState());
-  useDisconnectCleanup(section, unsubscribe);
+
+  const unsubscribeSession = subscribeSession((session) => {
+    composer.setUser(
+      session.status === authenticated ? getNameInitial(session.displayName) : undefined,
+    );
+  });
+
+  useDisconnectCleanup(section, () => {
+    unsubscribe();
+    unsubscribeSession();
+    clearView();
+  });
 
   return section;
 }

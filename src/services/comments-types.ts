@@ -12,6 +12,12 @@ export type GameComment = {
   createdAt: string;
 };
 
+/** Like toggle response; the comment id is only in the request path. */
+export type CommentLikeResult = {
+  isLikedByCurrentUser: boolean;
+  likesCount: number;
+};
+
 export type GameCommentsMeta = {
   /** Total for the game, even when `limit` is used. */
   totalComments: number;
