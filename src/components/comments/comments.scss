@@ -3,6 +3,15 @@
 // no exact $size-* match — Figma 28px comment avatar
 $comments-avatar-size: 1.75rem;
 
+// Keys must match `COMMENT_AVATAR_COLORS` in comments-data.ts.
+$comments-avatar-colors: (
+  'random-1': $color-avatar-random-1,
+  'random-2': $color-avatar-random-2,
+  'random-3': $color-avatar-random-3,
+  'random-4': $color-avatar-random-4,
+  'random-5': $color-avatar-random-5,
+);
+
 .comments {
   display: flex;
   flex-direction: column;
@@ -72,16 +81,10 @@ $comments-avatar-size: 1.75rem;
     line-height: normal;
     color: $color-on-primary;
 
-    &--random-3 {
-      background-color: $color-avatar-random-3;
-    }
-
-    &--primary {
-      background-color: $color-primary;
-    }
-
-    &--random-1 {
-      background-color: $color-avatar-random-1;
+    @each $name, $color in $comments-avatar-colors {
+      &--#{$name} {
+        background-color: $color;
+      }
     }
   }
 

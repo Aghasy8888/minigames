@@ -3,6 +3,7 @@ import { hrefForPage, resolvePageFromPath } from '../utils/route-path';
 import { syncAuthDialogFromLocation } from './auth-dialog-store';
 import { syncGameDetailsFromLocation } from './game-details-dialog-store';
 import { syncLibraryQueryFromLocation } from './library-query-store';
+import { checkSessionExpiry } from './session-store';
 
 export type { AppPage } from '../utils/app-page';
 
@@ -37,6 +38,8 @@ export function subscribeNavigation(listener: NavigationListener): () => void {
 }
 
 export function navigate(page: RoutablePage): void {
+  checkSessionExpiry();
+
   if (page === currentPage) {
     return;
   }
@@ -50,6 +53,7 @@ export function navigate(page: RoutablePage): void {
 }
 
 export function syncPageFromLocation(): void {
+  checkSessionExpiry();
   syncLibraryQueryFromLocation();
   setCurrentPage(resolvePageFromPath(globalThis.location.pathname));
   syncGameDetailsFromLocation();

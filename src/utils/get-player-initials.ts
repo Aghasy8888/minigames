@@ -26,7 +26,8 @@ export function getPlayerInitials(playerName: string): string {
   return playerName.slice(0, 2).toUpperCase();
 }
 
-/** Single-letter avatar initial (ForestDweller → F). */
+/** First non-whitespace character, uppercased (ForestDweller → F, "  bob" → B). */
 export function getNameInitial(name: string): string {
-  return name.trim().charAt(0).toUpperCase();
+  const [first = ''] = name.trim();
+  return first.toUpperCase();
 }

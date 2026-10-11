@@ -1,4 +1,5 @@
 @use '../../styles/tokens' as *;
+@use '../../styles/mixins' as *;
 
 // no exact $color-* match — Figma text-placeholder
 $comment-composer-placeholder-color: #969696;
@@ -10,11 +11,15 @@ $comment-composer-scrollbar-thumb: #a0a0a0;
 $comment-composer-scrollbar-radius: 2px;
 
 .comment-composer {
-  display: flex;
-  gap: $size-2;
-  align-items: center;
   width: 100%;
-  margin: 0;
+
+  &__form {
+    display: flex;
+    gap: $size-2;
+    align-items: center;
+    width: 100%;
+    margin: 0;
+  }
 
   &__avatar {
     display: inline-flex;
@@ -32,6 +37,19 @@ $comment-composer-scrollbar-radius: 2px;
     font-weight: $font-weight-bold;
     line-height: normal;
     color: $color-on-primary;
+
+    &--guest {
+      background-color: $color-outline-variant;
+    }
+  }
+
+  &__avatar-fallback {
+    width: $size-25;
+    height: $size-25;
+    background-color: $color-on-primary;
+    mask-position: center;
+    mask-repeat: no-repeat;
+    mask-size: contain;
   }
 
   &__textarea {
@@ -66,6 +84,17 @@ $comment-composer-scrollbar-radius: 2px;
         calc(#{$size-2} - #{$border-width - $border-width-xs});
       border: $border-width solid $color-on-primary;
       outline: none;
+    }
+
+    &:disabled {
+      border-color: $color-outline-variant;
+      background-color: $color-bg;
+      color: $color-on-bg-low;
+      cursor: not-allowed;
+    }
+
+    &[aria-invalid='true'] {
+      border-color: $color-error;
     }
 
     @supports not selector(::-webkit-scrollbar) {
@@ -125,5 +154,51 @@ $comment-composer-scrollbar-radius: 2px;
     display: block;
     width: $size-3;
     height: $size-3;
+  }
+
+  &__hint {
+    margin: $size-1 0 0;
+    font-family: $font-family-text;
+    font-size: $font-size-label-medium;
+    font-weight: $font-weight-medium;
+    line-height: normal;
+    color: $color-error;
+
+    &:empty {
+      margin: 0;
+    }
+  }
+
+  &__guest-note {
+    margin: $size-1 0 0;
+    font-family: $font-family-text;
+    font-size: $font-size-label-large;
+    font-weight: $font-weight-regular;
+    line-height: normal;
+    color: $color-on-bg;
+  }
+
+  &__login {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    font-weight: $font-weight-bold;
+    color: $color-tertiary;
+    text-decoration: underline;
+    text-underline-offset: $size-05;
+    cursor: pointer;
+    appearance: none;
+
+    @include hover {
+      color: $color-on-primary;
+    }
+
+    &:focus-visible {
+      border-radius: $corner-extra-small;
+      outline: $border-width solid $color-tertiary;
+      outline-offset: $border-width;
+    }
   }
 }

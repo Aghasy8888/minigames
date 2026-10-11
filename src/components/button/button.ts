@@ -95,3 +95,60 @@ export function createButton(options: CreateButtonOptions = {}): HTMLButtonEleme
 
   return button;
 }
+
+export function setButtonLoading(button: HTMLButtonElement, loadingLabel?: string): void {
+  const labelElement = button.querySelector<HTMLElement>('.button__label');
+  const { dataset } = button;
+
+  if (dataset.originalAriaLabel === undefined) {
+    dataset.originalAriaLabel = button.getAttribute('aria-label') ?? '';
+    dataset.originalLabel = labelElement?.textContent ?? '';
+  }
+
+  if (!button.querySelector('.button__spinner')) {
+    const spinner = document.createElement('span');
+    spinner.className = 'button__spinner';
+    spinner.setAttribute('aria-hidden', 'true');
+
+    const iconWrapper = button.querySelector('.button__icon');
+
+    if (iconWrapper) {
+      iconWrapper.append(spinner);
+    } else {
+      button.prepend(spinner);
+    }
+  }
+
+  button.classList.add('button--loading');
+  button.setAttribute('aria-busy', 'true');
+  button.disabled = true;
+
+  if (loadingLabel) {
+    button.setAttribute('aria-label', loadingLabel);
+
+    if (labelElement) {
+      labelElement.textContent = loadingLabel;
+    }
+  }
+}
+
+export function clearButtonLoading(button: HTMLButtonElement): void {
+  const { dataset } = button;
+  const { originalAriaLabel, originalLabel } = dataset;
+  const labelElement = button.querySelector<HTMLElement>('.button__label');
+
+  if (originalAriaLabel !== undefined) {
+    button.setAttribute('aria-label', originalAriaLabel);
+  }
+
+  if (labelElement && originalLabel !== undefined) {
+    labelElement.textContent = originalLabel;
+  }
+
+  delete dataset.originalAriaLabel;
+  delete dataset.originalLabel;
+
+  button.querySelector('.button__spinner')?.remove();
+  button.classList.remove('button--loading');
+  button.removeAttribute('aria-busy');
+}

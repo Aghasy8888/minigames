@@ -4,22 +4,29 @@
 .snackbar-host {
   position: fixed;
   z-index: 90;
-  bottom: $size-2;
-  left: 50%;
+  inset: auto $size-2 $size-2 auto;
   display: flex;
   flex-direction: column;
   gap: $size-1;
   box-sizing: border-box;
   width: calc(100% - #{$size-4});
   max-width: 22.5rem; // no exact $size-* match
-  transform: translateX(-50%);
+  height: auto;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  overflow: visible;
+  visibility: visible;
   pointer-events: none;
 
+  &:not(:popover-open) {
+    display: none;
+  }
+
   @include media-up('desktop') {
-    right: $size-3;
-    bottom: $size-3;
-    left: auto;
-    transform: none;
+    inset: auto $size-3 $size-3 auto;
   }
 }
 

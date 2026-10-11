@@ -1,5 +1,7 @@
 export {
+  clearButtonLoading,
   createButton,
+  setButtonLoading,
   type ButtonIconPosition,
   type ButtonSize,
   type ButtonType,

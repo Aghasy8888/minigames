@@ -1,12 +1,22 @@
 import { logoImage } from '../../assets/images';
 import { useNavLink } from '../../hooks/use-nav-link';
-import { subscribeNavigation } from '../../store/navigation-store';
 import { AUTH_DIALOG_MODE, type AuthDialogMode } from '../../store/auth-dialog-store';
+import { subscribeNavigation } from '../../store/navigation-store';
+import {
+  SESSION_END_REASON,
+  SESSION_STATUS,
+  endSession,
+  subscribeSession,
+  type SessionState,
+} from '../../store/session-store';
 import { HOME_LINK, MAIN_NAV_ITEMS, syncActiveNavLinks } from '../../utils/nav-items';
 import { createButton } from '../button';
+import { createUserProfile } from '../user-profile';
 import './mobile-nav.scss';
 
 const { login, register } = AUTH_DIALOG_MODE;
+const { authenticated } = SESSION_STATUS;
+const { logout } = SESSION_END_REASON;
 
 const ACTIVE_LINK_CLASS = 'mobile-nav__link--active';
 
@@ -92,13 +102,47 @@ export function createMobileNav(options: CreateMobileNavOptions = {}): HTMLEleme
     },
   });
 
-  actions.append(logInButton, signUpButton);
+  const logOutButton = createButton({
+    label: 'Log Out',
+    variant: 'secondary',
+    size: 'medium',
+    className: 'button--ghost-on-dark button--menu-auth',
+    onClick: () => {
+      onNavigate?.();
+      void endSession({ reason: logout });
+    },
+  });
+
+  const guestActions = [logInButton, signUpButton];
+
+  actions.append(...guestActions);
   panel.append(top, navigation, actions);
 
   const navLinks = navigation.querySelectorAll<HTMLAnchorElement>('.mobile-nav__link');
   subscribeNavigation((page) => {
     syncActiveNavLinks(navLinks, page, ACTIVE_LINK_CLASS);
   });
+
+  function applySession(session: SessionState): void {
+    if (session.status === authenticated) {
+      const { email, displayName, avatarUrl } = session;
+      actions.replaceChildren(
+        createUserProfile({
+          email,
+          displayName,
+          avatarUrl,
+          avatarPosition: 'start',
+          className: 'user-profile--on-dark',
+        }),
+        logOutButton,
+      );
+      return;
+    }
+
+    actions.replaceChildren(...guestActions);
+  }
+
+  subscribeSession(applySession);
 
   return panel;
 }

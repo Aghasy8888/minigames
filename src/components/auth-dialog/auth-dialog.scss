@@ -89,9 +89,14 @@ $dialog-width: 26.25rem;
       border-radius: $corner-small 0 0 $corner-small;
     }
 
-    &:hover {
+    &:hover:not(:disabled) {
       background-color: rgba($color-surface, 0.6);
       color: $color-on-primary;
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
     }
 
     &--active {
@@ -188,8 +193,13 @@ $dialog-width: 26.25rem;
     cursor: pointer;
     appearance: none;
 
-    &:hover {
+    &:hover:not(:disabled) {
       color: $color-tertiary;
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
     }
   }
 
@@ -238,8 +248,13 @@ $dialog-width: 26.25rem;
     cursor: pointer;
     appearance: none;
 
-    &:hover {
+    &:hover:not(:disabled) {
       color: $color-tertiary;
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
     }
   }
 

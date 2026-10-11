@@ -19,8 +19,13 @@ export type ApiListResponse<TData, TMeta = never> = {
 
 export type RequestQueryValue = string | number | boolean | undefined;
 
+export type RequestMethod = 'GET' | 'POST';
+
 export type RequestOptions = {
+  method?: RequestMethod;
   query?: Record<string, RequestQueryValue>;
+  /** Sent as JSON. */
+  body?: unknown;
   signal?: AbortSignal;
 };
 
@@ -82,11 +87,16 @@ export async function request<TData, TMeta = never>(
   path: string,
   options: RequestOptions = {},
 ): Promise<ApiListResponse<TData, TMeta>> {
+  const { method = 'GET', query, body: requestBody, signal } = options;
   let response: Response;
 
   try {
-    response = await fetch(`${API_BASE_URL}${path}${buildQueryString(options.query)}`, {
-      signal: options.signal,
+    response = await fetch(`${API_BASE_URL}${path}${buildQueryString(query)}`, {
+      method,
+      signal,
+      ...(requestBody === undefined
+        ? {}
+        : { headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestBody) }),
     });
   } catch (error) {
     if (isAbortError(error)) {

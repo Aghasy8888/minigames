@@ -1,6 +1,9 @@
 @use '../../styles/tokens' as *;
 @use '../../styles/mixins' as *;
 
+// no exact $size-* match — same box as `.favorite-icon`
+$comment-like-button-spinner-size: 0.813rem;
+
 .comment-like-button {
   display: inline-flex;
   gap: $size-05;
@@ -15,14 +18,21 @@
   appearance: none;
   transition: background-color 0.2s ease-out;
 
-  @include hover {
-    background-color: $color-surface;
-    color: $color-on-primary;
+  &:not(:disabled) {
+    @include hover {
+      background-color: $color-surface;
+      color: $color-on-primary;
+    }
   }
 
   &:focus-visible {
     background-color: $color-surface;
     color: $color-on-primary;
+  }
+
+  &--loading,
+  &:disabled {
+    cursor: progress;
   }
 
   &__count {
@@ -33,12 +43,28 @@
     color: $color-black;
   }
 
+  &__spinner {
+    display: block;
+    flex-shrink: 0;
+    box-sizing: border-box;
+    width: $comment-like-button-spinner-size;
+    height: $comment-like-button-spinner-size;
+    border: $border-width solid currentColor;
+    border-right-color: transparent;
+    border-radius: $corner-full;
+    animation: comment-like-button-spin 0.8s linear infinite;
+
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+    }
+  }
+
   &--liked,
   &--liked:focus-visible {
     color: $color-like;
   }
 
-  &--liked {
+  &--liked:not(:disabled) {
     @include hover {
       color: $color-like;
     }
@@ -46,5 +72,11 @@
 
   &--liked &__count {
     color: $color-like;
+  }
+}
+
+@keyframes comment-like-button-spin {
+  to {
+    transform: rotate(360deg);
   }
 }

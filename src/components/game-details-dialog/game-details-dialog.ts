@@ -3,6 +3,8 @@ import { useGameComments, type GameCommentsController } from '../../hooks/use-ga
 import { useGameDetails, type GameDetailsState } from '../../hooks/use-game-details';
 import { GAME_SLUG_LOAD_STATUS } from '../../hooks/use-game-slug-load';
 import { LOAD_STATUS } from '../../hooks/use-load-state';
+import { raiseTopLayer, releaseTopLayer } from '../../hooks/use-top-layer';
+import { getAuthDialogState, subscribeAuthDialog } from '../../store/auth-dialog-store';
 import {
   closeGameDetailsDialog,
   getGameDetailsDialogState,
@@ -125,6 +127,7 @@ export function createGameDetailsDialog(): HTMLDialogElement {
       dialog.classList.remove('game-details-dialog--closing');
       resetScroll();
       dialog.close();
+      releaseTopLayer(dialog);
     }, TRANSITION_MS);
   }
 
@@ -134,6 +137,7 @@ export function createGameDetailsDialog(): HTMLDialogElement {
 
     if (!dialog.open) {
       dialog.showModal();
+      raiseTopLayer(dialog);
       resetScroll();
       lockScroll();
       isLocked = true;
@@ -191,11 +195,20 @@ export function createGameDetailsDialog(): HTMLDialogElement {
     }
   });
 
+  function setCovered(isCovered: boolean): void {
+    dialog.classList.toggle('game-details-dialog--covered', isCovered);
+  }
+
   const comments = useGameComments();
   const { subscribe, getState } = useGameDetails();
   subscribe(render);
   setAccessibleName(false);
   render(getState());
+
+  subscribeAuthDialog(({ mode }) => {
+    setCovered(mode !== undefined);
+  });
+  setCovered(getAuthDialogState().mode !== undefined);
 
   return dialog;
 }
