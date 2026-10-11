@@ -37,9 +37,9 @@ export default defineConfig({
       // down to a whole percent so tiny refactors don't fail), a run below it fails. Never lower them by hand.
       // Branches and functions ratchet too, so untested error paths and guards can't hide behind statements.
       thresholds: {
-        statements: 16,
-        branches: 34,
-        functions: 21,
+        statements: 21,
+        branches: 41,
+        functions: 26,
         // The aggregate is the gate (the graded metric); low files are reviewed by hand in the table.
         perFile: false,
         autoUpdate: (newThreshold) => Math.floor(newThreshold),
