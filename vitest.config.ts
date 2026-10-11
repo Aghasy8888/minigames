@@ -7,6 +7,7 @@ export default defineConfig({
     environment: 'node',
     restoreMocks: true,
     unstubGlobals: true,
+    unstubEnvs: true,
     coverage: {
       provider: 'v8',
       // `text` prints the terminal summary table; `html` writes a browsable report to coverage/.
@@ -34,9 +35,9 @@ export default defineConfig({
       // down to a whole percent so tiny refactors don't fail), a run below it fails. Never lower them by hand.
       // Branches and functions ratchet too, so untested error paths and guards can't hide behind statements.
       thresholds: {
-        statements: 2,
-        branches: 5,
-        functions: 2,
+        statements: 4,
+        branches: 12,
+        functions: 5,
         // The aggregate is the gate (the graded metric); low files are reviewed by hand in the table.
         perFile: false,
         autoUpdate: (newThreshold) => Math.floor(newThreshold),
