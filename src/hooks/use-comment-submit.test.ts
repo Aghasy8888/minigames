@@ -2,6 +2,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 
 import { TEST_USER_EMAIL, makeComment, makeCommentsMeta } from '../test-support/api-factories';
+import { expireStoredSession } from '../test-support/app-session';
 import {
   jsonResponse,
   sentRequest,
@@ -153,6 +154,21 @@ describe('useCommentSubmit', () => {
       const comments = makeComments();
       vi.setSystemTime(NOW + TTL_MS);
 
+      await expect(hook.useCommentSubmit(comments).submit('Great game!')).resolves.toBe(false);
+      await vi.advanceTimersByTimeAsync(0);
+
+      expect(fetchMock).not.toHaveBeenCalled();
+      expect(currentUrl()).toBe(`${GAME_URL}&auth=login`);
+      expect(shownSnackbars()).toStrictEqual([EXPIRY_SNACKBAR]);
+      expect(drafts.getCommentDraft()).toBe(DRAFT);
+    });
+
+    it('sends nothing once the stored session is edited to an expired time, without a reload', async () => {
+      const fetchMock = stubFetchJson({ data: makeComment() });
+      session.startSession(PROFILE);
+      const comments = makeComments();
+
+      expireStoredSession();
       await expect(hook.useCommentSubmit(comments).submit('Great game!')).resolves.toBe(false);
       await vi.advanceTimersByTimeAsync(0);
 

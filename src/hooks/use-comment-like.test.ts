@@ -2,6 +2,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { TEST_USER_EMAIL, makeCommentLikeResult } from '../test-support/api-factories';
+import { expireStoredSession } from '../test-support/app-session';
 import {
   jsonResponse,
   sentRequest,
@@ -121,6 +122,21 @@ describe('useCommentLike', () => {
       const like = createLike();
       vi.setSystemTime(NOW + TTL_MS);
 
+      like.toggle();
+      await waitForSnackbar();
+
+      expect(fetchMock).not.toHaveBeenCalled();
+      expect(like.getState()).toStrictEqual({ status: idle, isLiked: false, likesCount: 3 });
+      expect(currentUrl()).toBe(`${GAME_URL}&auth=login`);
+      expect(shownSnackbars()).toStrictEqual([EXPIRY_SNACKBAR]);
+    });
+
+    it('sends nothing once the stored session is edited to an expired time, without a reload', async () => {
+      const fetchMock = stubFetchJson({ data: makeCommentLikeResult() });
+      session.startSession(PROFILE);
+      const like = createLike();
+
+      expireStoredSession();
       like.toggle();
       await waitForSnackbar();
 

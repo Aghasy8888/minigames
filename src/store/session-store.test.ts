@@ -2,6 +2,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi, type MockInstance } from 'vitest';
 
 import type { AppSessionRecord } from '../services/app-session-storage';
+import { expireStoredSession } from '../test-support/app-session';
 
 vi.mock('../services/firebase-auth', () => ({ signOutFirebase: vi.fn() }));
 
@@ -284,6 +285,19 @@ describe('expiry on visibilitychange', () => {
     expect(shownSnackbars()).toStrictEqual([EXPIRY_SNACKBAR]);
   });
 
+  it('ends the session when the page becomes visible after the stored record was edited to expire', async () => {
+    storeRecord({ authenticatedAt: NOW });
+    store.restoreSession();
+
+    expireStoredSession();
+    becomeVisible();
+    await settle();
+
+    expect(store.getSession().status).toBe('guest');
+    expect(signOut).toHaveBeenCalledTimes(1);
+    expect(shownSnackbars()).toStrictEqual([EXPIRY_SNACKBAR]);
+  });
+
   it('keeps the session when the page becomes visible before the deadline', async () => {
     storeRecord({ authenticatedAt: NOW });
     store.restoreSession();
@@ -330,6 +344,66 @@ describe('checkSessionExpiry', () => {
     await settle();
 
     expect(store.getSession().status).toBe(status);
+  });
+
+  it('ends the session when the stored authenticatedAt is moved past the lifetime after load', async () => {
+    store.startSession(PROFILE);
+
+    expireStoredSession();
+    store.checkSessionExpiry();
+    await settle();
+
+    expect(store.getSession()).toStrictEqual({ status: 'guest' });
+    expect(localStorage.getItem(SESSION_KEY)).toBeNull();
+    expect(localStorage.getItem(OTHER_KEY)).toBe('kept');
+    expect(signOut).toHaveBeenCalledTimes(1);
+    expect(shownSnackbars()).toStrictEqual([EXPIRY_SNACKBAR]);
+  });
+
+  it.each([
+    {
+      name: 'removed',
+      edit: () => {
+        localStorage.removeItem(SESSION_KEY);
+      },
+    },
+    {
+      name: 'not valid JSON',
+      edit: () => {
+        localStorage.setItem(SESSION_KEY, '{not json');
+      },
+    },
+    {
+      name: 'missing a required field',
+      edit: () => {
+        localStorage.setItem(SESSION_KEY, JSON.stringify({ email: PROFILE.email }));
+      },
+    },
+  ])('ends the session when the stored key is $name after load', async ({ edit }) => {
+    store.startSession(PROFILE);
+
+    edit();
+    store.checkSessionExpiry();
+    await settle();
+
+    expect(store.getSession()).toStrictEqual({ status: 'guest' });
+    expect(localStorage.getItem(SESSION_KEY)).toBeNull();
+    expect(localStorage.getItem(OTHER_KEY)).toBe('kept');
+    expect(signOut).toHaveBeenCalledTimes(1);
+    expect(shownSnackbars()).toStrictEqual([EXPIRY_SNACKBAR]);
+  });
+
+  it('never extends the session when the stored authenticatedAt is moved later', async () => {
+    store.startSession(PROFILE);
+    vi.setSystemTime(NOW + TTL_MS - 1000);
+    storeRecord({ authenticatedAt: NOW + TTL_MS - 1000 });
+
+    vi.setSystemTime(NOW + TTL_MS);
+    store.checkSessionExpiry();
+    await settle();
+
+    expect(store.getSession().status).toBe('guest');
+    expect(shownSnackbars()).toStrictEqual([EXPIRY_SNACKBAR]);
   });
 
   it('shows exactly one Snackbar when several checks see the same expiry', async () => {
@@ -465,6 +539,19 @@ describe('requireActiveSession', () => {
   it('blocks and ends a session that just expired, with one expiry Snackbar', async () => {
     store.startSession(PROFILE);
     vi.setSystemTime(NOW + TTL_MS);
+
+    expect(store.requireActiveSession()).toStrictEqual({ allowed: false, expired: true });
+    await settle();
+
+    expect(store.getSession().status).toBe('guest');
+    expect(signOut).toHaveBeenCalledTimes(1);
+    expect(shownSnackbars()).toStrictEqual([EXPIRY_SNACKBAR]);
+  });
+
+  it('blocks a protected action once the stored session is edited to an expired time, without a reload', async () => {
+    store.startSession(PROFILE);
+
+    expireStoredSession();
 
     expect(store.requireActiveSession()).toStrictEqual({ allowed: false, expired: true });
     await settle();

@@ -2,6 +2,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { TEST_USER_EMAIL, makeFavoriteResult } from '../test-support/api-factories';
+import { expireStoredSession } from '../test-support/app-session';
 import {
   jsonResponse,
   sentRequest,
@@ -121,6 +122,21 @@ describe('useFavoriteToggle', () => {
       const toggle = createToggle();
       vi.setSystemTime(NOW + TTL_MS);
 
+      toggle.toggle();
+      await waitForSnackbar();
+
+      expect(fetchMock).not.toHaveBeenCalled();
+      expect(toggle.getState()).toStrictEqual({ status: idle, isFavorited: false, likesCount: 10 });
+      expect(currentUrl()).toBe(`${GAME_URL}&auth=login`);
+      expect(shownSnackbars()).toStrictEqual([EXPIRY_SNACKBAR]);
+    });
+
+    it('sends nothing once the stored session is edited to an expired time, without a reload', async () => {
+      const fetchMock = stubFetchJson({ data: makeFavoriteResult() });
+      session.startSession(PROFILE);
+      const toggle = createToggle();
+
+      expireStoredSession();
       toggle.toggle();
       await waitForSnackbar();
 
