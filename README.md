@@ -46,3 +46,18 @@ To test expiry: DevTools → Application → Local Storage → set `authenticate
 npm install
 npm run dev
 ```
+
+## Testing
+
+Requires Node.js 22.12+ (the repo pins 24 in `.nvmrc`; run `nvm use`).
+
+```bash
+npm install
+npm test               # all unit test suites
+npm run test:coverage  # same suites + terminal coverage table
+```
+
+- Check the `All files` row, `% Stmts` column, in the coverage table (target: 80%+). An HTML report is also written to `coverage/index.html`.
+- Tests need no `.env` file, Firebase credentials, or network: Firebase and `fetch` are mocked, and time and env values are faked in tests, so results don't depend on time zone or locale.
+- Coverage exclusions (each with a reason) are listed in `vitest.config.ts`.
+- "Updating thresholds to configuration file" is expected. Vitest only raises the coverage floors in `vitest.config.ts` when a run beats them; on unchanged code the file stays the same.
