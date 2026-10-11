@@ -17,6 +17,8 @@ export default defineConfig({
       exclude: [
         // Test suites themselves, not application code.
         'src/**/*.test.ts',
+        // Test-only helpers, not imported by app code.
+        'src/test-support/**',
         // Ambient type declarations (`/// <reference types="vite/client" />`); erased at compile time.
         'src/**/*.d.ts',
         // Barrel files that only re-export a component's / feature's public API.
@@ -35,9 +37,9 @@ export default defineConfig({
       // down to a whole percent so tiny refactors don't fail), a run below it fails. Never lower them by hand.
       // Branches and functions ratchet too, so untested error paths and guards can't hide behind statements.
       thresholds: {
-        statements: 9,
-        branches: 21,
-        functions: 10,
+        statements: 10,
+        branches: 25,
+        functions: 12,
         // The aggregate is the gate (the graded metric); low files are reviewed by hand in the table.
         perFile: false,
         autoUpdate: (newThreshold) => Math.floor(newThreshold),
