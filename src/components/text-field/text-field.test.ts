@@ -80,7 +80,7 @@ describe('createTextField', () => {
     const icon = field.querySelector<HTMLImageElement>('.text-field__icon');
 
     expect(icon?.getAttribute('src')).toBe('/icons/mail.svg');
-    expect(icon?.alt).toBe('');
+    expect(icon?.getAttribute('alt')).toBe('');
     expect(control?.firstElementChild).toBe(icon);
   });
 
@@ -101,6 +101,7 @@ describe('password visibility toggle', () => {
     expect(toggle.getAttribute('aria-label')).toBe('Show password');
     expect(toggle.getAttribute('aria-pressed')).toBe('false');
     expect(toggle.getAttribute('aria-controls')).toBe('login-password');
+    expect(toggle.querySelector('img')?.getAttribute('alt')).toBe('');
   });
 
   it('reveals the password on the first click', () => {

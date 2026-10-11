@@ -38,7 +38,7 @@ describe('createIconImage', () => {
     const icon = createIconImage(starIcon, 'game-details-dialog__stat-icon');
 
     expect(icon.getAttribute('src')).toBe(starIcon);
-    expect(icon.alt).toBe('');
+    expect(icon.getAttribute('alt')).toBe('');
     expect(icon.className).toBe('game-details-dialog__stat-icon');
     expect(icon.getAttribute('aria-hidden')).toBe('true');
   });
@@ -87,7 +87,7 @@ describe('createHeroMedia', () => {
 
     expect(media.className).toBe('game-details-dialog__hero-media');
     expect(image?.getAttribute('src')).toMatch(/cat-mail-co-hero.*\.jpg$/);
-    expect(image?.alt).toBe('');
+    expect(image?.getAttribute('alt')).toBe('');
     expect(image?.decoding).toBe('async');
     expect(media.querySelector('.game-details-dialog__hero-skeleton')).not.toBeNull();
   });
