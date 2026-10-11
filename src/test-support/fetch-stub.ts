@@ -32,19 +32,34 @@ export type PendingFetch = {
   respond: (response: Response) => void;
 };
 
-/** Requests stay open until `respond`; aborting a request's signal rejects it like real `fetch`. */
+/**
+ * Requests stay open until `respond`; aborting a request's signal rejects it like real `fetch` and
+ * takes it out of the queue.
+ */
 export function stubPendingFetch(): PendingFetch {
-  const open: ((response: Response) => void)[] = [];
+  const open = new Set<(response: Response) => void>();
   const fetchMock = stubFetch(
     (_input, init) =>
       new Promise<Response>((resolve, reject) => {
-        open.push(resolve);
+        open.add(resolve);
         const signal = init?.signal;
-        signal?.addEventListener('abort', () => reject(signal.reason));
+        signal?.addEventListener('abort', () => {
+          open.delete(resolve);
+          reject(signal.reason);
+        });
       }),
   );
 
-  return { fetchMock, respond: (response) => open.shift()?.(response) };
+  return {
+    fetchMock,
+    respond(response) {
+      const [oldest] = open;
+      if (oldest !== undefined) {
+        open.delete(oldest);
+        oldest(response);
+      }
+    },
+  };
 }
 
 export function sentRequest(fetchMock: FetchMock, index = 0): SentRequest {
