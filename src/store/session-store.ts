@@ -133,15 +133,14 @@ export async function endSession({
 }
 
 export function checkSessionExpiry(): void {
-  if (state.status !== authenticated) {
-    return;
-  }
-
-  const record = readAppSession();
-
-  if (!record || isAppSessionExpired(state) || isAppSessionExpired(record)) {
+  if (state.status === authenticated && isAppSessionExpired(state)) {
     void endSession({ reason: expiry });
   }
+}
+
+function isStoredSessionUsable(): boolean {
+  const record = readAppSession();
+  return record !== undefined && !isAppSessionExpired(record);
 }
 
 export function getUserEmail(): string | undefined {
@@ -154,6 +153,10 @@ export type ProtectedActionAccess =
 export function requireActiveSession(): ProtectedActionAccess {
   const wasAuthenticated = state.status === authenticated;
   checkSessionExpiry();
+
+  if (state.status === authenticated && !isStoredSessionUsable()) {
+    void endSession({ reason: expiry });
+  }
 
   const current: SessionState = state;
 
