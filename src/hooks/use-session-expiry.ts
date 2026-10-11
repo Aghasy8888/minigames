@@ -14,7 +14,6 @@ export function clearSessionExpiry(): void {
 
 export function scheduleSessionExpiry(delayMs: number, expire: () => void): void {
   clearTimer();
-  onExpire = expire;
 
   if (delayMs <= 0) {
     expire();
