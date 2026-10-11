@@ -1,12 +1,13 @@
 // @vitest-environment happy-dom
 import { afterEach, beforeEach, describe, expect, it, vi, type MockInstance } from 'vitest';
 
+import { expireStoredSession } from '../test-support/app-session';
 import { currentUrl, goBack, goForward } from '../test-support/history';
 import { SESSION_STATUS } from './session-store';
 
 vi.mock('../services/firebase-auth', () => ({ signOutFirebase: vi.fn() }));
 
-const { guest } = SESSION_STATUS;
+const { guest, authenticated } = SESSION_STATUS;
 
 const NOW = 1_800_000_000_000;
 const TTL_MS = 5 * 60 * 1000;
@@ -109,6 +110,18 @@ describe('openGameDetailsDialog', () => {
     dialog.openGameDetailsDialog('cat-mail-co');
 
     expect(session.getSession().status).toBe(guest);
+    expect(openSlug()).toBe('cat-mail-co');
+  });
+
+  it('opens with no expiry Snackbar when only the stored session was edited to expire', async () => {
+    const snackbars = await import('./snackbar-store');
+    session.startSession({ email: 'student@rs.school', displayName: 'Student' });
+    expireStoredSession();
+
+    dialog.openGameDetailsDialog('cat-mail-co');
+
+    expect(session.getSession().status).toBe(authenticated);
+    expect(snackbars.getSnackbars()).toStrictEqual([]);
     expect(openSlug()).toBe('cat-mail-co');
   });
 });

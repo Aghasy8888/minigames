@@ -2,12 +2,13 @@
 import { afterEach, beforeEach, describe, expect, it, vi, type MockInstance } from 'vitest';
 
 import { GAME_CATEGORIES } from '../services/games-types';
+import { expireStoredSession } from '../test-support/app-session';
 import { currentUrl, goBack, goForward } from '../test-support/history';
 import { SESSION_STATUS } from './session-store';
 
 vi.mock('../services/firebase-auth', () => ({ signOutFirebase: vi.fn() }));
 
-const { guest } = SESSION_STATUS;
+const { guest, authenticated } = SESSION_STATUS;
 
 const NOW = 1_800_000_000_000;
 const TTL_MS = 5 * 60 * 1000;
@@ -244,6 +245,19 @@ describe('expired session during Library navigation', () => {
 
     expect(session.getSession().status).toBe(guest);
     expect(currentUrl()).toBe('/library?page=2');
+  });
+
+  it('changes the filter with no expiry Snackbar when only the stored session was edited to expire', async () => {
+    await loadStoreAt('/library');
+    const snackbars = await import('./snackbar-store');
+    session.startSession({ email: 'student@rs.school', displayName: 'Student' });
+    expireStoredSession();
+
+    store.navigateLibraryCategory('card');
+
+    expect(session.getSession().status).toBe(authenticated);
+    expect(snackbars.getSnackbars()).toStrictEqual([]);
+    expect(currentUrl()).toBe('/library?category=card');
   });
 });
 

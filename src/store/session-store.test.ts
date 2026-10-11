@@ -285,7 +285,7 @@ describe('expiry on visibilitychange', () => {
     expect(shownSnackbars()).toStrictEqual([EXPIRY_SNACKBAR]);
   });
 
-  it('ends the session when the page becomes visible after the stored record was edited to expire', async () => {
+  it('leaves a stored record edited to expire for the next protected action to report', async () => {
     storeRecord({ authenticatedAt: NOW });
     store.restoreSession();
 
@@ -293,9 +293,9 @@ describe('expiry on visibilitychange', () => {
     becomeVisible();
     await settle();
 
-    expect(store.getSession().status).toBe('guest');
-    expect(signOut).toHaveBeenCalledTimes(1);
-    expect(shownSnackbars()).toStrictEqual([EXPIRY_SNACKBAR]);
+    expect(store.getSession().status).toBe('authenticated');
+    expect(signOut).not.toHaveBeenCalled();
+    expect(shownSnackbars()).toStrictEqual([]);
   });
 
   it('keeps the session when the page becomes visible before the deadline', async () => {
@@ -346,51 +346,16 @@ describe('checkSessionExpiry', () => {
     expect(store.getSession().status).toBe(status);
   });
 
-  it('ends the session when the stored authenticatedAt is moved past the lifetime after load', async () => {
+  it('ignores a stored record edited to expire after load, so navigation shows no Snackbar', async () => {
     store.startSession(PROFILE);
 
     expireStoredSession();
     store.checkSessionExpiry();
     await settle();
 
-    expect(store.getSession()).toStrictEqual({ status: 'guest' });
-    expect(localStorage.getItem(SESSION_KEY)).toBeNull();
-    expect(localStorage.getItem(OTHER_KEY)).toBe('kept');
-    expect(signOut).toHaveBeenCalledTimes(1);
-    expect(shownSnackbars()).toStrictEqual([EXPIRY_SNACKBAR]);
-  });
-
-  it.each([
-    {
-      name: 'removed',
-      edit: () => {
-        localStorage.removeItem(SESSION_KEY);
-      },
-    },
-    {
-      name: 'not valid JSON',
-      edit: () => {
-        localStorage.setItem(SESSION_KEY, '{not json');
-      },
-    },
-    {
-      name: 'missing a required field',
-      edit: () => {
-        localStorage.setItem(SESSION_KEY, JSON.stringify({ email: PROFILE.email }));
-      },
-    },
-  ])('ends the session when the stored key is $name after load', async ({ edit }) => {
-    store.startSession(PROFILE);
-
-    edit();
-    store.checkSessionExpiry();
-    await settle();
-
-    expect(store.getSession()).toStrictEqual({ status: 'guest' });
-    expect(localStorage.getItem(SESSION_KEY)).toBeNull();
-    expect(localStorage.getItem(OTHER_KEY)).toBe('kept');
-    expect(signOut).toHaveBeenCalledTimes(1);
-    expect(shownSnackbars()).toStrictEqual([EXPIRY_SNACKBAR]);
+    expect(store.getSession().status).toBe('authenticated');
+    expect(signOut).not.toHaveBeenCalled();
+    expect(shownSnackbars()).toStrictEqual([]);
   });
 
   it('never extends the session when the stored authenticatedAt is moved later', async () => {
@@ -556,7 +521,57 @@ describe('requireActiveSession', () => {
     expect(store.requireActiveSession()).toStrictEqual({ allowed: false, expired: true });
     await settle();
 
-    expect(store.getSession().status).toBe('guest');
+    expect(store.getSession()).toStrictEqual({ status: 'guest' });
+    expect(localStorage.getItem(SESSION_KEY)).toBeNull();
+    expect(localStorage.getItem(OTHER_KEY)).toBe('kept');
+    expect(signOut).toHaveBeenCalledTimes(1);
+    expect(shownSnackbars()).toStrictEqual([EXPIRY_SNACKBAR]);
+  });
+
+  it.each([
+    {
+      name: 'removed',
+      edit: () => {
+        localStorage.removeItem(SESSION_KEY);
+      },
+    },
+    {
+      name: 'not valid JSON',
+      edit: () => {
+        localStorage.setItem(SESSION_KEY, '{not json');
+      },
+    },
+    {
+      name: 'missing a required field',
+      edit: () => {
+        localStorage.setItem(SESSION_KEY, JSON.stringify({ email: PROFILE.email }));
+      },
+    },
+  ])('blocks and ends the session when the stored key is $name after load', async ({ edit }) => {
+    store.startSession(PROFILE);
+
+    edit();
+
+    expect(store.requireActiveSession()).toStrictEqual({ allowed: false, expired: true });
+    await settle();
+
+    expect(store.getSession()).toStrictEqual({ status: 'guest' });
+    expect(localStorage.getItem(SESSION_KEY)).toBeNull();
+    expect(localStorage.getItem(OTHER_KEY)).toBe('kept');
+    expect(signOut).toHaveBeenCalledTimes(1);
+    expect(shownSnackbars()).toStrictEqual([EXPIRY_SNACKBAR]);
+  });
+
+  it('keeps the in-memory deadline when the stored authenticatedAt is moved later', async () => {
+    store.startSession(PROFILE);
+    vi.setSystemTime(NOW + TTL_MS - 1000);
+    storeRecord({ authenticatedAt: NOW + TTL_MS - 1000 });
+
+    vi.setSystemTime(NOW + TTL_MS);
+
+    expect(store.requireActiveSession()).toStrictEqual({ allowed: false, expired: true });
+    await settle();
+
     expect(signOut).toHaveBeenCalledTimes(1);
     expect(shownSnackbars()).toStrictEqual([EXPIRY_SNACKBAR]);
   });
