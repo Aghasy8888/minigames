@@ -17,7 +17,7 @@ export default defineConfig({
       exclude: [
         // Test suites themselves, not application code.
         'src/**/*.test.ts',
-        // Test-only helpers, not imported by app code.
+        // Test infrastructure (fixtures, fetch stubs); no application logic, never imported by app code.
         'src/test-support/**',
         // Ambient type declarations (`/// <reference types="vite/client" />`); erased at compile time.
         'src/**/*.d.ts',
