@@ -137,7 +137,9 @@ export function checkSessionExpiry(): void {
     return;
   }
 
-  if (isAppSessionExpired(state)) {
+  const record = readAppSession();
+
+  if (!record || isAppSessionExpired(state) || isAppSessionExpired(record)) {
     void endSession({ reason: expiry });
   }
 }
